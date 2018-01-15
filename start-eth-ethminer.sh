@@ -66,7 +66,7 @@ NUMGPU="$(nvidia-smi -L | wc -l)"
 #   Commented out as this needs root
 #   .. will figure this out later
 
-if [ $LIMITPOWER = 'yes' ] ; then
+if [ "$LIMITPOWER" = "yes" ] ; then
 
    echo "Limiting power to $POWERLIMIT_WATTS"
    sudo nvidia-smi -pm 1
@@ -76,7 +76,7 @@ fi
 
 #   GPU Overlock
 
-if [ $GPUOVERCLOCK = 'yes' ] ; then
+if [ "$GPUOVERCLOCK" = "yes" ] ; then
 
    echo "Overclocking GPU by $GPUOVERCLOCK"
    n=0
@@ -90,7 +90,7 @@ fi
 
 #   GPU Memory Overclock
 
-if [ $GPUMEMOVERCLOCK = 'yes' ] ; then
+if [ "$GPUMEMOVERCLOCK" = "yes" ] ; then
 
    echo "Overclocking GPU Memory"
    n=0
