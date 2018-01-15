@@ -42,12 +42,13 @@
 SERVER=http://eth1.nanopool.org:8888
 FSERVER=http://eth-eu2.nanopool.org:9999
 WALLET=0x75A3CdA475EE196916ec76C7174eCd7886163beC
-WORKER=GTX-1060x4-ethminer
+WORKER=gtx-1060x4-ethminer
 EMAIL=nikansell00@gmail.com
-POWERLIMIT_WATTS=100
-GPUOVERCLOCK=10
-MEMOVERCLOCK=10
+POWERLIMIT_WATTS=78
+GPUOVERCLOCK=107
+MEMOVERCLOCK=935
 MININGCMD="ethminer -G -F $SERVER/$WALLET.$WORKER/$EMAIL --farm-recheck 200"
+LIMITPOWER='yes'
 
 #export GPU_FORCE_64BIT_0=PTR
 #export GPU_MAX_HEAP_SIZE=100
@@ -65,26 +66,41 @@ NUMGPU="$(nvidia-smi -L | wc -l)"
 #   Commented out as this needs root
 #   .. will figure this out later
 
-#sudo nvidia-smi -pm 1
-#sudo nvidia-smi -pl $POWERLIMIT_WATTS
+if [ $LIMITPOWER = 'yes' ] ; then
+
+   echo "Limiting power to $POWERLIMIT_WATTS"
+   sudo nvidia-smi -pm 1
+   sudo nvidia-smi -pl $POWERLIMIT_WATTS
+
+fi
 
 #   GPU Overlock
 
-#n=0
-#while [ $n -lt $NUMGPU ];
-#do
-#    nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
-#    let n=n+1
-#done
+if [ $GPUOVERCLOCK = 'yes' ] ; then
+
+   echo "Overclocking GPU by $GPUOVERCLOCK"
+   n=0
+   while [ $n -lt $NUMGPU ];
+   do
+      nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
+      let n=n+1
+   done
+
+fi
 
 #   GPU Memory Overclock
 
-#n=0
-#while [ $n -lt $NUMGPU ];
-#do
-#    nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK
-#    let n=n+1
-#done
+if [ $GPUMEMOVERCLOCK = 'yes' ] ; then
+
+   echo "Overclocking GPU Memory"
+   n=0
+   while [ $n -lt $NUMGPU ];
+   do
+      nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK
+      let n=n+1
+   done
+
+fi
 
 #   Set fan speed to auto
 
