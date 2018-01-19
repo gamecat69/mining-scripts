@@ -10,16 +10,19 @@ POOLPASS=x
 POWERLIMIT_WATTS=78
 GPUOVERCLOCK=107
 MEMOVERCLOCK=935
-LIMITPOWER='yes'
+GPUOC=yes
+MEMOC=yes
+MAXPERF=yes
+LIMITPOWER=yes
 #CMINERDIR="cminer9.4"
 CMINERDIR="cminer10.0"
 MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $WALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80"
 
-#export GPU_FORCE_64BIT_PTR=0
-#export GPU_MAX_HEAP_SIZE=100
-#export GPU_USE_SYNC_OBJECTS=1
-#export GPU_MAX_ALLOC_PERCENT=100
-#export GPU_SINGLE_ALLOC_PERCENT=100
+export GPU_FORCE_64BIT_PTR=0
+export GPU_MAX_HEAP_SIZE=100
+export GPU_USE_SYNC_OBJECTS=1
+export GPU_MAX_ALLOC_PERCENT=100
+export GPU_SINGLE_ALLOC_PERCENT=100
 
 #   ------------------------
 #   Configure Nvidia cards
@@ -41,7 +44,7 @@ fi
 
 #   GPU Overlock
 
-if [ "$GPUOVERCLOCK" = "yes" ] ; then
+if [ "$GPUOC" = "yes" ] ; then
 
    echo "Overclocking GPU by $GPUOVERCLOCK"
    n=0
@@ -55,9 +58,9 @@ fi
 
 #   GPU Memory Overclock
 
-if [ "$GPUMEMOVERCLOCK" = "yes" ] ; then
+if [ "$MEMOC" = "yes" ] ; then
 
-   echo "Overclocking GPU Memory"
+   echo "Overclocking GPU Memory by $MEMOVERCLOCK"
    n=0
    while [ $n -lt $NUMGPU ];
    do
@@ -78,12 +81,17 @@ fi
 
 #   Set max performance mode
 
-#n=0
-#while [  $n -lt  $NUMGPU ];
-#do
-#    nvidia-settings -a [gpu:${n}]/GPUPowerMizerMode=1
-#    let n=n+1
-#done
+if [ "$MAXPERF" = "yes" ] ; then
+
+   echo "Setting Powermizer to Prefer Max Performance"
+   n=0
+   while [  $n -lt  $NUMGPU ];
+   do
+      nvidia-settings -a [gpu:${n}]/GPUPowerMizerMode=1
+      let n=n+1
+   done
+
+fi
 
 #   ------------------------
 #   Start mining
