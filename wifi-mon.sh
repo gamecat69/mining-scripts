@@ -17,4 +17,4 @@ do
 
    sleep 60
 
-do
+done

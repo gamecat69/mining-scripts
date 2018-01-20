@@ -6,6 +6,9 @@ MINE_ETH=yes
 echo "Killing previous processes..."
 ./kill-miner.sh
 
+echo "Starting wifi monitor"
+./wifi-mon.sh &
+
 if [ "$MINE_ETH" = "yes" ] ; then
 
    echo "Starting ETH Miner"

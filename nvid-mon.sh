@@ -4,7 +4,7 @@ OUTFILE=~/nvidia-mon.log
 #   Data to query. run "nvidia-smi --help" for more info
 QUERYCOLUMNS="timestamp,index,gpu_name,gpu_bus_id,fan.speed,pstate,clocks_throttle_reasons.hw_slowdown,utilization.gpu,temperature.gpu,power.draw,clocks.gr"
 WAITTIMESECS=300
-MAXHOURSPERLOG=1
+MAXHOURSPERLOG=4
 #   Calc when to cycle log file
 MAXITERATIONS=$((3600/$WAITTIMESECS*$MAXHOURSPERLOG))
 
@@ -28,6 +28,6 @@ do
    sleep $WAITTIMESECS
    let i=$i+1
    REMAININGITERATIONS=$(($MAXITERATIONS - $i))
-   echo "$OUTFILE will be cycled in $REMAININGITERATIONS iterations"
+   #echo "$OUTFILE will be cycled in $REMAININGITERATIONS iterations"
 
 done
