@@ -11,3 +11,6 @@ pkill -f nvid-mon
 
 echo "Killing xmr-stak"
 pkill -f xmr-stak
+
+echo "Killing wifi-mon"
+pkill -f wifi-mon
