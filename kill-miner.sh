@@ -7,7 +7,7 @@ echo "Killing ethminer"
 pkill -f ethminer
 
 echo "Killing NVIDIA logging"
-pkill -f nvid-mon
+pkill -f nvidia-mon
 
 echo "Killing xmr-stak"
 pkill -f xmr-stak
