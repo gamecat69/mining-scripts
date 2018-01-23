@@ -25,7 +25,7 @@ do
       i=1
    fi
 
-   nvidia-smi --format=noheader,csv --query-gpu=$QUERYCOLUMNS >> $OUTFILE
+   nvidia-smi --format=noheader,csv,nounits --query-gpu=$QUERYCOLUMNS >> $OUTFILE
    sleep $WAITTIMESECS
    let i=$i+1
    REMAININGITERATIONS=$(($MAXITERATIONS - $i))
