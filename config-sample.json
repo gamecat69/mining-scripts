@@ -1,0 +1,11 @@
+{
+
+   "ACCESSKEY" : "sdcifusdhciosaduhcsdi",
+   "SECRETKEY" : "sdcsdcsdacsadcsadcsadc",
+   "S3BUCKET"  : "my-bucket-name",
+   "CMINERURL" : "http://localhost:3333",
+   "XMRSTAKURL" : "http://localhost:4444/api.json",
+   "HTMLREPORTDIR" : "/home/mining/mining-scripts",
+   "HTMLREPORTFILE" : "index.html"
+
+}

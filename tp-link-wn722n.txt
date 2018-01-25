@@ -6,8 +6,9 @@ sudo git clone https://github.com/lwfinger/rtl8188eu.git
 sudo dkms add ./rtl8188eu
 sudo dkms build 8188eu/1.0
 sudo dkms install 8188eu/1.0
+sudo modprobe 8188eu
 reboot
-sudo modprobe 8188e
+
 
 
 Backing up initrd.img-4.10.0-38-generic to /boot/initrd.img-4.10.0-38-generic.old-dkms

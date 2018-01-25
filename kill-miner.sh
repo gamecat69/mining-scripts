@@ -14,3 +14,6 @@ pkill -f xmr-stak
 
 echo "Killing wifi-mon"
 pkill -f wifi-mon
+
+echo "Killing min-mon"
+pkill -f min-mon
