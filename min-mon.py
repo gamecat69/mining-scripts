@@ -3,6 +3,8 @@ import urllib2
 import re
 import boto3
 import datetime
+import string
+import subprocess
 
 #	----------------------------------
 #	Pre-requisites
@@ -11,8 +13,10 @@ import datetime
 #	----------------------------------
 
 global gpuDetails
-gpuDetails    = []
+global xmrUSD
+global ethUSD
 
+gpuDetails    = []
 ethVersion    = ''
 ethHashRate   = ''
 ethPoolAddr   = ''
@@ -26,38 +30,67 @@ xmrShares     = ''
 xmrUptimeMin  = ''
 xmrSharePerHr = ''
 xmrErrors     = ''
+xmrUSD        = ''
+ethUSD        = ''
 
 #	----------------------------------
 #	Functions
 #	----------------------------------
 
+def getCoinUSD(coin):
+
+	url = cfg["COINMARKETCAPURL"] + '/' + coin
+
+	print ("[MIN MON] Getting data from:%s" % url)
+
+	res = urllib2.urlopen(url)
+	data = res.read()
+	Json = json.loads(data)
+	return Json[0]["price_usd"]
+
+def getSystemUptime():
+    raw = subprocess.check_output('uptime').replace(',','')
+    days = int(raw.split()[2])
+    if 'min' in raw:
+    	hours = 0
+    	minutes = int(raw[4])
+    else:
+    	hours, minutes = map(int,raw.split()[4].split(':'))
+    totalsecs = days*24*60*60 + hours*60*60 + minutes*60    
+    
+    return (str(days) + "d " + str(hours) + "h " + str(minutes) + "m")
+
 def writeHTML():
 
-	HTMLfilepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLREPORTFILE"]
-
+	HTMLfilepath     = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLREPORTFILE"]
+	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
+	
 	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
+	lastUpdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+	sysUptime = getSystemUptime()
+
+	f = open(HTMLtemplatepath)
+	data = f.read()
+	data = string.replace(data, '$minername', cfg["MINERNAME"])
+	data = string.replace(data, '$lastupdate', lastUpdate)
+	data = string.replace(data, '$systemuptime', sysUptime)
+	data = string.replace(data, '$avggputemp', str(avgGPUTemp))
+	data = string.replace(data, '$avggpufanspeed', str(avgGPUFanSpeed))
+	data = string.replace(data, '$ethusd', str(ethUSD))
+	data = string.replace(data, '$ethhashrate', str(ethHashRate))
+	data = string.replace(data, '$ethshares', str(ethSharePerHr))
+	data = string.replace(data, '$ethuptime', str(ethUptimeMin))
+	data = string.replace(data, '$ethtotalshares', str(ethShares))
+	data = string.replace(data, '$ethpool', str(ethPoolAddr))
+	data = string.replace(data, '$xmrusd', str(xmrUSD))
+	data = string.replace(data, '$xmrhashrate', str(xmrHashRate))
+	data = string.replace(data, '$xmrshares', str(xmrSharePerHr))
+	data = string.replace(data, '$xmruptime', str(xmrUptimeMin))
+	data = string.replace(data, '$xmrtotalshares', str(xmrShares))
+	data = string.replace(data, '$xmrpool', str(xmrPoolAddr))
 
 	HTMLfile= open(HTMLfilepath,"w")
-	HTMLfile.write("<!DOCTYPE html><html><body>\n")
-
-	HTMLfile.write ("Last updated on: %s<br/>\n" % datetime.datetime.now() )
-
-	HTMLfile.write ("xmrVersion: %s<br/>\n" % xmrVersion)
-	HTMLfile.write ("xmrHashRate: %s h/s<br/>\n" % xmrHashRate)
-	HTMLfile.write ("xmrPoolAddr: %s<br/>\n" % xmrPoolAddr)
-	HTMLfile.write ("xmrShares: %s<br/>\n" % xmrShares) 
-	HTMLfile.write ("xmrUptimeMin: %s<br/>\n" % xmrUptimeMin)
-	HTMLfile.write ("xmrSharePerHr: %s<br/>\n" % xmrSharePerHr)
-	HTMLfile.write ("xmrErrors: %s<br/>\n" % xmrErrors)
-
-	HTMLfile.write ("ethVersion: %s<br/>\n" % ethVersion)
-	HTMLfile.write ("ethHashRate: %s Kh/s<br/>\n" % ethHashRate)
-	HTMLfile.write ("ethPoolAddr: %s<br/>\n" % ethPoolAddr)
-	HTMLfile.write ("ethShares: %s<br/>\n" % ethShares) 
-	HTMLfile.write ("ethUptimeMin: %s<br/>\n" % ethUptimeMin)
-	HTMLfile.write ("ethSharePerHr: %s<br/>\n" % ethSharePerHr)
-
-	HTMLfile.write("</body></html>")
+	HTMLfile.write(data)
 	HTMLfile.close()
 
 def getxmrStakData():
@@ -122,6 +155,8 @@ def getCminerData():
 	global ethShares
 	global ethUptimeMin
 	global ethSharePerHr
+	global avgGPUTemp
+	global avgGPUFanSpeed
 
 	#   Open cminer http interface and read
 
@@ -147,40 +182,40 @@ def getCminerData():
 
 	if m:
 
-	   #    Load the json object
+		#    Load the json object
 
-	   js = json.loads(m.group(1))
-	   
-	   h_s_r=js["result"][2].split(';')
-	   gpu_hashrates=js["result"][3].split(';')
-	   gpu_temp_fanspeed=js["result"][6].split(';')
-	   pooladdr=js["result"][7]
+		js = json.loads(m.group(1))
 
-	   #print ("Version:%s" % js["result"][0])
-	   #print ("PoolAddr:%s" % js["result"][7])
-	   #print ("Uptime(mins):%s" % js["result"][1])
-	   #print ("Hashrate: %s Kh/s" % (h_s_r[0]))
-	   #print ("Shares_Accepted: %s" % (h_s_r[1]))
-	   #print ("Shares_Rejected: %s" % (h_s_r[2]))
-	   #print ("Avg Shares/hr:%s" % ( int(h_s_r[1]) / ( int(js["result"][1]) / 60 ) ) )
+		h_s_r=js["result"][2].split(';')
+		gpu_hashrates=js["result"][3].split(';')
+		gpu_temp_fanspeed=js["result"][6].split(';')
+		pooladdr=js["result"][7]
 
-	   i=0
-	   for gpu in gpu_hashrates:
+		#print ("Version:%s" % js["result"][0])
+		#print ("PoolAddr:%s" % js["result"][7])
+		#print ("Uptime(mins):%s" % js["result"][1])
+		#print ("Hashrate: %s Kh/s" % (h_s_r[0]))
+		#print ("Shares_Accepted: %s" % (h_s_r[1]))
+		#print ("Shares_Rejected: %s" % (h_s_r[2]))
+		#print ("Avg Shares/hr:%s" % ( int(h_s_r[1]) / ( int(js["result"][1]) / 60 ) ) )
+
+		i=0
+		for gpu in gpu_hashrates:
 		  #print ("GPU %d hashrate:%s" % (i, gpu))
 		  gpuHashRates.append(gpu)
 		  i=i+1
 
-	   #    Cycle through GPUs and get temp and fanspeed
-	   #    See below for data structure guidance
-	   #    GPU # = listindex, listindex 
-	   #    0 = 0,1
-	   #    1 = 2,3
-	   #    2 = 4,5
-	   #    3 = 6,7
-	   #    4 = 8,9
+		#    Cycle through GPUs and get temp and fanspeed
+		#    See below for data structure guidance
+		#    GPU # = listindex, listindex 
+		#    0 = 0,1
+		#    1 = 2,3
+		#    2 = 4,5
+		#    3 = 6,7
+		#    4 = 8,9
 
-	   n=0
-	   while n < i:
+		n=0
+		while n < i:
 		  #print ("GPU %d temp:%s" % (n, gpu_temp_fanspeed[n*2]))
 		  #print ("GPU %d fanspeed:%s" % (n, gpu_temp_fanspeed[(n*2)+1]))
 		  gpuTemps.append(gpu_temp_fanspeed[n*2])
@@ -188,29 +223,42 @@ def getCminerData():
 		  gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
 		  n=n+1
 
-	ethVersion    = js["result"][0]
-	ethHashRate   = h_s_r[0]
-	ethPoolAddr   = js["result"][7]
-	ethShares     = h_s_r[1]
-	ethUptimeMin  = js["result"][1]
+		#	Get average GPU temp
+		tempTotal=0
+		for t in gpuTemps:
+			tempTotal = tempTotal + int(t)
+		avgGPUTemp = tempTotal / i;
 
-	#	Prevent a divide by zero error
-	if ethShares > 0 and int(js["result"][1]) > 60:
-		ethSharePerHr = int(h_s_r[1]) / ( int(js["result"][1]) / 60 )
-	else:
-		ethSharePerHr = 0
+		#	Get average GPU fanspeed
+		speedTotal=0
+		for t in gpuFanSpeeds:
+			speedTotal = speedTotal + int(t)
+		avgGPUFanSpeed = speedTotal / i;
 
-	#print ("ethVersion:%s" % ethVersion)
-	#print ("ethHashRate:%s Kh/s" % ethHashRate)
-	#print ("ethPoolAddr:%s" % ethPoolAddr)
-	#print ("ethShares:%s" % ethShares) 
-	#print ("ethUptimeMin:%s" % ethUptimeMin)
-	#print ("ethSharePerHr:%s" % ethSharePerHr)
-	
-	n=0
-	while n < i:
-		#print ("GPU%d Info:%s" % (n, gpuDetails[n]) )
-		n=n+1
+		ethVersion    = js["result"][0]
+		ethHashRate   = h_s_r[0]
+		ethPoolAddr   = js["result"][7]
+		ethShares     = h_s_r[1]
+		ethUptimeMin  = js["result"][1]
+
+		#	Prevent a divide by zero error
+		if ethShares > 0 and int(js["result"][1]) > 60:
+			ethSharePerHr = int(h_s_r[1]) / ( int(js["result"][1]) / 60 )
+		else:
+			ethSharePerHr = 0
+
+		#print ("ethVersion:%s" % ethVersion)
+		#print ("ethHashRate:%s Kh/s" % ethHashRate)
+		#print ("ethPoolAddr:%s" % ethPoolAddr)
+		#print ("ethShares:%s" % ethShares) 
+		#print ("ethUptimeMin:%s" % ethUptimeMin)
+		#print ("ethSharePerHr:%s" % ethSharePerHr)
+		#print ("avgGPUTemp:%s" % avgGPUTemp)
+		
+		#n=0
+		#while n < i:
+			#print ("GPU%d Info:%s" % (n, gpuDetails[n]) )
+			#n=n+1
 
 #	----------------------------------
 #	Main code
@@ -221,5 +269,7 @@ cfg = json.load(open('config.json'))
 
 getCminerData()
 getxmrStakData()
+xmrUSD = getCoinUSD('monero')
+ethUSD = getCoinUSD('ethereum')
 writeHTML()
 uploadToAWS(cfg["HTMLREPORTDIR"], cfg["HTMLREPORTFILE"])
