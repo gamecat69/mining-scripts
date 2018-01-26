@@ -4,7 +4,7 @@ import re
 import boto3
 import datetime
 import string
-import subprocess
+import os
 
 #	----------------------------------
 #	Pre-requisites
@@ -49,16 +49,38 @@ def getCoinUSD(coin):
 	return Json[0]["price_usd"]
 
 def getSystemUptime():
-    raw = subprocess.check_output('uptime').replace(',','')
-    days = int(raw.split()[2])
-    if 'min' in raw:
-    	hours = 0
-    	minutes = int(raw[4])
-    else:
-    	hours, minutes = map(int,raw.split()[4].split(':'))
-    totalsecs = days*24*60*60 + hours*60*60 + minutes*60    
-    
-    return (str(days) + "d " + str(hours) + "h " + str(minutes) + "m")
+
+     try:
+         f = open( "/proc/uptime" )
+         contents = f.read().split()
+         f.close()
+     except:
+        return "Cannot open uptime file: /proc/uptime"
+ 
+     total_seconds = float(contents[0])
+ 
+     # Helper vars:
+     MINUTE  = 60
+     HOUR    = MINUTE * 60
+     DAY     = HOUR * 24
+ 
+     # Get the days, hours, etc:
+     days    = int( total_seconds / DAY )
+     hours   = int( ( total_seconds % DAY ) / HOUR )
+     minutes = int( ( total_seconds % HOUR ) / MINUTE )
+     seconds = int( total_seconds % MINUTE )
+ 
+     # Build up the pretty string (like this: "N days, N hours, N minutes, N seconds")
+     string = ""
+     if days > 0:
+         string += str(days) + " " + (days == 1 and "d" or "d" ) + " "
+     if len(string) > 0 or hours > 0:
+         string += str(hours) + " " + (hours == 1 and "h" or "h" ) + " "
+     if len(string) > 0 or minutes > 0:
+         string += str(minutes) + " " + (minutes == 1 and "m" or "m" ) + " "
+     string += str(seconds) + " " + (seconds == 1 and "s" or "s" )
+ 
+     return string;
 
 def writeHTML():
 
@@ -66,7 +88,7 @@ def writeHTML():
 	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
 	
 	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
-	lastUpdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+	lastUpdate = datetime.datetime.now().strftime("%H:%M on %d-%m-%Y")
 	sysUptime = getSystemUptime()
 
 	f = open(HTMLtemplatepath)
