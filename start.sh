@@ -1,16 +1,17 @@
 #!/bin/bash
 
-MINE_XMR=yes
-MINE_ETH=yes
 RED='\033[0;31m'
 NC='\033[0m' # No Color
-WORKINGDIR=/home/mining/mining-scripts
 PUSH_MSG="Starting up...\
 Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com"
-PUSH_TITLE="gtx-1060x5"
+PUSH_TITLE="gtx-1060x6"
 WAITSECS=20
 
+WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
+
+#	Get config data
+source ./config.sh
 
 echo -e "${RED}Killing previous processes...${NC}"
 ./kill-miner.sh

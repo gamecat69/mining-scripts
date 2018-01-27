@@ -5,6 +5,7 @@ import boto3
 import datetime
 import string
 import os
+import time
 
 #	----------------------------------
 #	Pre-requisites
@@ -21,66 +22,88 @@ ethVersion    = ''
 ethHashRate   = ''
 ethPoolAddr   = ''
 ethShares     = ''
-ethUptimeMin  = ''
+ethUptime     = ''
 ethSharePerHr = ''
 xmrVersion    = ''
 xmrHashRate   = ''
 xmrPoolAddr   = ''
 xmrShares     = ''
-xmrUptimeMin  = ''
+xmrUptime     = ''
 xmrSharePerHr = ''
 xmrErrors     = ''
 xmrUSD        = ''
 ethUSD        = ''
+numGPU        = ''
+avgGPUTemp    = ''
+avgGPUTemp    = ''
+avgGPUFanSpeed = ''
+avgGPUHashRate = ''
 
 #	----------------------------------
 #	Functions
 #	----------------------------------
 
+def logError(errString):
+	print ("[MIN MON] [ERR] : %s" % errString)
+
+def formatUptimeMins(mins):
+	
+	mins = int(mins)
+
+	# Helper vars:
+	MINUTE  = 1
+	HOUR    = 60
+	DAY     = HOUR * 24
+
+	# Get the days, hours, etc:
+	days    = int( mins / DAY )
+	hours   = int( ( mins % DAY ) / HOUR )
+	minutes = int( ( mins % HOUR ) / MINUTE )
+
+	# Build up the pretty string (like this: "N d N h N m")
+	string = ""
+	if days > 0:
+		 string += str(days) + " d "
+	if len(string) > 0 or hours > 0:
+		 string += str(hours) + " h "
+	if len(string) > 0 or minutes > 0:
+		 string += str(minutes) + " m"
+	else:
+		string = "less than 1m"
+
+	return string;
+	
+
 def getCoinUSD(coin):
 
 	url = cfg["COINMARKETCAPURL"] + '/' + coin
 
-	print ("[MIN MON] Getting data from:%s" % url)
+	print ("[MIN MON] Getting data from: %s" % url)
 
-	res = urllib2.urlopen(url)
-	data = res.read()
-	Json = json.loads(data)
-	return Json[0]["price_usd"]
+	try:
+		res = urllib2.urlopen(url)
+		data = res.read()
+		Json = json.loads(data)
+		#print ("[MIN MON]    Got: %s" % Json[0]["price_usd"])
+		return Json[0]["price_usd"]
+	except Exception as e:
+		logError("getCoinUSD: Unable to open url " + str(e))
+		return "Error"
 
 def getSystemUptime():
 
-     try:
-         f = open( "/proc/uptime" )
-         contents = f.read().split()
-         f.close()
-     except:
-        return "Cannot open uptime file: /proc/uptime"
- 
-     total_seconds = float(contents[0])
- 
-     # Helper vars:
-     MINUTE  = 60
-     HOUR    = MINUTE * 60
-     DAY     = HOUR * 24
- 
-     # Get the days, hours, etc:
-     days    = int( total_seconds / DAY )
-     hours   = int( ( total_seconds % DAY ) / HOUR )
-     minutes = int( ( total_seconds % HOUR ) / MINUTE )
-     seconds = int( total_seconds % MINUTE )
- 
-     # Build up the pretty string (like this: "N days, N hours, N minutes, N seconds")
-     string = ""
-     if days > 0:
-         string += str(days) + " " + (days == 1 and "d" or "d" ) + " "
-     if len(string) > 0 or hours > 0:
-         string += str(hours) + " " + (hours == 1 and "h" or "h" ) + " "
-     if len(string) > 0 or minutes > 0:
-         string += str(minutes) + " " + (minutes == 1 and "m" or "m" ) + " "
-     string += str(seconds) + " " + (seconds == 1 and "s" or "s" )
- 
-     return string;
+	try:
+		f = open( "/proc/uptime" )
+		contents = f.read().split()
+		f.close()
+	except Exception as e:
+		logError("getSystemUptime: Unable to open /proc/uptime " + str(e))
+		return "Error"
+
+	total_seconds = float(contents[0])
+	mins = int(total_seconds / 60)
+	string = formatUptimeMins(mins)
+	return string;
 
 def writeHTML():
 
@@ -91,8 +114,14 @@ def writeHTML():
 	lastUpdate = datetime.datetime.now().strftime("%H:%M on %d-%m-%Y")
 	sysUptime = getSystemUptime()
 
-	f = open(HTMLtemplatepath)
-	data = f.read()
+	try:
+		f = open(HTMLtemplatepath)
+		data = f.read()
+		f.close()
+	except Exception as e:
+		logError("writeHTML: Unable to open HTML template" + str(e))
+		return "Error"
+	
 	data = string.replace(data, '$minername', cfg["MINERNAME"])
 	data = string.replace(data, '$lastupdate', lastUpdate)
 	data = string.replace(data, '$systemuptime', sysUptime)
@@ -101,19 +130,25 @@ def writeHTML():
 	data = string.replace(data, '$ethusd', str(ethUSD))
 	data = string.replace(data, '$ethhashrate', str(ethHashRate))
 	data = string.replace(data, '$ethshares', str(ethSharePerHr))
-	data = string.replace(data, '$ethuptime', str(ethUptimeMin))
+	data = string.replace(data, '$ethuptime', str(ethUptime))
 	data = string.replace(data, '$ethtotalshares', str(ethShares))
 	data = string.replace(data, '$ethpool', str(ethPoolAddr))
 	data = string.replace(data, '$xmrusd', str(xmrUSD))
 	data = string.replace(data, '$xmrhashrate', str(xmrHashRate))
 	data = string.replace(data, '$xmrshares', str(xmrSharePerHr))
-	data = string.replace(data, '$xmruptime', str(xmrUptimeMin))
+	data = string.replace(data, '$xmruptime', str(xmrUptime))
 	data = string.replace(data, '$xmrtotalshares', str(xmrShares))
 	data = string.replace(data, '$xmrpool', str(xmrPoolAddr))
+	data = string.replace(data, '$numGPU', str(numGPU))
+	data = string.replace(data, '$avggpuhashrate', str(avgGPUHashRate))
 
-	HTMLfile= open(HTMLfilepath,"w")
-	HTMLfile.write(data)
-	HTMLfile.close()
+	try:
+		HTMLfile = open(HTMLfilepath,"w")
+		HTMLfile.write(data)
+		HTMLfile.close()
+	except Exception as e:
+		logError("writeHTML: Unable to open HTML outputfile" + str(e))
+		return "Error"
 
 def getxmrStakData():
 
@@ -121,21 +156,26 @@ def getxmrStakData():
 	global xmrHashRate
 	global xmrPoolAddr
 	global xmrShares
-	global xmrUptimeMin
+	global xmrUptime
 	global xmrSharePerHr
 	global xmrErrors
 
-	print ("[MIN MON] Getting XMR data from:%s" % cfg["XMRSTAKURL"])
+	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
-	res = urllib2.urlopen(cfg["XMRSTAKURL"])
-	data = res.read()
-	xmrJson = json.loads(data)
+	try:
+		res = urllib2.urlopen(cfg["XMRSTAKURL"])
+		data = res.read()
+		xmrJson = json.loads(data)
+	except Exception as e:
+		logError("getxmrStakData: Unable to open url" + str(e))
+		return "Error"
 	
 	xmrVersion    = xmrJson["version"]
-	xmrHashRate   = xmrJson["hashrate"]["total"][0]
+	xmrHashRate   = int(xmrJson["hashrate"]["total"][0])
 	xmrPoolAddr   = xmrJson["connection"]["pool"]
-	xmrShares     = xmrJson["results"]["shares_good"]
-	xmrUptimeMin  = xmrJson["connection"]["uptime"] / 60
+	xmrShares     = int(xmrJson["results"]["shares_good"])
+	xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
+	xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#	Prevent a divide by zero error
 	if xmrShares > 0 and xmrUptimeMin > 60:
@@ -143,27 +183,27 @@ def getxmrStakData():
 	else:
 		xmrSharePerHr = 0
 	xmrErrors     = xmrJson["connection"]["error_log"]
-	
-	#print ("xmrVersion:%s" % xmrVersion)
-	#print ("xmrHashRate:%s h/s" % xmrHashRate)
-	#print ("xmrPoolAddr:%s" % xmrPoolAddr)
-	#print ("xmrShares:%s" % xmrShares) 
-	#print ("xmrUptimeMin:%s" % xmrUptimeMin)
-	#print ("xmrSharePerHr:%s" % xmrSharePerHr)
-	#print ("xmrErrors:%s" % xmrErrors)
 
 def uploadToAWS(dir, file):
 
-	print ("[MIN MON] Logging into AWS")
-	session=boto3.session.Session(
-		region_name='eu-west-1',
-		aws_access_key_id = cfg["ACCESSKEY"],
-		aws_secret_access_key = cfg["SECRETKEY"],
-	)
+	try:
+		session=boto3.session.Session(
+			region_name='eu-west-1',
+			aws_access_key_id = cfg["ACCESSKEY"],
+			aws_secret_access_key = cfg["SECRETKEY"],
+		)
+	except Exception as e:
+		logError("uploadToAWS: Unable to create session" + str(e))
+		return "Error"
 
-	print ("[MIN MON] Uploading file:%s to bucket:%s" % (dir + '/' + file, cfg["S3BUCKET"]))
-	s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
-	s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
+	print ("[MIN MON] Uploading file: %s to bucket:%s" % (dir + '/' + file, cfg["S3BUCKET"]))
+	
+	try:
+		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
+		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
+	except Exception as e:
+		logError("uploadToAWS: Unable to upload file" + str(e))
+		return "Error"
 
 def getCminerData():
 
@@ -175,23 +215,28 @@ def getCminerData():
 	global ethHashRate
 	global ethPoolAddr
 	global ethShares
-	global ethUptimeMin
+	global ethUptime
 	global ethSharePerHr
 	global avgGPUTemp
 	global avgGPUFanSpeed
+	global numGPU
+	global avgGPUHashRate
 
 	#   Open cminer http interface and read
 
-	print ("[MIN MON] Getting ETH data from:%s" % cfg["CMINERURL"])
+	print ("[MIN MON] Getting ETH data from: %s" % cfg["CMINERURL"])
 
-	res = urllib2.urlopen(cfg["CMINERURL"])
-	data = res.read()
+	try:
+		res = urllib2.urlopen(cfg["CMINERURL"])
+		data = res.read()
+	except Exception as e:
+		logError("getCminerData: Unable to open url" + str(e))
+		return "Error"
 
 	#   Split into a "lines" array
 	#   The line we want is the second line
 
 	lines = data.splitlines(True)
-	#print lines[1]
 
 	#   Remove everything after the '}'
 
@@ -205,7 +250,6 @@ def getCminerData():
 	if m:
 
 		#    Load the json object
-
 		js = json.loads(m.group(1))
 
 		h_s_r=js["result"][2].split(';')
@@ -213,19 +257,12 @@ def getCminerData():
 		gpu_temp_fanspeed=js["result"][6].split(';')
 		pooladdr=js["result"][7]
 
-		#print ("Version:%s" % js["result"][0])
-		#print ("PoolAddr:%s" % js["result"][7])
-		#print ("Uptime(mins):%s" % js["result"][1])
-		#print ("Hashrate: %s Kh/s" % (h_s_r[0]))
-		#print ("Shares_Accepted: %s" % (h_s_r[1]))
-		#print ("Shares_Rejected: %s" % (h_s_r[2]))
-		#print ("Avg Shares/hr:%s" % ( int(h_s_r[1]) / ( int(js["result"][1]) / 60 ) ) )
-
 		i=0
 		for gpu in gpu_hashrates:
-		  #print ("GPU %d hashrate:%s" % (i, gpu))
 		  gpuHashRates.append(gpu)
 		  i=i+1
+
+		numGPU = i
 
 		#    Cycle through GPUs and get temp and fanspeed
 		#    See below for data structure guidance
@@ -238,12 +275,17 @@ def getCminerData():
 
 		n=0
 		while n < i:
-		  #print ("GPU %d temp:%s" % (n, gpu_temp_fanspeed[n*2]))
-		  #print ("GPU %d fanspeed:%s" % (n, gpu_temp_fanspeed[(n*2)+1]))
 		  gpuTemps.append(gpu_temp_fanspeed[n*2])
 		  gpuFanSpeeds.append(gpu_temp_fanspeed[(n*2)+1])
 		  gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
 		  n=n+1
+
+		ethVersion    = js["result"][0]
+		ethHashRate   = int(h_s_r[0])
+		ethPoolAddr   = js["result"][7]
+		ethShares     = int(h_s_r[1])
+		ethUptimeMin  = int(js["result"][1])
+		ethUptime     = formatUptimeMins(ethUptimeMin)
 
 		#	Get average GPU temp
 		tempTotal=0
@@ -257,30 +299,16 @@ def getCminerData():
 			speedTotal = speedTotal + int(t)
 		avgGPUFanSpeed = speedTotal / i;
 
-		ethVersion    = js["result"][0]
-		ethHashRate   = h_s_r[0]
-		ethPoolAddr   = js["result"][7]
-		ethShares     = h_s_r[1]
-		ethUptimeMin  = js["result"][1]
+		#	Get average GPU Hashrate
+		avgGPUHashRate = int(ethHashRate) / i
 
 		#	Prevent a divide by zero error
-		if ethShares > 0 and int(js["result"][1]) > 60:
-			ethSharePerHr = int(h_s_r[1]) / ( int(js["result"][1]) / 60 )
+		if ethShares > 0 and ethUptimeMin > 60:
+			ethSharePerHr = ethShares // ( ethUptimeMin // 60 )
 		else:
 			ethSharePerHr = 0
 
-		#print ("ethVersion:%s" % ethVersion)
-		#print ("ethHashRate:%s Kh/s" % ethHashRate)
-		#print ("ethPoolAddr:%s" % ethPoolAddr)
-		#print ("ethShares:%s" % ethShares) 
-		#print ("ethUptimeMin:%s" % ethUptimeMin)
-		#print ("ethSharePerHr:%s" % ethSharePerHr)
-		#print ("avgGPUTemp:%s" % avgGPUTemp)
-		
-		#n=0
-		#while n < i:
-			#print ("GPU%d Info:%s" % (n, gpuDetails[n]) )
-			#n=n+1
+		#print ("[MIN MON] ETH Shares per hour calc. %d / (%d / 60)" % (ethShares, ethUptimeMin) )
 
 #	----------------------------------
 #	Main code
@@ -294,4 +322,6 @@ getxmrStakData()
 xmrUSD = getCoinUSD('monero')
 ethUSD = getCoinUSD('ethereum')
 writeHTML()
+#	Add a pause to try and stop occasional S3upload Bad Digest error
+time.sleep(1)
 uploadToAWS(cfg["HTMLREPORTDIR"], cfg["HTMLREPORTFILE"])

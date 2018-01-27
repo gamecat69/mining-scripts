@@ -1,0 +1,128 @@
+* {
+  box-sizing: border-box;
+}
+
+hr {
+  padding: 0;
+}
+
+body {
+  text-align: center;
+  background:#F5F5F5;
+}
+
+/* Desktops: */
+.box-surround {
+  width: 600px;
+  margin: auto;
+}
+
+/* iPhone 6/7: */
+@media screen 
+and (min-width: 300px) 
+and (max-width: 680px)  {
+  
+  .box-surround {
+  -webkit-text-size-adjust: none;
+
+  width: 350px;
+  margin: auto;
+  /* font: 1.0em Arial, Helvetica, sans-serif; */
+  }
+
+}
+
+.hspacer {
+  padding: 5px;
+}
+
+.content-box-green .content {
+    overflow: hidden;
+    background-color: #FFFFFF;
+    color: #A9A9A9;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    padding: 0px 10px 0px 10px;
+}
+.content-box-green .title {
+    overflow: hidden;
+    background-color:#9cbc23;
+    color:white;
+    padding: 0px 10px 0px 10px;
+    line-height: 50px;
+}
+
+.content-box-orange .content {
+    overflow: hidden;
+    background-color: #FFFFFF;
+    color: #A9A9A9;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    padding: 0px 10px 0px 10px;
+}
+.content-box-orange .title {
+    /* display:block; */
+    overflow: hidden;
+    background-color:#CC6600;
+    color:white;
+    padding: 0px 10px 0px 10px;
+    font-size:14px;
+    line-height: 50px;
+}
+
+.content-box-blue .content {
+    overflow: hidden;
+    background-color: #FFFFFF;
+    color: #A9A9A9;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    padding: 0px 10px 0px 10px;
+}
+.content-box-blue .title {
+    /* display:block; */
+    overflow: hidden;
+    background-color:#333366;
+    color:white;
+    padding: 0px 10px 0px 10px;
+    font-size:14px;
+    line-height: 50px;
+}
+
+.title-left {
+    float: left;
+    text-align: left;
+    font-size: 28px;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.title-right {
+    float: right;
+    position: relative;
+}
+
+.box-left {
+    float: left;
+    text-align: left;
+    font-size:1em;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    line-height: 35px;
+}
+
+.box-right{
+    float: right;
+    text-align: right;
+    font-size:1em;
+    font-weight:normal;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    color:#585858;
+    line-height: 35px;
+}
+
+.img-parent {
+    position: absolute;
+    top: 7px;
+    bottom: 7px;
+    left: -34px;
+}

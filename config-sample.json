@@ -1,11 +1,14 @@
 {
 
+   "MINERNAME" : "gtx-1060x6",
    "ACCESSKEY" : "sdcifusdhciosaduhcsdi",
    "SECRETKEY" : "sdcsdcsdacsadcsadcsadc",
    "S3BUCKET"  : "my-bucket-name",
    "CMINERURL" : "http://localhost:3333",
+   "COINMARKETCAPURL" : "https://api.coinmarketcap.com/v1/ticker",
    "XMRSTAKURL" : "http://localhost:4444/api.json",
-   "HTMLREPORTDIR" : "/home/mining/mining-scripts",
-   "HTMLREPORTFILE" : "index.html"
+   "HTMLREPORTDIR" : "/home/mining/mining-scripts/html",
+   "HTMLREPORTFILE" : "index.html",
+   "HTMLTEMPLATEFILE" : "index-template.html"
 
 }
