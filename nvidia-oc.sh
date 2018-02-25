@@ -1,8 +1,8 @@
 #!/bin/bash
 
 POWERLIMIT_WATTS=100
-GPUOVERCLOCK=107
-MEMOVERCLOCK=935
+GPUOVERCLOCK=110
+MEMOVERCLOCK=700
 GPUOC=yes
 MEMOC=yes
 MAXPERF=yes
@@ -13,6 +13,13 @@ export GPU_MAX_HEAP_SIZE=100
 export GPU_USE_SYNC_OBJECTS=1
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_SINGLE_ALLOC_PERCENT=100
+
+#   ------------------------
+#   Run this then reboot
+#   info: http://www.ckode.dk/linux/overclocking-nvidia-graphics-card-on-linux/
+#   ------------------------
+
+#   sudo nvidia-xconfig -a --cool-bits=12
 
 #   ------------------------
 #   Configure Nvidia cards
@@ -40,7 +47,8 @@ if [ "$GPUOC" = "yes" ] ; then
    n=0
    while [ $n -lt $NUMGPU ];
    do
-      nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
+      nvidia-settings --assign "[gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK"
+      #nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
       let n=n+1
    done
 
@@ -54,7 +62,8 @@ if [ "$MEMOC" = "yes" ] ; then
    n=0
    while [ $n -lt $NUMGPU ];
    do
-      nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK
+      nvidia-settings --assign "[gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK"
+      #nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[2]=$MEMOVERCLOCK
       let n=n+1
    done
 
