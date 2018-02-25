@@ -1,8 +1,18 @@
 #!/bin/bash
 
 POWERLIMIT_WATTS=100
-GPUOVERCLOCK=110
-MEMOVERCLOCK=700
+GPUOVERCLOCK_0=110
+MEMOVERCLOCK_0=700
+GPUOVERCLOCK_1=110
+MEMOVERCLOCK_1=700
+GPUOVERCLOCK_2=110
+MEMOVERCLOCK_2=700
+GPUOVERCLOCK_3=110
+MEMOVERCLOCK_3=700
+GPUOVERCLOCK_4=110
+MEMOVERCLOCK_4=700
+GPUOVERCLOCK_5=226
+MEMOVERCLOCK_5=900
 GPUOC=yes
 MEMOC=yes
 MAXPERF=yes
@@ -43,14 +53,23 @@ fi
 
 if [ "$GPUOC" = "yes" ] ; then
 
-   echo "Overclocking GPU by $GPUOVERCLOCK"
-   n=0
-   while [ $n -lt $NUMGPU ];
-   do
-      nvidia-settings --assign "[gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK"
-      #nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
-      let n=n+1
-   done
+echo "Overclocking GPU Clocks"
+
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_1"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_2"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_3"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_4"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK_5"
+
+#   echo "Overclocking GPU by $GPUOVERCLOCK"
+#   n=0
+#   while [ $n -lt $NUMGPU ];
+#   do
+#      nvidia-settings --assign "[gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK"
+#      #nvidia-settings -a [gpu:${n}]/GPUGraphicsClockOffset[3]=$GPUOVERCLOCK
+#      let n=n+1
+#   done
 
 fi
 
@@ -58,14 +77,23 @@ fi
 
 if [ "$MEMOC" = "yes" ] ; then
 
-   echo "Overclocking GPU Memory by $MEMOVERCLOCK"
-   n=0
-   while [ $n -lt $NUMGPU ];
-   do
-      nvidia-settings --assign "[gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK"
-      #nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[2]=$MEMOVERCLOCK
-      let n=n+1
-   done
+echo "Overclocking GPU Memory"
+
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_0"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_1"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_2"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_3"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_4"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK_5"
+
+#   echo "Overclocking GPU Memory by $MEMOVERCLOCK"
+#   n=0
+#   while [ $n -lt $NUMGPU ];
+#   do
+#      nvidia-settings --assign "[gpu:${n}]/GPUMemoryTransferRateOffset[3]=$MEMOVERCLOCK"
+#      #nvidia-settings -a [gpu:${n}]/GPUMemoryTransferRateOffset[2]=$MEMOVERCLOCK
+#      let n=n+1
+#   done
 
 fi
 
