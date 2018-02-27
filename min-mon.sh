@@ -23,13 +23,11 @@ function readJson {
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
-MINMON_INT_SECS=`readJson config.json MINMON_INT_SECS`
-YELLOW=`readJson config.json YELLOW`
-NC=`readJson config.json NC`
+RED='\033[0;31m'
+YELLOW='\033[0;93m'
+NC='\033[0m' # No Color
 
-#WAITSECS=300
-#YELLOW='\033[0;93m'
-#NC='\033[0m' # No Color
+MINMON_INT_SECS=`readJson config.json MINMON_INT_SECS`
 
 #	Call the python script in a loop
 
