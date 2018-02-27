@@ -50,7 +50,7 @@ MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw
 cd ~/$CMINERDIR
 
 #   Delete files older than LOGFILERETENTIONDAYS
-find $CMINERDIR/*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
+find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
 
 #   Init epools.txt
 echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
