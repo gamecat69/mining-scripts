@@ -2,8 +2,33 @@
 
 #    Resets wifi adapter if connection drops
 
-HOST_TO_PING="www.google.com"
+function readJson {
+
+	UNAMESTR=`uname`
+	if [[ "$UNAMESTR" == 'Linux' ]]; then
+    	SED_EXTENDED='-r'
+	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
+    	SED_EXTENDED='-E'
+	fi;
+
+	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
+
+	if [ ! "$VALUE" ]; then
+		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
+		exit 1;
+	else
+		echo $VALUE ;
+	fi;
+
+}
+
+WORKINGDIR=/home/mining/mining-scripts
+cd $WORKINGDIR
+
+HOST_TO_PING=`readJson config.json HOST_TO_PING`
+
 RED='\033[0;31m'
+YELLOW='\033[0;93m'
 NC='\033[0m' # No Color
 
 while [ 1 = 1 ]
