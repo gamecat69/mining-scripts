@@ -1,12 +1,24 @@
 #!/bin/bash
 
+function readJson {
 
-WORKINGDIR=/home/mining/mining-scripts
+	UNAMESTR=`uname`
+	if [[ "$UNAMESTR" == 'Linux' ]]; then
+    	SED_EXTENDED='-r'
+	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
+    	SED_EXTENDED='-E'
+	fi;
 
-cd $WORKINGDIR
+	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
 
-#   Get TOKEN and USER from config.sh
-source ./config.sh
+	if [ ! "$VALUE" ]; then
+		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
+		exit 1;
+	else
+		echo $VALUE ;
+	fi;
+
+}
 
 urlencode() {
     # urlencode <string>
@@ -21,9 +33,16 @@ urlencode() {
     done
 }
 
+WORKINGDIR=/home/mining/mining-scripts
+cd $WORKINGDIR
+
+PUSHOVER_USER=`readJson config.json PUSHOVER_USER`
+PUSHOVER_TOKEN=`readJson config.json PUSHOVER_TOKEN`
+CURLBIN=`readJson config.json CURLBIN`
+
 TITLE=$(urlencode "$1")
 MSG=$(urlencode "$2")
-CURLBIN=/usr/bin/curl
+#CURLBIN=/usr/bin/curl
 
 PUSHOVER_CMD="$CURLBIN -s \
 -d user=$PUSHOVER_USER \
