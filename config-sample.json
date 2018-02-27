@@ -61,7 +61,7 @@
    "pushover"       : "-------------------",
    "PUSHOVER_TOKEN" : "pushover-token-here",
    "PUSHOVER_USER"  : "pushover-user-here",
-   "CURLBIN"        : "/usr/bin/curl"
+   "CURLBIN"        : "/usr/bin/curl",
    "pushover-end"   : "-------------------",
 
    "cminer"               : "-------------------",
