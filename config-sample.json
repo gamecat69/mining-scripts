@@ -2,9 +2,6 @@
 
    "generic"     : "-------------------",
    "MINERNAME"   : "gtx-1060x6",
-   "RED"         : "\033[0;31m",
-   "NC"          : "\033[0m",
-   "YELLOW"      : "\033[0;93m",
    "generic-end" : "-------------------",
    
    "start"             : "-------------------",
@@ -13,7 +10,14 @@
    "PUSH_MSG"          : "Starting up...Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com",
    "MINMON_DELAY_SECS" : "20",
    "start-end"         : "-------------------",
-   
+
+   "nvidia-mon"     : "-------------------",
+   "OUTFILE"        : "nvidia-mon.log",
+   "QUERYCOLUMNS"   : "timestamp,index,gpu_name,gpu_bus_id,fan.speed,pstate,clocks_throttle_reasons.hw_slowdown,utilization.gpu,temperature.gpu,power.draw,clocks.gr",
+   "WAITTIMESECS"   : "300",
+   "MAXHOURSPERLOG" : "4",
+   "nvidia-mon-end" : "-------------------",
+      
    "min-mon"          : "-------------------",
    "ACCESSKEY"        : "sdcifusdhciosaduhcsdi",
    "SECRETKEY"        : "sdcsdcsdacsadcsadcsadc",
