@@ -8,7 +8,7 @@
    "MINE_XMR"          : "yes",
    "MINE_ETH"          : "yes",
    "PUSH_MSG"          : "Starting up...Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com",
-   "MINMON_DELAY_SECS" : "20",
+   "MINMON_DELAY_SECS" : "30",
    "start-end"         : "-------------------",
 
    "nvidia-mon"     : "-------------------",
