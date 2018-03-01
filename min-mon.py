@@ -11,7 +11,7 @@ import requests
 #	----------------------------------
 #	Pre-requisites
 #	sudo apt-get install python-pip
-#	pip install boto3
+#	pip install boto3 requests
 #	----------------------------------
 
 global gpuDetails
@@ -48,8 +48,7 @@ def getURL(url):
 
 	try:
 		res = requests.get(url, timeout=5)
-		data = res.read()
-		return data
+		return res.text
 	except Exception as e:
 		logError("getURL: Unable to open url " + str(e))
 		return "Error"
