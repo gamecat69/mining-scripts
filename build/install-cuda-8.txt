@@ -6,8 +6,8 @@ cd ~/Downloads
 wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
 
 #	Extract all files
-chmod +x cuda_8.0.61_375.26_linux.run
-./cuda_8.0.61_375.26_linux.run --extract=$HOME
+chmod +x cuda_8.0.61_375.26_linux-run
+./cuda_8.0.61_375.26_linux-run --extract=$HOME
 
 #	Install only the cuda driver
 sudo ./cuda-linux64-rel-8.0.61-21551265.run
