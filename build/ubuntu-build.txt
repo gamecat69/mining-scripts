@@ -1,0 +1,134 @@
+#	-----------------------------
+#	Install Linux Mint 18.3 (Ubuntu 16.04)
+#	-----------------------------
+
+#	info: https://www.meebey.net/posts/ethereum_gpu_mining_on_linux_howto/
+#	info: https://github.com/nanopool/genoil-ethereum
+#	info: https://forum.getpimp.org/topic/9/setting-up-motherboards-for-mining
+
+#	--------------------------------------
+#	BIOS Settings
+#	--------------------------------------
+
+#	MSI GPU BIOS Settings for RX cards
+#	Need to update for Asus BTC Motherboard
+
+Under "Integrated Peripherals": -> set HD AUDIO CONTROLLER to DISABLED.
+set 4G DECODE to ENABLED.
+set PEG1 to "GEN 2"
+set PEG2 to "GEN 2"
+set PCI Latency to "96 Cycles"
+
+#	------------------
+#	OS Stuff
+#	------------------
+
+#	Update
+sudo apt-get update && sudo apt-get upgrade
+
+#	Create a user, add to video group
+sudo useradd mining -b /home -m
+sudo passwd mining
+sudo usermod -a -G video mining
+
+#	Install ssh server
+sudo apt-get install openssh-server
+
+#	------------------------------
+#	Pull down mining scripts
+#	------------------------------
+
+cd ~
+git clone https://github.com/gamecat69/mining-scripts.git
+
+#	------------------
+#	Cuda Install
+#	------------------
+
+#	Download
+cd ~/Downloads
+wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
+
+#	Extract all files
+chmod +x cuda_8.0.61_375.26_linux.run
+./cuda_8.0.61_375.26_linux.run --extract=$HOME
+
+#	Install only the cuda driver
+sudo ./cuda-linux64-rel-8.0.61-21551265.run
+
+#	Configure runtime
+sudo bash -c "echo /usr/local/cuda/lib64/ > /etc/ld.so.conf.d/cuda.conf"
+sudo ldconfig
+
+#	-----------------------
+#	Nvidia Driver Install
+#	-----------------------
+
+#	Install the latest driver
+#	You can do this through the GUI in the "Drivers" util
+#	Or do it manually like so....
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+
+#	Update 384 to whatever version is needed
+#	e.g. 367 / 387 etc
+sudo apt install nvidia-384 nvidia-384-dev
+
+#	Test
+nvidia-smi
+
+#	-------------------------------
+#	Install xmr-stak (Monero)
+#	-------------------------------
+
+#	This installs to /home/<username>/xmr-stak
+sudo apt install libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git cmake
+cd ~
+git clone https://github.com/fireice-uk/xmr-stak.git
+cd xmr-stak
+cmake -DOpenCL_ENABLE=OFF .
+make install
+
+#	Configure, this creates the required config files
+cd ~
+/home/<username>/xmr-stak/bin/xmr-stak
+
+#	------------------------------
+#	Install ETH miner (Claymore)
+#	------------------------------
+
+#	Get latest version from here: https://bitcointalk.org/index.php?topic=1433925.0
+#	https://drive.google.com/drive/folders/0B69wv2iqszefdFZUV2toUG5HdlU
+
+cd ~/Downloads
+sudo mkdir /home/mining/cminer11.1
+sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" /home/mining/cminer11.1
+
+#	-----------------------------------
+#	Configure and start mining scripts
+#	-----------------------------------
+
+cd ~/mining-scripts
+nano config.son
+./start.sh
+
+#	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
+
+#	-------------------------------
+#	Install genoil (Nvidia custom
+#	-------------------------------
+
+#	Skip this if using ccminer
+
+sudo apt-get -y install software-properties-common
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install git cmake libjson-rpc-cpp-dev libboost-all-dev libgmp-dev libreadline-dev libcurl4-gnutls-dev ocl-icd-libopencl1 opencl-headers mesa-common-dev libmicrohttpd-dev build-essential -y
+cd ~ && git clone https://github.com/Genoil/cpp-ethereum/
+cd cpp-ethereum/
+mkdir build
+cd build
+cmake -DBUNDLE=cudaminer ..
+make -j8
+reboot
