@@ -6,6 +6,7 @@ import datetime
 import string
 import os
 import time
+#import requests
 
 #	----------------------------------
 #	Pre-requisites
@@ -42,6 +43,16 @@ avgGPUHashRate = ''
 #	----------------------------------
 #	Functions
 #	----------------------------------
+
+def getURL(url):
+
+	try:
+		res = requests.get(url, timeout=5)
+		data = res.read()
+		return data
+	except Exception as e:
+		logError("getURL: Unable to open url " + str(e))
+		return "Error"
 
 def logError(errString):
 	print ("[MIN MON] [ERR] : %s" % errString)
@@ -81,8 +92,9 @@ def getCoinUSD(coin):
 	print ("[MIN MON] Getting data from: %s" % url)
 
 	try:
-		res = urllib2.urlopen(url)
-		data = res.read()
+		#res = urllib2.urlopen(url)
+		#data = res.read()
+		data = getURL(url)
 		Json = json.loads(data)
 		#print ("[MIN MON]    Got: %s" % Json[0]["price_usd"])
 		return Json[0]["price_usd"]
@@ -163,8 +175,9 @@ def getxmrStakData():
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
 	try:
-		res = urllib2.urlopen(cfg["XMRSTAKURL"])
-		data = res.read()
+		#res = urllib2.urlopen(cfg["XMRSTAKURL"])
+		#data = res.read()
+		data = getURL(cfg["XMRSTAKURL"])
 		xmrJson = json.loads(data)
 	except Exception as e:
 		logError("getxmrStakData: Unable to open url" + str(e))
@@ -227,8 +240,9 @@ def getCminerData():
 	print ("[MIN MON] Getting ETH data from: %s" % cfg["CMINERURL"])
 
 	try:
-		res = urllib2.urlopen(cfg["CMINERURL"])
-		data = res.read()
+		#res = urllib2.urlopen(cfg["CMINERURL"])
+		#data = res.read()
+		data = getURL(cfg["CMINERURL"])
 	except Exception as e:
 		logError("getCminerData: Unable to open url" + str(e))
 		return "Error"
