@@ -6,7 +6,7 @@ import datetime
 import string
 import os
 import time
-#import requests
+import requests
 
 #	----------------------------------
 #	Pre-requisites
