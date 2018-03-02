@@ -71,9 +71,11 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 #   ------------------------
 #   Run this then reboot
 #   info: http://www.ckode.dk/linux/overclocking-nvidia-graphics-card-on-linux/
+#   info: https://github.com/Cyclenerd/ethereum_nvidia_miner/blob/master/files/setup.sh
 #   ------------------------
 
 #   sudo nvidia-xconfig -a --cool-bits=12
+#   Or for headless: sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
 
 #   ------------------------
 #   Configure Nvidia cards
