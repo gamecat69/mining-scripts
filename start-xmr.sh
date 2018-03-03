@@ -45,6 +45,9 @@ else
 
 fi
 
+echo "Killing any previous process"
+pkill -f xmr-stak
+
 echo $MININGCMD
 $MININGCMD
 

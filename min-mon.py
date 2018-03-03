@@ -7,6 +7,7 @@ import string
 import os
 import time
 import requests
+import subprocess
 
 #	----------------------------------
 #	Pre-requisites
@@ -49,7 +50,7 @@ def getURL(url):
 	try:
 		res = requests.get(url, timeout=5)
 		return res.text
-	except Exception as e:
+	except requests.NewConnectionError, e:
 		logError("getURL: Unable to open url " + str(e))
 		return "Error"
 
@@ -174,12 +175,11 @@ def getxmrStakData():
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
 	try:
-		#res = urllib2.urlopen(cfg["XMRSTAKURL"])
-		#data = res.read()
 		data = getURL(cfg["XMRSTAKURL"])
 		xmrJson = json.loads(data)
-	except Exception as e:
-		logError("getxmrStakData: Unable to open url" + str(e))
+	except:
+		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
+		subprocess.Popen(["./start-xmr.sh"])
 		return "Error"
 	
 	xmrVersion    = xmrJson["version"]
@@ -239,11 +239,10 @@ def getCminerData():
 	print ("[MIN MON] Getting ETH data from: %s" % cfg["CMINERURL"])
 
 	try:
-		#res = urllib2.urlopen(cfg["CMINERURL"])
-		#data = res.read()
 		data = getURL(cfg["CMINERURL"])
-	except Exception as e:
-		logError("getCminerData: Unable to open url" + str(e))
+	except:
+		logError("getCminerData: Unable to open url. Restarting cminer")
+		subprocess.Popen(["./start-eth-cminer.sh"])
 		return "Error"
 
 	#   Split into a "lines" array

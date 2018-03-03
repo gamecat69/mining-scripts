@@ -49,6 +49,9 @@ MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw
 
 cd ~/$CMINERDIR
 
+echo "Killing any previous process"
+pkill -f ethdcrminer64
+
 #   Delete files older than LOGFILERETENTIONDAYS
 find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
 
