@@ -116,6 +116,21 @@ nano config.son
 #	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
 
 #	-------------------------------
+#	Install ethminer
+#	-------------------------------
+
+#	info: https://github.com/ethereum-mining/ethminer
+
+#cd ~
+#git clone https://github.com/ethereum-mining/ethminer.git
+#cd ethminer
+
+cd ~/Downloads
+wget https://github.com/ethereum-mining/ethminer/releases/download/v0.14.0.dev3/ethminer-0.14.0.dev3-Linux.tar.gz
+mkdir ~/ethminer
+tar -xvf ethminer-0.14.0.dev3-Linux.tar.gz -C ~/ethminer
+
+#	-------------------------------
 #	Install genoil (Nvidia custom
 #	-------------------------------
 
