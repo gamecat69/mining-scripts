@@ -179,6 +179,7 @@ def getxmrStakData():
 		xmrJson = json.loads(data)
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
+		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
 		subprocess.Popen(["./start-xmr.sh"])
 		return "Error"
 	
