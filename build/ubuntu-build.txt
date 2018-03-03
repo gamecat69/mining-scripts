@@ -23,13 +23,16 @@ set PCI Latency to "96 Cycles"
 #	OS Stuff
 #	------------------
 
-#	When installing, making sure you click autologin when creating a user
-
 #	Update
 sudo apt-get update && sudo apt-get upgrade
 
-#	Install ssh server and git
-sudo apt-get install openssh-server git
+#	Create a user, add to video group
+sudo useradd mining -b /home -m
+sudo passwd mining
+sudo usermod -a -G video mining
+
+#	Install ssh server
+sudo apt-get install openssh-server
 
 #	------------------------------
 #	Pull down mining scripts
@@ -47,8 +50,8 @@ cd ~/Downloads
 wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
 
 #	Extract all files
-chmod +x cuda_8.0.61_375.26_linux-run
-./cuda_8.0.61_375.26_linux-run --extract=$HOME
+chmod +x cuda_8.0.61_375.26_linux.run
+./cuda_8.0.61_375.26_linux.run --extract=$HOME
 
 #	Install only the cuda driver
 sudo ./cuda-linux64-rel-8.0.61-21551265.run
@@ -103,39 +106,14 @@ sudo mkdir /home/mining/cminer11.1
 sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" /home/mining/cminer11.1
 
 #	-----------------------------------
-#	Configure config.json
+#	Configure and start mining scripts
 #	-----------------------------------
 
 cd ~/mining-scripts
 nano config.son
-
-#	-----------------------------------
-#	Test run start.sh
-#	-----------------------------------
-
-#	If things run well, stop the script (kill_all.sh)
-
 ./start.sh
 
-#	---------------------------------------------
-#	Configure Nvidia for overclock and headless
-#	---------------------------------------------
-
-sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
-
-#	---------------------------------------------
-#	Configure Autostart and reboot
-#	---------------------------------------------
-
-#	Menu -> Control Centre -> Startup Applications
-#	Disable Mint update
-#	Add -> "Custom Command" -> Browse to /home/<user>/mining-scripts/start.sh
-
-reboot
-
-#	========================================================================================
-#	Option from here .....
-#	========================================================================================
+#	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
 
 #	-------------------------------
 #	Install ethminer
