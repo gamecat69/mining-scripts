@@ -26,6 +26,7 @@ WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
 HOST_TO_PING=`readJson config.json HOST_TO_PING`
+MINERNAME=`readJson config.json MINERNAME`
 
 RED='\033[0;31m'
 YELLOW='\033[0;93m'
@@ -40,6 +41,8 @@ do
       echo -e "${RED}[WIFI MON] Network down, resetting wifi card${NC}"
       nmcli radio wifi off
       nmcli radio wifi on
+      sleep 5
+      ./pushover.sh "$MINERNAME" "Wifi Problem, reset WLAN adapter"
    fi
 
    sleep 60

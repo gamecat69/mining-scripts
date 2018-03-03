@@ -242,6 +242,7 @@ def getCminerData():
 		data = getURL(cfg["CMINERURL"])
 	except:
 		logError("getCminerData: Unable to open url. Restarting cminer")
+		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "cminer problem, restarting..."])
 		subprocess.Popen(["./start-eth-cminer.sh"])
 		return "Error"
 
