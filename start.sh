@@ -73,7 +73,7 @@ fi
 if [ "$MINE_XMR" = "yes" ] ; then
 
    echo "Starting XMR Miner"
-   $SCREEN_CMD xmr-stak ./start-xmr.sh &
+   $SCREEN_CMD xmrstak ./start-xmr.sh &
 
 fi
 
@@ -83,4 +83,4 @@ echo "Sending pushover message"
 sleep $MINMON_DELAY_SECS
 
 echo "Starting min-mon"
-$SCREEN_CMD min-mon ./min-mon.sh
+$SCREEN_CMD minmon ./min-mon.sh &
