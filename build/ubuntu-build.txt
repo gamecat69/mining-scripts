@@ -46,19 +46,36 @@ git clone https://github.com/gamecat69/mining-scripts.git
 #	------------------
 
 #	Download
-cd ~/Downloads
-wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
+#cd ~/Downloads
+#wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
 
 #	Extract all files
-chmod +x cuda_8.0.61_375.26_linux.run
-./cuda_8.0.61_375.26_linux.run --extract=$HOME
+#chmod +x cuda_8.0.61_375.26_linux.run
+#./cuda_8.0.61_375.26_linux.run --extract=$HOME
 
 #	Install only the cuda driver
-sudo ./cuda-linux64-rel-8.0.61-21551265.run
+#sudo ./cuda-linux64-rel-8.0.61-21551265.run
 
 #	Configure runtime
-sudo bash -c "echo /usr/local/cuda/lib64/ > /etc/ld.so.conf.d/cuda.conf"
-sudo ldconfig
+#sudo bash -c "echo /usr/local/cuda/lib64/ > /etc/ld.so.conf.d/cuda.conf"
+#sudo ldconfig
+
+
+# Taken from https://github.com/tmcdonell/travis-scripts.
+
+set -e
+
+export CUDA_VER=9.0.176-1
+sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo apt-get update -qq
+export CUDA_APT=${CUDA_VER:0:3}
+export CUDA_APT=${CUDA_APT/./-}
+sudo apt-get install -qy cuda-core-${CUDA_APT} cuda-cudart-dev-${CUDA_APT}
+sudo apt-get clean
+export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
+export PATH=${CUDA_HOME}/bin:${PATH}
 
 #	-----------------------
 #	Nvidia Driver Install
