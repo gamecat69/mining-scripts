@@ -20,6 +20,7 @@ function readJson {
 
 }
 
+
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
@@ -47,35 +48,31 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 #WORKER=gtx-1060x6-2-ethminer
 #EMAIL=nikansell00@gmail.com
 
+echo "Miner: $ETHMINER"
+
 if [ "$ETHMINER" = "ethminer" ] ; then
 
     echo "Killing previous ethminer process"
-    pkill -f "ethminer -U" 
-	MININGCMD="/home/mining/ethminer/bin/ethminer --opencl -U -F $PSERVER/$ETHWALLET.$WORKER/$EMAIL --farm-recheck 200 --api-port 3333"
+    pkill -f "ethminer -U"
+    MININGCMD="/home/mining/ethminer/bin/ethminer --opencl -U -F $PSERVER/$ETHWALLET.$WORKER/$EMAIL --farm-recheck 200 --api-port 3333"
 
 elif [ "$ETHMINER" = "cminer" ] ; then
-
 	cd ~/$CMINERDIR
-	
 	echo "Killing any previous process"
 	pkill -f ethdcrminer64
 	MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80"
-
 	#   Delete files older than LOGFILERETENTIONDAYS
 	find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
-	
 	#   Init epools.txt
 	echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
 	echo "POOL: $SERVER2, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" >> epools.txt 
-
 else
 	echo "Unable to determing which ethminer to use"
-
+fi
 #   ------------------------
 #   Start mining
 #   ------------------------
 
 echo $MININGCMD
 $MININGCMD
-
 
