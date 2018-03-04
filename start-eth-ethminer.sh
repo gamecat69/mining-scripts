@@ -68,6 +68,9 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
 	echo "POOL: $SERVER2, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" >> epools.txt 
 
+else
+	echo "Unable to determing which ethminer to use"
+
 #   ------------------------
 #   Start mining
 #   ------------------------
