@@ -316,17 +316,6 @@ def getEthminerData():
 	else:
 		ethSharePerHr = 0
 
-	print (ethVersion)
-	print (ethHashRate)
-	print (ethPoolAddr)
-	print (ethShares)
-	print (ethUptimeMin)
-	print (ethUptime)
-	print (avgGPUTemp)
-	print (avgGPUFanSpeed)
-	print (avgGPUHashRate)
-	print (ethSharePerHr)
-
 def getCminerData():
 
 	gpuHashRates = []
@@ -446,9 +435,9 @@ getxmrStakData()
 xmrUSD = getCoinUSD('monero')
 ethUSD = getCoinUSD('ethereum')
 writeHTML()
+
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
 
 htmlReportFile = cfg["HTMLREPORTFILE"] + ".html"
-#uploadToAWS(cfg["HTMLREPORTDIR"], cfg["HTMLREPORTFILE"])
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
