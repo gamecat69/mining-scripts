@@ -1,0 +1,14 @@
+#	Screen notes
+
+#	Start a screen, detach it (-d), create a new session (-m) and name the session "miner" (-S)
+screen -dmS miner /home/mining/mining-scripts/start.sh
+
+#	Connect to the screen
+#	ssh to the server
+screen -r miner
+
+#	To exit from a screen
+#	CTRL+A d
+
+#	To list screens
+screen -ls
