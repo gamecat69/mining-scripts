@@ -458,4 +458,7 @@ ethUSD = getCoinUSD('ethereum')
 writeHTML()
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
-uploadToAWS(cfg["HTMLREPORTDIR"], cfg["HTMLREPORTFILE"])
+
+htmlReportFile = cfg["HTMLREPORTFILE"] . ".html"
+#uploadToAWS(cfg["HTMLREPORTDIR"], cfg["HTMLREPORTFILE"])
+uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
