@@ -53,7 +53,7 @@ echo "Miner: $ETHMINER"
 if [ "$ETHMINER" = "ethminer" ] ; then
 
     echo "Killing previous ethminer process"
-    pkill -f "ethminer -U"
+    pkill -f "ethminer --opencl"
     MININGCMD="/home/mining/ethminer/bin/ethminer --opencl -U -F $PSERVER/$ETHWALLET.$WORKER/$EMAIL --farm-recheck 200 --api-port 3333"
 
 elif [ "$ETHMINER" = "cminer" ] ; then
