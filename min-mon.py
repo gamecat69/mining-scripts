@@ -438,5 +438,5 @@ writeHTML()
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
 
-htmlReportFile = cfg["HTMLREPORTFILE"] + ".html"
+htmlReportFile = cfg["HTMLREPORTFILE"]
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
