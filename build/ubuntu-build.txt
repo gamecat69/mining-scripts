@@ -31,8 +31,8 @@ sudo useradd mining -b /home -m
 sudo passwd mining
 sudo usermod -a -G video mining
 
-#	Install ssh server
-sudo apt-get install openssh-server
+#	Install some initial software
+sudo apt-get install openssh-server git screen
 
 #	------------------------------
 #	Pull down mining scripts
