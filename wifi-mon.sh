@@ -42,7 +42,7 @@ do
       nmcli radio wifi off
       nmcli radio wifi on
       sleep 5
-      ./pushover.sh "$MINERNAME" "Wifi Problem, reset WLAN adapter"
+      ./pushover.sh "$MINERNAME" "Network down, resetting wifi cardr"
    fi
 
    sleep 60

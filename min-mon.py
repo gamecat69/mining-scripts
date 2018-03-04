@@ -289,7 +289,6 @@ def getEthminerData():
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer
 	if len(ethPoolAddr) > 40:
-		print ("[MIN MON] Cleaning up PoolAddr")
 		pattern="http://(.+?:\d+)/.+"
 		m = re.match(pattern, ethPoolAddr)
 		if m:
