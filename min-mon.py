@@ -255,16 +255,6 @@ def getEthminerData():
 		j=s.recv(2048)
 		s.close()
 		js=json.loads(j.decode("utf-8"))
-	except TimeoutError:
-		logError("getEthminerData: Connection Timeout. Restarting ethminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-ethminer.sh"])
-		return "Error"
-	except ConnectionRefusedError:
-		logError("getEthminerData: Connection Timeout. Restarting ethminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-ethminer.sh"])
-		return "Error"
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
