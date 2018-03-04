@@ -39,7 +39,7 @@ MINE_ETH=`readJson config.json MINE_ETH`
 ETHMINER=`readJson config.json ETHMINER`
 S3BUCKET=`readJson config.json S3BUCKET`
 
-S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/MINERNAME.html"
+S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/$MINERNAME.html"
 PUSH_MSG="Starting up... Report URL: $S3URL"
 
 #PUSH_MSG="Starting up...\
