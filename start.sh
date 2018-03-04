@@ -36,6 +36,7 @@ PUSH_MSG=`readJson config.json PUSH_MSG`
 MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
 MINE_XMR=`readJson config.json MINE_XMR`
 MINE_ETH=`readJson config.json MINE_ETH`
+ETHMINER=`readJson config.json ETHMINER`
 
 #PUSH_MSG="Starting up...\
 #Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com"
@@ -57,9 +58,9 @@ echo "Starting NVIDIA logging"
 ./nvidia-mon.sh &
 
 if [ "$MINE_ETH" = "yes" ] ; then
-
-   echo "Starting ETH Miner"
-   ./start-eth-cminer.sh &
+    
+    echo "Starting Ethminer"
+    ./start-eth-ethminer.sh &
 
 fi
 

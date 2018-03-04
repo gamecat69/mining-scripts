@@ -2,11 +2,15 @@
 
    "generic"     : "-------------------",
    "MINERNAME"   : "gtx-1060x6",
+   "EMAIL"       : "nikansell00@gmail.com",
+   "POOLPASS"    : "x",
+   "ETHWALLET"   : "0x75A3CdA475EE196916ec76C7174eCd7886163beC",
    "generic-end" : "-------------------",
    
    "start"             : "-------------------",
    "MINE_XMR"          : "yes",
    "MINE_ETH"          : "yes",
+   "ETHMINER"          : "ethminer",
    "PUSH_MSG"          : "Starting up...Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com",
    "MINMON_DELAY_SECS" : "30",
    "start-end"         : "-------------------",
@@ -69,14 +73,16 @@
    "pushover-end"   : "-------------------",
 
    "cminer"               : "-------------------",
-   "EMAIL"                : "nikansell00@gmail.com",
-   "POOLPASS"             : "x",
    "CMINERDIR"            : "cminer10.0",
-   "ETHWALLET"            : "0x75A3CdA475EE196916ec76C7174eCd7886163beC",
    "SERVER1"              : "eth-eu1.nanopool.org:9999",
    "SERVER2"              : "eth-eu2.nanopool.org:9999",
    "LOGFILERETENTIONDAYS" : "1",
    "cminer-end"           : "-------------------",
+
+   "ethminer"               : "-------------------",
+   "PSERVER"              : "eth-eu1.nanopool.org:9999",
+   "FSERVER"              : "eth-eu2.nanopool.org:9999",
+   "ethminer-end"           : "-------------------",
 
    "xmr-stak"      : "-------------------",
    "XMR_WALLET"    : "45kbjV6VRZ3GMPBHktLh9VGgun5nxEwtXS18yL8S23Gu8gvsE31JtMPHo6DwTwi4s4he3r6U5pmmo1ZhMVgsKrECPH3gBsk",

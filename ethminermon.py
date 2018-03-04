@@ -15,6 +15,13 @@ url = "http://localhost:3333"
 host = "192.168.0.38"
 port = 3333
 
+
+global gpuDetails
+global xmrUSD
+global ethUSD
+
+gpuDetails    = []
+
 def formatUptimeMins(mins):
 	
 	mins = int(mins)
@@ -81,19 +88,9 @@ def getEthminerData():
 		j=s.recv(2048)
 		s.close()
 		js=json.loads(j.decode("utf-8"))
-		#resp=resp['result']
-	except TimeoutError:
-		logError("getEthminerData: Connection Timeout. Restarting ethminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-ethminer.sh"])
-		return "Error"
-	except ConnectionRefusedError:
-		logError("getEthminerData: Connection Timeout. Restarting ethminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-ethminer.sh"])
-		return "Error"
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
+		ETHMINER
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		subprocess.Popen(["./start-eth-ethminer.sh"])
 		return "Error"
@@ -123,10 +120,18 @@ def getEthminerData():
 	ethUptimeMin  = int(js["result"][1])
 	ethUptime     = formatUptimeMins(ethUptimeMin)
 
+	#	Extract just the pool address if its too long
+	#	Ethminer provides a much longer URL than cminer
+	if len(ethPoolAddr) > 40:
+		print ("[MIN MON] Cleaning up PoolAddr")
+		pattern="http://(.+?:\d+)/.+"
+		m = re.match(pattern, ethPoolAddr)
+		if m:
+			ethPoolAddr = m.group(1)
+
 	#	Get average GPU temp
 	tempTotal=0
 	for t in gpuTemps:
-		print("temp:%s" % t)
 		tempTotal = tempTotal + int(t)
 	avgGPUTemp = tempTotal / i;
 
