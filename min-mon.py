@@ -446,7 +446,7 @@ def getCminerData():
 #	Get config from json
 cfg = json.load(open('config.json'))
 
-getCminerData()
+#getCminerData()
 getEthminerData()
 getxmrStakData()
 xmrUSD = getCoinUSD('monero')
