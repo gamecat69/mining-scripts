@@ -18,6 +18,7 @@ set 4G DECODE to ENABLED.
 set PEG1 to "GEN 2"
 set PEG2 to "GEN 2"
 set PCI Latency to "96 Cycles"
+set Advnanced Power Management (APM) to Power On after loss of power
 
 #	------------------
 #	OS Stuff
@@ -34,48 +35,27 @@ sudo usermod -a -G video mining
 #	Install some initial software
 sudo apt-get install openssh-server git screen
 
+#	----------------------------
+#	Fix USB Wifi Network issues
+#	----------------------------
+
+#	Only run this section if using an RT8192cu variant
+
+sudo apt-get install linux-headers-$(uname -r) build-essential dkms git
+git clone https://github.com/pvaret/rtl8192cu-fixes.git
+sudo dkms add ./rtl8192cu-fixes
+sudo dkms install 8192cu/1.11
+sudo depmod -a
+sudo cp ./rtl8192cu-fixes/blacklist-native-rtl8192.conf /etc/modprobe.d/
+sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
+reboot
+
 #	------------------------------
 #	Pull down mining scripts
 #	------------------------------
 
 cd ~
 git clone https://github.com/gamecat69/mining-scripts.git
-
-#	------------------
-#	Cuda Install
-#	------------------
-
-#	Download
-#cd ~/Downloads
-#wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
-
-#	Extract all files
-#chmod +x cuda_8.0.61_375.26_linux.run
-#./cuda_8.0.61_375.26_linux.run --extract=$HOME
-
-#	Install only the cuda driver
-#sudo ./cuda-linux64-rel-8.0.61-21551265.run
-
-#	Configure runtime
-#sudo bash -c "echo /usr/local/cuda/lib64/ > /etc/ld.so.conf.d/cuda.conf"
-#sudo ldconfig
-
-
-# Taken from https://github.com/tmcdonell/travis-scripts.
-
-set -e
-
-export CUDA_VER=9.0.176-1
-sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
-wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
-sudo apt-get update -qq
-export CUDA_APT=${CUDA_VER:0:3}
-export CUDA_APT=${CUDA_APT/./-}
-sudo apt-get install -qy cuda-core-${CUDA_APT} cuda-cudart-dev-${CUDA_APT}
-sudo apt-get clean
-export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
-export PATH=${CUDA_HOME}/bin:${PATH}
 
 #	-----------------------
 #	Nvidia Driver Install
@@ -94,6 +74,25 @@ sudo apt install nvidia-384 nvidia-384-dev
 
 #	Test
 nvidia-smi
+
+#	------------------
+#	Cuda Install
+#	------------------
+
+#	Info: https://github.com/tmcdonell/travis-scripts.
+
+set -e
+export CUDA_VER=9.0.176-1
+sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo apt-get update -qq
+export CUDA_APT=${CUDA_VER:0:3}
+export CUDA_APT=${CUDA_APT/./-}
+sudo apt-get install -qy cuda-core-${CUDA_APT} cuda-cudart-dev-${CUDA_APT}
+sudo apt-get clean
+export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
+export PATH=${CUDA_HOME}/bin:${PATH}
 
 #	-------------------------------
 #	Install xmr-stak (Monero)
@@ -122,12 +121,21 @@ cd ~/Downloads
 sudo mkdir /home/mining/cminer11.1
 sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" /home/mining/cminer11.1
 
+#	-------------------------------
+#	Configure Nvidia cards
+#	-------------------------------
+
+#	Enable Overclocking on all cards
+#	Enable headless operations
+sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
+reboot
+
 #	-----------------------------------
 #	Configure and start mining scripts
 #	-----------------------------------
 
 cd ~/mining-scripts
-nano config.son
+nano config.json
 ./start.sh
 
 #	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
@@ -138,29 +146,8 @@ nano config.son
 
 #	info: https://github.com/ethereum-mining/ethminer
 
-#cd ~
-#git clone https://github.com/ethereum-mining/ethminer.git
-#cd ethminer
-
-cd ~/Downloads
-wget https://github.com/ethereum-mining/ethminer/releases/download/v0.14.0.dev3/ethminer-0.14.0.dev3-Linux.tar.gz
+cd Downloads
+wget https://github.com/ethereum-mining/ethminer/releases/download/v0.13.0/ethminer-0.13.0-Linux.tar.gz
 mkdir ~/ethminer
-tar -xvf ethminer-0.14.0.dev3-Linux.tar.gz -C ~/ethminer
+tar -xvf ethminer-0.13.0-Linux.tar.gz ~/ethminer
 
-#	-------------------------------
-#	Install genoil (Nvidia custom
-#	-------------------------------
-
-#	Skip this if using ccminer
-
-sudo apt-get -y install software-properties-common
-sudo add-apt-repository -y ppa:ethereum/ethereum
-sudo apt-get update
-sudo apt-get install git cmake libjson-rpc-cpp-dev libboost-all-dev libgmp-dev libreadline-dev libcurl4-gnutls-dev ocl-icd-libopencl1 opencl-headers mesa-common-dev libmicrohttpd-dev build-essential -y
-cd ~ && git clone https://github.com/Genoil/cpp-ethereum/
-cd cpp-ethereum/
-mkdir build
-cd build
-cmake -DBUNDLE=cudaminer ..
-make -j8
-reboot
