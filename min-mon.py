@@ -178,7 +178,8 @@ def getxmrStakData():
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
-		subprocess.Popen(["./start-xmr.sh"])
+		#subprocess.Popen(["./start-xmr.sh"])
+		subprocess.Popen(["screen -dmS", "xmrstak", "./start-xmr.sh"])
 		return "Error"
 	
 	xmrVersion    = xmrJson["version"]
@@ -258,7 +259,8 @@ def getEthminerData():
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-ethminer.sh"])
+		#subprocess.Popen(["./start-eth-ethminer.sh"])
+		subprocess.Popen(["screen -dmS", "ethminer", "./start-eth-ethminer.sh"])
 		return "Error"
 
 	h_s_r=js["result"][2].split(';')
@@ -428,9 +430,13 @@ def getCminerData():
 #	Get config from json
 cfg = json.load(open('config.json'))
 
-#getCminerData()
-getEthminerData()
-getxmrStakData()
+if cfg["MINE_ETH"]:
+	#getCminerData()
+	getEthminerData()
+
+if cfg["MINE_ETH"]:
+	getxmrStakData()
+
 xmrUSD = getCoinUSD('monero')
 ethUSD = getCoinUSD('ethereum')
 writeHTML()
