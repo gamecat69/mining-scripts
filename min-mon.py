@@ -41,10 +41,6 @@ avgGPUTemp    = ''
 avgGPUTemp    = ''
 avgGPUFanSpeed = ''
 avgGPUHashRate = ''
-miningRootDir = "/home/mining/mining-scripts"
-ethMinerCmd = miningRootDir + "/" + "start-eth.sh"
-xmrMinerCmd = miningRootDir + "/" + "start-xmr.sh"
-htmlReportFile = cfg["MINERNAME"] + ".html"
 
 #	----------------------------------
 #	Functions
@@ -433,6 +429,11 @@ def getCminerData():
 
 #	Get config from json
 cfg = json.load(open('config.json'))
+
+miningRootDir  = "/home/mining/mining-scripts"
+ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
+xmrMinerCmd    = miningRootDir + "/" + "start-xmr.sh"
+htmlReportFile = cfg["MINERNAME"] + ".html"
 
 if cfg["MINE_ETH"]:
 	#getCminerData()
