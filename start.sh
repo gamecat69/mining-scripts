@@ -32,7 +32,6 @@ YELLOW='\033[0;93m'
 NC='\033[0m' # No Color
 
 MINERNAME=`readJson config.json MINERNAME`
-PUSH_MSG=`readJson config.json PUSH_MSG`
 MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
 MINE_XMR=`readJson config.json MINE_XMR`
 MINE_ETH=`readJson config.json MINE_ETH`

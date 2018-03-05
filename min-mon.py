@@ -44,6 +44,7 @@ avgGPUHashRate = ''
 miningRootDir = "/home/mining/mining-scripts"
 ethMinerCmd = miningRootDir + "/" + "start-eth.sh"
 xmrMinerCmd = miningRootDir + "/" + "start-xmr.sh"
+htmlReportFile = cfg["MINERNAME"] + ".html"
 
 #	----------------------------------
 #	Functions
@@ -120,7 +121,7 @@ def getSystemUptime():
 
 def writeHTML():
 
-	HTMLfilepath     = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLREPORTFILE"]
+	HTMLfilepath     = cfg["HTMLREPORTDIR"] + '/' + htmlReportFile
 	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
 	
 	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
@@ -446,6 +447,4 @@ writeHTML()
 
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
-
-htmlReportFile = cfg["HTMLREPORTFILE"]
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
