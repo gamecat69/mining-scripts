@@ -435,11 +435,11 @@ ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
 xmrMinerCmd    = miningRootDir + "/" + "start-xmr.sh"
 htmlReportFile = cfg["MINERNAME"] + ".html"
 
-if cfg["MINE_ETH"]:
+if cfg["MINE_ETH"] == "yes":
 	#getCminerData()
 	getEthminerData()
 
-if cfg["MINE_ETH"]:
+if cfg["MINE_ETH"] == "yes":
 	getxmrStakData()
 
 xmrUSD = getCoinUSD('monero')
