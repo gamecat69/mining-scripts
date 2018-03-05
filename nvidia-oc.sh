@@ -23,17 +23,6 @@ function readJson {
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
-export DISPLAY=:0
-
-POWERLIMIT_WATTS[0]=`readJson config.json POWERLIMIT_WATTS_0`
-POWERLIMIT_WATTS[1]=`readJson config.json POWERLIMIT_WATTS_1`
-POWERLIMIT_WATTS[2]=`readJson config.json POWERLIMIT_WATTS_2`
-POWERLIMIT_WATTS[3]=`readJson config.json POWERLIMIT_WATTS_3`
-POWERLIMIT_WATTS[4]=`readJson config.json POWERLIMIT_WATTS_4`
-POWERLIMIT_WATTS[5]=`readJson config.json POWERLIMIT_WATTS_5`
-POWERLIMIT_WATTS[6]=`readJson config.json POWERLIMIT_WATTS_6`
-POWERLIMIT_WATTS[7]=`readJson config.json POWERLIMIT_WATTS_7`
-
 GPUOVERCLOCK[0]=`readJson config.json GPUOVERCLOCK_0`
 GPUOVERCLOCK[1]=`readJson config.json GPUOVERCLOCK_1`
 GPUOVERCLOCK[2]=`readJson config.json GPUOVERCLOCK_2`
@@ -55,12 +44,6 @@ MEMOVERCLOCK[7]=`readJson config.json MEMOVERCLOCK_7`
 GPUOC=`readJson config.json GPUOC`
 MEMOC=`readJson config.json MEMOC`
 MAXPERF=`readJson config.json MAXPERF`
-LIMITPOWER=`readJson config.json LIMITPOWER`
-
-GPUOC=yes
-MEMOC=yes
-MAXPERF=yes
-LIMITPOWER=no
 
 export GPU_FORCE_64BIT_PTR=0
 export GPU_MAX_HEAP_SIZE=100
@@ -82,23 +65,6 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 
 NUMGPU="$(nvidia-smi -L | wc -l)"
 echo "[NVIDIA-OC] Found $NUMGPU Nvidia cards"
-
-#   Power Limit
-#   Commented out as this needs root
-#   .. will figure this out later
-
-if [ "$LIMITPOWER" = "yes" ] ; then
-
-   n=0
-   while [ $n -lt $NUMGPU ];
-   do
-      echo "[NVIDIA-OC] Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]}"
-      #sudo nvidia-smi -i $n -pm 1
-      #sudo nvidia-smi -i $n -pl ${POWERLIMIT_WATTS[$n]}
-      let n=n+1
-   done
-
-fi
 
 #   GPU Overlock
 
