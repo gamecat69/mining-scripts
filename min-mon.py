@@ -41,6 +41,9 @@ avgGPUTemp    = ''
 avgGPUTemp    = ''
 avgGPUFanSpeed = ''
 avgGPUHashRate = ''
+miningRootDir = "/home/mining/mining-scripts"
+ethMinerCmd = miningRootDir + "/" + "start-eth.sh"
+xmrMinerCmd = miningRootDir + "/" + "start-xmr.sh"
 
 #	----------------------------------
 #	Functions
@@ -179,7 +182,7 @@ def getxmrStakData():
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
 		#subprocess.Popen(["./start-xmr.sh"])
-		subprocess.Popen(["screen -dmS", "xmrstak", "./start-xmr.sh"])
+		subprocess.Popen(["screen -dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
 	xmrVersion    = xmrJson["version"]
@@ -260,7 +263,7 @@ def getEthminerData():
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		#subprocess.Popen(["./start-eth-ethminer.sh"])
-		subprocess.Popen(["screen -dmS", "ethminer", "./start-eth-ethminer.sh"])
+		subprocess.Popen(["screen -dmS", "ethminer", ethMinerCmd])
 		return "Error"
 
 	h_s_r=js["result"][2].split(';')
