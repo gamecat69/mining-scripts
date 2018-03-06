@@ -71,6 +71,9 @@ export XAUTHORITY=/var/run/lightdm/root/:0
 
 #   Or for headless: sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
 
+#	***** Must be run as root now *****
+#	This is because power limitting needs root and because we export XAUTHORITY=/var/run/lightdm/root/:0
+
 #   ------------------------
 #   Configure Nvidia cards
 #   ------------------------
