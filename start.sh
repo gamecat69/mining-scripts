@@ -47,7 +47,7 @@ echo -e "${RED}Killing previous processes...${NC}"
 ./kill-miner.sh
 
 echo -e "Starting wifi monitor"
-./wifi-mon.sh &
+$SCREEN_CMD wifimon ./wifi-mon.sh &
 
 echo "Configuring NVIDIA cards"
 ./nvidia-oc.sh
