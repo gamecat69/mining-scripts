@@ -49,8 +49,9 @@ echo -e "${RED}Killing previous processes...${NC}"
 echo -e "Starting wifi monitor"
 $SCREEN_CMD wifimon ./wifi-mon.sh &
 
-echo "Configuring NVIDIA cards"
-./nvidia-oc.sh
+#	All handled in /etc/rc.local now
+#echo "Configuring NVIDIA cards"
+#./nvidia-oc.sh
 
 echo "Starting NVIDIA logging"
 ./nvidia-mon.sh &
