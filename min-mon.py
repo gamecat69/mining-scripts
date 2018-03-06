@@ -279,8 +279,8 @@ def getEthminerData():
 
 	n=0
 	while n < i:
-		gpuTemps.append("{0:.0f}".gpu_temp_fanspeed[n*2])
-		gpuFanSpeeds.append(int("{0:.0f}".gpu_temp_fanspeed[(n*2)+1]))
+		gpuTemps.append("{0:.0f}".format(gpu_temp_fanspeed[n*2]))
+		gpuFanSpeeds.append(int("{0:.0f}".format(gpu_temp_fanspeed[(n*2)+1])))
 		gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
 		n=n+1
 
@@ -312,7 +312,7 @@ def getEthminerData():
 	avgGPUFanSpeed = speedTotal / i;
 
 	#	Get average GPU Hashrate
-	avgGPUHashRate = int(ethHashRate) / i
+	avgGPUHashRate = int(ethHashRate / i)
 
 	#	Prevent a divide by zero error
 	if ethShares > 0:
