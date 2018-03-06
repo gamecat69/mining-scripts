@@ -315,7 +315,7 @@ def getEthminerData():
 
 	#	Prevent a divide by zero error
 	if ethShares > 0:
-		ethSharePerHr = ethShares / ( ethUptimeMin / 60 )
+		ethSharePerHr = "{0:.2f}".format(ethShares / ( ethUptimeMin / 60 ))
 	else:
 		ethSharePerHr = 0
 
