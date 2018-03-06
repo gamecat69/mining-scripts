@@ -314,8 +314,8 @@ def getEthminerData():
 	avgGPUHashRate = int(ethHashRate) / i
 
 	#	Prevent a divide by zero error
-	if ethShares > 0 and ethUptimeMin > 60:
-		ethSharePerHr = ethShares // ( ethUptimeMin // 60 )
+	if ethShares > 0:
+		ethSharePerHr = ethShares / ( ethUptimeMin / 60 )
 	else:
 		ethSharePerHr = 0
 
