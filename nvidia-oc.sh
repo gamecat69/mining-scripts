@@ -88,9 +88,8 @@ if [ "$LIMITPOWER" = "yes" ] ; then
    n=0
    while [ $n -lt $NUMGPU ];
    do
-      echo "[NVIDIA-OC] Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]}"
       MINWATT=$(nvidia-smi --id=$n -q -d POWER | grep -Eo 'Min Power Limit\s+:\s.+' | grep -Eo '[0-9]{1,3}\.[0-9]{2}')
-      echo "[NVIDIA-OC] Minimum for GPU:$n : $MINWATT Watts"
+      echo "[NVIDIA-OC] Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]} Watts. Minimum for this card: $MINWATT Watts"
       nvidia-smi -i $n -pm 1
       nvidia-smi -i $n -pl ${POWERLIMIT_WATTS[$n]}
       let n=n+1
