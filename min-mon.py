@@ -51,8 +51,10 @@ def getURL(url):
 	try:
 		res = requests.get(url, timeout=5)
 		return res.text
-	except requests.NewConnectionError, e:
-		logError("getURL: Unable to open url " + str(e))
+	#except requests.NewConnectionError, e:
+	except:
+		#logError("getURL: Unable to open url " + str(e))
+		logError("getURL: Unable to open url %s" % url)
 		return "Error"
 
 def logError(errString):
