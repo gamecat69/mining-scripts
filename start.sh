@@ -40,15 +40,7 @@ S3BUCKET=`readJson config.json S3BUCKET`
 
 S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/$MINERNAME.html"
 PUSH_MSG="Starting up... Report URL: $S3URL"
-
 SCREEN_CMD="screen -dmS"
-
-#PUSH_MSG="Starting up...\
-#Check here for report: http://min-mon.s3-website-eu-west-1.amazonaws.com"
-#PUSH_TITLE="gtx-1060x6"
-
-#	Get config data
-#source ./config.sh
 
 echo -e "${RED}Killing previous processes...${NC}"
 ./kill-miner.sh
