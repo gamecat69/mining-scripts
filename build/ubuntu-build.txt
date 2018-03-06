@@ -5,6 +5,7 @@
 #	info: https://www.meebey.net/posts/ethereum_gpu_mining_on_linux_howto/
 #	info: https://github.com/nanopool/genoil-ethereum
 #	info: https://forum.getpimp.org/topic/9/setting-up-motherboards-for-mining
+#	info: https://github.com/one-quaker/linux-rig-tools/blob/master/nvidia_rig_install.sh
 
 #	--------------------------------------
 #	BIOS Settings
@@ -33,7 +34,7 @@ sudo passwd mining
 sudo usermod -a -G video mining
 
 #	Install some initial software
-sudo apt-get install openssh-server git screen
+sudo apt-get install -y openssh-server git screen
 
 #	----------------------------
 #	Fix USB Wifi Network issues
@@ -42,7 +43,7 @@ sudo apt-get install openssh-server git screen
 #	Only run this section if using an RT8192cu variant
 #	E.G. the Edimax EW-7811
 
-sudo apt-get install linux-headers-$(uname -r) build-essential dkms git
+sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms git
 git clone https://github.com/pvaret/rtl8192cu-fixes.git
 sudo dkms add ./rtl8192cu-fixes
 sudo dkms install 8192cu/1.11
@@ -106,7 +107,7 @@ export PATH=${CUDA_HOME}/bin:${PATH}
 #	-------------------------------
 
 #	This installs to /home/<username>/xmr-stak
-sudo apt install libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git cmake
+sudo apt install -y libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git cmake
 cd ~
 git clone https://github.com/fireice-uk/xmr-stak.git
 cd xmr-stak
