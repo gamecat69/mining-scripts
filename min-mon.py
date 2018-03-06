@@ -51,9 +51,7 @@ def getURL(url):
 	try:
 		res = requests.get(url, timeout=5)
 		return res.text
-	#except requests.NewConnectionError, e:
 	except:
-		#logError("getURL: Unable to open url " + str(e))
 		logError("getURL: Unable to open url %s" % url)
 		return "Error"
 
@@ -250,10 +248,11 @@ def getEthminerData():
 	global avgGPUHashRate
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	print ("[MIN MON] getEthminerData: Attemping to connect to %s:%d" % (host, port))
+	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
+	#print ("[MIN MON] getEthminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
 		s.connect((host, port))
-		print("[MIN MON] getEthminerData: Connected, calling jsonrpc api")
+		#print("[MIN MON] getEthminerData: Connected, calling jsonrpc api")
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		j=s.recv(2048)
 		s.close()
