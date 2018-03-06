@@ -126,3 +126,19 @@ and (max-width: 680px)  {
     bottom: 7px;
     left: -34px;
 }
+
+.iframe-left {
+	float: left;
+	position: absolute;
+}
+
+
+.iframe-right {
+	margin-left:540px;
+	float: left;
+	position: absolute;
+}
+
+.clearfix{
+    clear:both
+}
