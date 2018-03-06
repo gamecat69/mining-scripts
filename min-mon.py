@@ -192,9 +192,10 @@ def getxmrStakData():
 
 	#	Prevent a divide by zero error
 	if xmrShares > 0:
-		xmrSharePerHr = xmrShares / (xmrUptimeMin / 60)
+		xmrSharePerHr = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
 	else:
 		xmrSharePerHr = 0
+	
 	xmrErrors     = xmrJson["connection"]["error_log"]
 
 def uploadToAWS(dir, file):
