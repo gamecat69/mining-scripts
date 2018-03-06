@@ -71,7 +71,8 @@ sudo apt update
 
 #	Update 384 to whatever version is needed
 #	e.g. 367 / 387 / 390 etc
-sudo apt install nvidia-390 nvidia-390-dev
+NVIDIA_VERSION=390
+sudo apt install nvidia-$NVIDIA_VERSION nvidia-$NVIDIA_VERSION-dev
 
 #	Test
 nvidia-smi
@@ -79,6 +80,11 @@ nvidia-smi
 #	------------------
 #	Cuda Install
 #	------------------
+
+#	Try this first, if it does work, read on...
+NVIDIA_VERSION=390
+sudo apt install -y nvidia-$NVIDIA_VERSION-dev nvidia-$NVIDIA_VERSION nvidia-cuda-toolkit libcuda1-$NVIDIA_VERSION
+
 
 #	Info: https://github.com/tmcdonell/travis-scripts.
 
