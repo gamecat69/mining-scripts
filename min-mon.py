@@ -10,6 +10,9 @@ import requests
 import subprocess
 import socket
 
+#	Try and improve the share per hour division calcs....
+from __future__ import division
+
 #	----------------------------------
 #	Pre-requisites
 #	sudo apt-get install python-pip
