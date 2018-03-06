@@ -279,9 +279,9 @@ def getEthminerData():
 
 	n=0
 	while n < i:
-		gpuTemps.append(int(gpu_temp_fanspeed[n*2]))
-		gpuFanSpeeds.append(int(gpu_temp_fanspeed[(n*2)+1]))
-		gpuDetails.append( gpuHashRates[n] + "," + str(gpuTemps[n]) + "," + str(gpuFanSpeeds[n]) )
+		gpuTemps.append("{0:.0f}".gpu_temp_fanspeed[n*2])
+		gpuFanSpeeds.append(int("{0:.0f}".gpu_temp_fanspeed[(n*2)+1]))
+		gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
 		n=n+1
 
 	ethVersion    = js["result"][0]
