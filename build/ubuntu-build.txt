@@ -52,13 +52,6 @@ sudo cp ./rtl8192cu-fixes/blacklist-native-rtl8192.conf /etc/modprobe.d/
 sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
 reboot
 
-#	------------------------------
-#	Pull down mining scripts
-#	------------------------------
-
-cd ~
-git clone https://github.com/gamecat69/mining-scripts.git
-
 #	-----------------------
 #	Nvidia Driver Install
 #	-----------------------
@@ -103,8 +96,26 @@ export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
 export PATH=${CUDA_HOME}/bin:${PATH}
 
 #	-------------------------------
+#	Configure Nvidia cards
+#	-------------------------------
+
+#	Enable Overclocking on all cards
+#	Enable headless operations
+#sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
+sudo nvidia-xconfig --allow-empty-initial-configuration --enable-all-gpus --cool-bits=31 --separate-x-screens
+
+#	Add a call to power limit the cards into /etc/rc.local
+sudo sed -i -e 's/^exit 0/\/home\/mining\/mining-scripts\/nvidia-oc.sh > \/home\/mining\/nvidia-oc.log\nexit 0/' /etc/rc.local
+reboot
+
+#	-------------------------------
 #	Install xmr-stak (Monero)
 #	-------------------------------
+
+#	Enable large page support
+sudo sysctl -w vm.nr_hugepages=128
+sudo echo "* soft memlock 262144" >> /etc/security/limits.conf
+sudo echo "* hard memlock 262144" >> /etc/security/limits.conf
 
 #	This installs to /home/<username>/xmr-stak
 sudo apt install -y libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git cmake
@@ -115,45 +126,31 @@ cmake -DOpenCL_ENABLE=OFF .
 make install
 
 #	Configure, this creates the required config files
-cd ~
-/home/<username>/xmr-stak/bin/xmr-stak
+#	This is skipped now, as the config files are pulled down from github
+#	cpu.txt + config.txt
+#	cd ~
+#	/home/<username>/xmr-stak/bin/xmr-stak
 
 #	------------------------------
-#	Install ETH miner (Claymore)
+#	Install Claymore ETH miner
 #	------------------------------
 
 #	Get latest version from here: https://bitcointalk.org/index.php?topic=1433925.0
 #	https://drive.google.com/drive/folders/0B69wv2iqszefdFZUV2toUG5HdlU
 
+#	Alt
+cd ~/Downloads
+mkdir /home/mining/cminer11.2
+curl -L -o "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" https://drive.google.com/uc?id=1t25SK0lk2osr32GH623rR8aG2_qvZds9
+mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" cminer11.2.tar.gz
+sudo tar -xvf cminer11.2.tar.gz
+cp -r cminer11.2/* /home/mining/cminer11.2/
+
+#	End alt
+
 cd ~/Downloads
 sudo mkdir /home/mining/cminer11.1
-sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" /home/mining/cminer11.1
-
-#	-------------------------------
-#	Configure Nvidia cards
-#	-------------------------------
-
-#	Enable Overclocking on all cards
-#	Enable headless operations
-#sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
-sudo nvidia-xconfig --allow-empty-initial-configuration --enable-all-gpus --cool-bits=28 --separate-x-screens
-
-#	Add a call to power limit the cards into /etc/rc.local
-sudo sed -i -e 's/^exit 0/\/home\/mining\/mining-scripts\/nvidia-oc-rc.sh > \/home\/mining\/nvidia-oc-rc.log\nexit 0/' /etc/rc.local
-
-reboot
-
-
-
-#	-----------------------------------
-#	Configure and start mining scripts
-#	-----------------------------------
-
-cd ~/mining-scripts
-nano config.json
-./start.sh
-
-#	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
+sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" -C /home/mining/cminer11.1
 
 #	-------------------------------
 #	Install ethminer
@@ -166,3 +163,15 @@ wget https://github.com/ethereum-mining/ethminer/releases/download/v0.13.0/ethmi
 mkdir ~/ethminer
 tar -xvf ethminer-0.13.0-Linux.tar.gz ~/ethminer
 
+#	-----------------------------------
+#	Configure and start mining scripts
+#	-----------------------------------
+
+cd ~
+git clone https://github.com/gamecat69/mining-scripts.git
+cd ~/mining-scripts
+nano config.json
+./start.sh
+
+#	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
+#	Need to figure out how to automate this part
