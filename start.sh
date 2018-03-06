@@ -40,7 +40,7 @@ S3BUCKET=`readJson config.json S3BUCKET`
 
 S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/$MINERNAME.html"
 SCREEN_CMD="screen -dmS"
-MYIP=$(ifconfig | grep -Eo 'int (adds:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+MYIP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 PUSH_MSG="[$MYIP] Starting up... Report URL: $S3URL"
 
 echo -e "${RED}Killing previous processes...${NC}"
