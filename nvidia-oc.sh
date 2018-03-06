@@ -41,6 +41,16 @@ MEMOVERCLOCK[5]=`readJson config.json MEMOVERCLOCK_5`
 MEMOVERCLOCK[6]=`readJson config.json MEMOVERCLOCK_6`
 MEMOVERCLOCK[7]=`readJson config.json MEMOVERCLOCK_7`
 
+POWERLIMIT_WATTS[0]=`readJson config.json POWERLIMIT_WATTS_0`
+POWERLIMIT_WATTS[1]=`readJson config.json POWERLIMIT_WATTS_1`
+POWERLIMIT_WATTS[2]=`readJson config.json POWERLIMIT_WATTS_2`
+POWERLIMIT_WATTS[3]=`readJson config.json POWERLIMIT_WATTS_3`
+POWERLIMIT_WATTS[4]=`readJson config.json POWERLIMIT_WATTS_4`
+POWERLIMIT_WATTS[5]=`readJson config.json POWERLIMIT_WATTS_5`
+POWERLIMIT_WATTS[6]=`readJson config.json POWERLIMIT_WATTS_6`
+POWERLIMIT_WATTS[7]=`readJson config.json POWERLIMIT_WATTS_7`
+
+LIMITPOWER=`readJson config.json LIMITPOWER`
 GPUOC=`readJson config.json GPUOC`
 MEMOC=`readJson config.json MEMOC`
 MAXPERF=`readJson config.json MAXPERF`
@@ -50,6 +60,8 @@ export GPU_MAX_HEAP_SIZE=100
 export GPU_USE_SYNC_OBJECTS=1
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_SINGLE_ALLOC_PERCENT=100
+export DISPLAY=:0
+export XAUTHORITY=/var/run/lightdm/root/:0
 
 #   ------------------------
 #   Run this then reboot
@@ -65,6 +77,21 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 
 NUMGPU="$(nvidia-smi -L | wc -l)"
 echo "[NVIDIA-OC] Found $NUMGPU Nvidia cards"
+
+#	Power limit
+
+if [ "$LIMITPOWER" = "yes" ] ; then
+
+   n=0
+   while [ $n -lt $NUMGPU ];
+   do
+      echo "[NVIDIA-OC] Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]}"
+      nvidia-smi -i $n -pm 1
+      nvidia-smi -i $n -pl ${POWERLIMIT_WATTS[$n]}
+      let n=n+1
+   done
+
+fi
 
 #   GPU Overlock
 
