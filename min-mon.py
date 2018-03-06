@@ -1,3 +1,4 @@
+from __future__ import division
 import json
 import urllib2
 import re
@@ -9,9 +10,6 @@ import time
 import requests
 import subprocess
 import socket
-
-#	Try and improve the share per hour division calcs....
-from __future__ import division
 
 #	----------------------------------
 #	Pre-requisites
@@ -193,7 +191,7 @@ def getxmrStakData():
 	xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#	Prevent a divide by zero error
-	if xmrShares > 0 and xmrUptimeMin > 60:
+	if xmrShares > 0:
 		xmrSharePerHr = xmrShares / (xmrUptimeMin / 60)
 	else:
 		xmrSharePerHr = 0
