@@ -5,6 +5,8 @@
 #	Only resets adapter after MAX_ERRORS subsequent failures
 #	--------------------------------------------------
 
+SCRIPT_NAME="WIFi-MON"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -22,6 +24,13 @@ function readJson {
 	else
 		echo $VALUE ;
 	fi;
+
+}
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
@@ -46,15 +55,15 @@ while [ 1 = 1 ]
 do
 
    if ping -c 1 $HOST_TO_PING >/dev/null 2>&1 ; then
-      echo -e "${NC}[WIFI MON] Network up"
+      output -e "${NC}[WIFI MON] Network up"
       #	Reset Error count
       NUM_ERRORS=0
    else
       let NUM_ERRORS+=1
-      echo -e "${RED}[WIFI MON] Network down. Num errors: $NUM_ERRORS"
+      output -e "${RED}[WIFI MON] Network down. Num errors: $NUM_ERRORS"
       
       if [ $NUM_ERRORS -ge $MAX_ERRORS ]; then 
-         echo -e "${RED}[WIFI MON] Network down, resetting wifi card${NC}"
+         output -e "${RED}[WIFI MON] Network down, resetting wifi card${NC}"
       	 nmcli radio wifi off
       	 nmcli radio wifi on
       	 sleep 5

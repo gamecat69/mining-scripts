@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_NAME="MIN-MON"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -20,6 +22,13 @@ function readJson {
 
 }
 
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
+
+}
+
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
@@ -37,13 +46,13 @@ while [ 1 = 1 ]
 do
 
    if [ "$RUN_MODE" == "boot" ]; then
-      echo -e "${YELLOW}[MIN MON] Just booted. Sleeping for $MINMON_DELAY_SECS secs"
+      output -e "${YELLOW}[MIN MON] Just booted. Sleeping for $MINMON_DELAY_SECS secs"
       sleep $MINMON_DELAY_SECS
    fi
 
-   echo -e "${YELLOW}[MIN MON] Getting Mining Stats"
+   output -e "${YELLOW}[MIN MON] Getting Mining Stats"
    python min-mon.py
-   echo -e "${YELLOW}[MIN MON] Sleeping for $MINMON_INT_SECS${NC}"
+   output -e "${YELLOW}[MIN MON] Sleeping for $MINMON_INT_SECS${NC}"
    sleep $MINMON_INT_SECS
 
 done

@@ -5,7 +5,7 @@ SCRIPT_NAME="KILLMINER"
 function output {
 
 	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $1"
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
