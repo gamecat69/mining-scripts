@@ -562,10 +562,11 @@ def getZminerData():
 	
 	#	Get worker Stats
 	try:
-		data = getURL(cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"])
+		url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
+		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
 	except:
-		logError("getZminerData: Unable to get worker stats")
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
 	btcpBalance = js["balance"]
