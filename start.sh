@@ -4,6 +4,8 @@
 #	Function to get data from json file
 #	-------------------------------------
 
+SCRIPT_NAME="START"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -27,7 +29,7 @@ function readJson {
 function output {
 
 	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW $1"
+	echo -e "$NOW [$SCRIPT_NAME] $1"
 
 }
 

@@ -1,19 +1,28 @@
 #!/bin/bash
 
-echo "Killing cminer"
+SCRIPT_NAME="START"
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $1"
+
+}
+
+output "Killing cminer"
 pkill -f ethdcrminer64
 
-echo "Killing ethminer"
+output "Killing ethminer"
 pkill -f ethminer
 
-echo "Killing NVIDIA logging"
+output "Killing NVIDIA logging"
 pkill -f nvidia-mon
 
-echo "Killing xmr-stak"
+output "Killing xmr-stak"
 pkill -f xmr-stak
 
-echo "Killing wifi-mon"
+output "Killing wifi-mon"
 pkill -f wifi-mon
 
-echo "Killing min-mon"
+output "Killing min-mon"
 pkill -f min-mon
