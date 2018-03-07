@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_NAME="START"
+SCRIPT_NAME="KILLMINER"
 
 function output {
 

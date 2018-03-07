@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_NAME="KILLMINER"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -17,6 +19,13 @@ function readJson {
 	else
 		echo $VALUE ;
 	fi;
+
+}
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $1"
 
 }
 
@@ -51,7 +60,7 @@ PUSHOVER_CMD="$CURLBIN -s \
 -d title=$TITLE \
 https://api.pushover.net/1/messages.json"
 
-echo "Running Pushover command:"
-echo $PUSHOVER_CMD
+output "Running Pushover command:"
+output $PUSHOVER_CMD
 $PUSHOVER_CMD
 
