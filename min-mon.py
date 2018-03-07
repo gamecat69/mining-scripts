@@ -493,6 +493,7 @@ def getEarnedCoins():
 	btcpEarned = js["balance"] + js["paid"]
 
 	#	Get ETH balance
+	#	https://eth.nanopool.org/api#api-Pool
 	ethEarned = 0
 	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
 	try:
@@ -519,6 +520,9 @@ def getEarnedCoins():
 		ethEarned = ethEarned + payment["amount"]
 
 	#	Get XMR data
+	#	http://api.minexmr.com:8080/stats_address?address=
+	#	api code: https://github.com/zone117x/node-cryptonote-pool/blob/master/lib/api.js
+	#	Other apis: live_stats, stats_address
 	url = cfg["XMRMINERSTATSURL"] + cfg["XMR_WALLET"]
 	try:
 		data = getURL(url)
