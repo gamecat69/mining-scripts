@@ -529,7 +529,7 @@ def getEarnedCoins():
 		return "Error"
 
 	print("[MIN MON] xmrEarned: %s" % xmrEarned)
-	xmrEarned = int(js["stats"]["balance"]) / 100
+	xmrEarned = int(js["stats"]["balance"]) / 1000000000000
 
 	for payment in js["payments"]:
 		xmrEarned = xmrEarned + payment[1]
