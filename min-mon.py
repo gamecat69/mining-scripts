@@ -532,6 +532,12 @@ def getZminerData():
 
 	#	Get average GPU Hashrate
 	avgGPUHashRate = int(btcpHashRate / i)
+
+	#	Prevent a divide by zero error
+	if btcpShares > 0:
+		btcpSharePerHr = "{0:.2f}".format(btcpShares / ( btcpUptimeMin / 60 ))
+	else:
+		btcpSharePerHr = 0
 	
 	print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -542,6 +548,7 @@ def getZminerData():
 	print("[MIN MON] btcpShares: %s" % btcpShares)
 	print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
 	print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
+	print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
 
 #	----------------------------------
 #	Main code
