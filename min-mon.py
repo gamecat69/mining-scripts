@@ -515,7 +515,7 @@ def getZminerData():
 	for gpu in result:
 		gpuTemps.append(gpu["temperature"])
 		gpuFanSpeeds.append("0") # not available
-		btcpShares = btcpShares + int(gpu["accepted_shares")
+		btcpShares = btcpShares + int(gpu["accepted_shares"])
 	
 	print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
