@@ -511,11 +511,27 @@ def getZminerData():
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
 	btcpShares   = 0
+	btcpHashRate = 0
 
+	i=0
 	for gpu in result:
 		gpuTemps.append(gpu["temperature"])
 		gpuFanSpeeds.append("0") # not available
+		btcpHashRate = btcpHashRate + int(gpu["avg_sol_ps"])
 		btcpShares = btcpShares + int(gpu["accepted_shares"])
+		i=i+1
+
+	numGPU = i
+	avgGPUFanSpeed = 0 # Data not available
+
+	#	Get average GPU temp
+	tempTotal=0
+	for t in gpuTemps:
+		tempTotal = tempTotal + int(t)
+	avgGPUTemp = int(tempTotal / i);
+
+	#	Get average GPU Hashrate
+	avgGPUHashRate = int(btcpHashRate / i)
 	
 	print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -524,6 +540,8 @@ def getZminerData():
 	print("[MIN MON] gpuTemps: %s" % gpuTemps)
 	print("[MIN MON] gpuFanSpeeds: %s" % gpuFanSpeeds)
 	print("[MIN MON] btcpShares: %s" % btcpShares)
+	print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
+	print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
 
 #	----------------------------------
 #	Main code
