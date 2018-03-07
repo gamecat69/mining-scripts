@@ -1,0 +1,47 @@
+#	btcp install
+
+#	Info: http://btcprivate.pro/getting_started
+
+#	Configured m2 as the miner
+
+#	Create a wallet
+#	Download electrum wallet or create a paper wallet
+
+#	Public: b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8
+#	Check wallet balance here: https://explorer.btcprivate.org/address/b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8
+#	Check stats (api): http://btcprivate.pro/api/worker_stats?b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8
+
+#	Configure swapfile
+
+sudo fallocate -l 16G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon --show
+
+#	miner software install
+
+cd ~/Downloads
+wget https://github.com/rewrewby/miner_dstm/releases/download/BTCPv0.6/BTCP-zm_0.6.tar.gz
+tar -xvf BTCP-zm_0.6.tar.gz
+mkdir /home/mining/zminer
+cp -r zm_0.6/* /home/mining/zminer/
+
+#	Start miner
+#	Username is <public-wallet-address>.<minername>
+screen -dmS zminer ./zm --server eu.btcprivate.pro  --port 2827 --user b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8.gtx-1060x6-2 --telemetry --color\
+
+#	Example startup script
+zm --server $BTCPSERVER  --port $BTCPSERVERPORT --user $BTCPWALLET.$WORKER --telemetry --color
+
+#	Check share balance here: http://btcprivate.pro/workers/b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8
+
+#	Add to config.json
+
+   "MINE_BTCP"         : "yes",
+   
+   "zminer"         : "----------------",
+   "BTCPSERVER"     : "eu.btcprivate.pro",
+   "BTCPSERVERPORT" : "2827",
+   "BTCPWALLET"     : "b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8",
+   "zminer-end"     : "----------------",
