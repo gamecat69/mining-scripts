@@ -159,6 +159,8 @@ def writeHTML():
 	data = string.replace(data, '$ethuptime', str(ethUptime))
 	data = string.replace(data, '$ethtotalshares', str(ethShares))
 	data = string.replace(data, '$ethpool', str(ethPoolAddr))
+	data = string.replace(data, '$ethEarned', str(ethEarned))
+
 	data = string.replace(data, '$xmrusd', str(xmrUSD))
 	data = string.replace(data, '$xmrhashrate', str(xmrHashRate))
 	data = string.replace(data, '$xmrshares', str(xmrSharePerHr))
