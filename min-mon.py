@@ -557,7 +557,7 @@ def getZminerData():
 		#s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		print("[MIN MON] getZminerData: Receiving data")
-		j=s.recv(2048)
+		j=s.recv(4096)
 		print("[MIN MON] getZminerData: Received %d bytes" % len(j) )
 		print("[MIN MON] getZminerData: Closing socket")
 		s.close()
@@ -567,7 +567,7 @@ def getZminerData():
 		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
-	#js=json.loads(j.decode("utf-8"))
+	js=json.loads(j.decode("utf-8"))
 	print("Received data:\n%s" % j)	
 
 #	----------------------------------
