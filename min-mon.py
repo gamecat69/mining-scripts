@@ -553,9 +553,12 @@ def getZminerData():
 	print ("[MIN MON] getZminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
 		s.connect((host, port))
-		print("[MIN MON] getZminerData: Connected, calling jsonrpc api")
+		print("[MIN MON] getZminerData: Connected, calling api")
+		#s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
+		print("[MIN MON] getZminerData: Receiving data")
 		j=s.recv(2048)
+		print("[MIN MON] getZminerData: Cosing socket")
 		s.close()
 		js=json.loads(j.decode("utf-8"))
 	except:
