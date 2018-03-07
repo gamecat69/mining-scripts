@@ -561,14 +561,19 @@ def getZminerData():
 		print("[MIN MON] getZminerData: Received %d bytes" % len(j) )
 		print("[MIN MON] getZminerData: Closing socket")
 		s.close()
+		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getZminerData: Unable to connect. Restarting zminer")
 		#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
 		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
-	js=json.loads(j.decode("utf-8"))
-	print("Received data:\n%s" % j)	
+	print("[MIN MON] getZminerData: Received data:\n%s" % js)
+
+	result=js["result"]
+	gpu0temp=result[0].temperature
+	
+	print("[MIN MON] gpu0temp: %s" % gpu0temp)
 
 #	----------------------------------
 #	Main code
