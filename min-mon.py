@@ -561,8 +561,8 @@ def getZminerData():
 		btcpSharePerHr = 0
 	
 	#	Get worker Stats
+	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
 	try:
-		url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
 	except:
