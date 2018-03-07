@@ -348,34 +348,6 @@ def getEthminerData():
 	else:
 		ethSharePerHr = 0
 
-	#	Get balance
-	ethEarned = 0
-	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
-	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
-	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
-		return "Error"
-	
-	ethEarned = js["data"]
-	
-	#print("ETH Stats:%s" % js)
-
-	#	Get payments
-	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
-	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
-	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
-		return "Error"
-
-	for payment in js["data"]:
-		ethEarned = ethEarned + payment["amount"]
-
-	print("[MIN MON] ethEarned: %s" % ethEarned)
-
 def getZminerData():
 
 	'''
@@ -427,7 +399,6 @@ def getZminerData():
 	global avgGPUFanSpeed
 	global numGPU
 	global avgGPUHashRate
-	global btcpEarned
 
 	host = "127.0.0.1"
 	port = 2222
@@ -488,17 +459,6 @@ def getZminerData():
 		btcpSharePerHr = "{0:.2f}".format(btcpShares / ( btcpUptimeMin / 60 ))
 	else:
 		btcpSharePerHr = 0
-	
-	#	Get worker Stats
-	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
-	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
-	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
-		return "Error"
-
-	btcpEarned = js["balance"] + js["paid"]
 
 	#print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	#print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -510,8 +470,53 @@ def getZminerData():
 	#print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
 	#print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
 	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
-	#print("[MIN MON] btcpEarned: %s" % btcpEarned)
 
+def getEarnedCoins():
+
+	global btcpEarned
+	global xmrEarned
+	global ethEarned
+
+	#	Get Zminer (BTCP) info
+	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		return "Error"
+
+	btcpEarned = js["balance"] + js["paid"]
+
+	#	Get ETH balance
+	ethEarned = 0
+	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		return "Error"
+	
+	ethEarned = js["data"]
+	
+	#print("ETH Stats:%s" % js)
+
+	#	Get ETH payments
+	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		return "Error"
+
+	for payment in js["data"]:
+		ethEarned = ethEarned + payment["amount"]
+
+	print("[MIN MON] ethEarned: %s" % ethEarned)
+	print("[MIN MON] btcpEarned: %s" % btcpEarned)
+	print("[MIN MON] xmrEarned: %s" % xmrEarned)
 
 #	----------------------------------
 #	Main code
@@ -535,6 +540,8 @@ if cfg["MINE_XMR"] == "yes":
 
 if cfg["MINE_BTCP"] == "yes":
 	getZminerData()
+
+getEarnedCoins()
 
 xmrUSD = getCoinUSD('monero')
 ethUSD = getCoinUSD('ethereum')
