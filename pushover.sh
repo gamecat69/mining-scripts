@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_NAME="KILLMINER"
+SCRIPT_NAME="PUSHOVER"
 
 function readJson {
 
@@ -25,7 +25,7 @@ function readJson {
 function output {
 
 	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $+"
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
