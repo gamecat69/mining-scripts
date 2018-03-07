@@ -9,7 +9,8 @@
    
    "start"             : "-------------------",
    "MINE_XMR"          : "yes",
-   "MINE_ETH"          : "yes",
+   "MINE_ETH"          : "no",
+   "MINE_BTCP"         : "yes",
    "ETHMINER"          : "ethminer",
    "MINMON_DELAY_SECS" : "20",
    "start-end"         : "-------------------",
@@ -89,6 +90,12 @@
    "XMR_CPUONLY"   : "yes",
    "XMR_CURRENCY"  : "monero",
    "xmr-stack-end" : "-------------------",
+
+   "zminer"         : "----------------",
+   "BTCPSERVER"     : "eu.btcprivate.pro",
+   "BTCPSERVERPORT" : "2827",
+   "BTCPWALLET"     : "b1GymVZkpvE5JGj1AbhDFwRMnADJkk4Cfw8",
+   "zminer-end"     : "----------------",
 
    "wifi-mon"     : "-------------------",
    "HOST_TO_PING" : "www.google.com",
