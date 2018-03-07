@@ -522,14 +522,14 @@ def getEarnedCoins():
 	url = cfg["XMRMINERSTATSURL"] + cfg["XMR_WALLET"]
 	try:
 		data = getURL(url)
-		#js=json.loads(data.decode("utf-8"))
-		js=json.loads(data)
+		js=json.loads(data.decode("utf-8"))
+		
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
-	xmrEarned = js["stats"]["balance"] / 100
 	print("[MIN MON] xmrEarned: %s" % xmrEarned)
+	xmrEarned = int(js["stats"]["balance"]) / 100
 
 	for payment in js["payments"]:
 		xmrEarned = xmrEarned + payment[1]
