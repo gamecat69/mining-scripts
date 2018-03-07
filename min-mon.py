@@ -528,20 +528,19 @@ def getEarnedCoins():
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
-	print("[MIN MON] xmrEarned: %s" % xmrEarned)
 	xmrEarned = int(js["stats"]["balance"]) / 1000000000000
 
 	for payment in js["payments"]:
 		xmrEarned = xmrEarned + payment[1]
-		print("[MIN MON] xmrPayment: %s" % payment[1])
+		#print("[MIN MON] xmrPayment: %s" % payment[1])
 	
 	ethEarned  = "{0:.6f}".format(float(ethEarned))
 	btcpEarned = "{0:.6f}".format(float(btcpEarned))
 	xmrEarned  = "{0:.6f}".format(float(xmrEarned))
 
-	print("[MIN MON] ethEarned: %s" % ethEarned)
-	print("[MIN MON] btcpEarned: %s" % btcpEarned)
-	print("[MIN MON] xmrEarned: %s" % xmrEarned)
+	#print("[MIN MON] ethEarned: %s" % ethEarned)
+	#print("[MIN MON] btcpEarned: %s" % btcpEarned)
+	#print("[MIN MON] xmrEarned: %s" % xmrEarned)
 
 #	----------------------------------
 #	Main code
