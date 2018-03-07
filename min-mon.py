@@ -584,7 +584,7 @@ def getZminerData():
 	#print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
 	#print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
 	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
-	print("[MIN MON] btcpEarned: %s" % btcpEarned)
+	#print("[MIN MON] btcpEarned: %s" % btcpEarned)
 
 
 #	----------------------------------
