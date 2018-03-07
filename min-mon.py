@@ -346,8 +346,9 @@ def getEthminerData():
 	else:
 		ethSharePerHr = 0
 
-	#	Get worker Stats
-	url = cfg["ETHMINERSTATSURL"] + '/' + cfg["ETHWALLET"]
+	#	Get payments
+	ethEarned = 0
+	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
@@ -355,9 +356,19 @@ def getEthminerData():
 		logError("getZminerData: Unable to get worker stats from url:%s" % url)
 		return "Error"
 	
-	#print("ETH Stats:%s" % js)
+	ethEarned = js["data"]
 	
-	ethEarned = 0
+	#print("ETH Stats:%s" % js)
+
+	#	Get balance
+	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		return "Error"
+
 	for payment in js["data"]:
 		ethEarned = ethEarned + payment["amount"]
 
