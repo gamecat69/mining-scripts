@@ -346,9 +346,9 @@ def getEthminerData():
 	else:
 		ethSharePerHr = 0
 
-	#	Get payments
+	#	Get balance
 	ethEarned = 0
-	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
+	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
@@ -360,8 +360,8 @@ def getEthminerData():
 	
 	#print("ETH Stats:%s" % js)
 
-	#	Get balance
-	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
+	#	Get payments
+	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
