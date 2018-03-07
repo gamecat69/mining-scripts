@@ -530,7 +530,7 @@ def getZminerData():
 	result=js["result"]
 
 	btcpVersion    = js["version"]
-	btcpPoolAddr   = js["server"] + ':' + js["port"]
+	btcpPoolAddr   = js["server"] + ':' + str(js["port"])
 	btcpUptimeMin  = int(js["uptime"]) / 60
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
