@@ -26,13 +26,20 @@ cd $WORKINGDIR
 RED='\033[0;31m'
 YELLOW='\033[0;93m'
 NC='\033[0m' # No Color
+RUN_MODE=$1
 
 MINMON_INT_SECS=`readJson config.json MINMON_INT_SECS`
+MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
 
 #	Call the python script in a loop
 
 while [ 1 = 1 ]
 do
+
+   if [ "$RUN_MODE" == "boot" ]; then
+      echo -e "${YELLOW}[MIN MON] Just booted. Sleeping for $MINMON_DELAY_SECS secs"
+      sleep $MINMON_DELAY_SECS
+   fi
 
    echo -e "${YELLOW}[MIN MON] Getting Mining Stats"
    python min-mon.py

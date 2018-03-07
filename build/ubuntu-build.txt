@@ -6,6 +6,7 @@
 #	info: https://github.com/nanopool/genoil-ethereum
 #	info: https://forum.getpimp.org/topic/9/setting-up-motherboards-for-mining
 #	info: https://github.com/one-quaker/linux-rig-tools/blob/master/nvidia_rig_install.sh
+#	AMD Info: http://www.cryptobadger.com/2017/04/build-ethereum-mining-rig-linux/
 
 #	--------------------------------------
 #	BIOS Settings

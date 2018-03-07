@@ -24,6 +24,13 @@ function readJson {
 
 }
 
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW $1"
+
+}
+
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
@@ -32,7 +39,7 @@ YELLOW='\033[0;93m'
 NC='\033[0m' # No Color
 
 MINERNAME=`readJson config.json MINERNAME`
-MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
+#MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
 MINE_XMR=`readJson config.json MINE_XMR`
 MINE_ETH=`readJson config.json MINE_ETH`
 ETHMINER=`readJson config.json ETHMINER`
@@ -43,37 +50,38 @@ SCREEN_CMD="screen -dmS"
 MYIP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 PUSH_MSG="[$MYIP] Starting up... Report URL: $S3URL"
 
-echo -e "${RED}Killing previous processes...${NC}"
+output "${RED}Killing previous processes...${NC}"
 ./kill-miner.sh
 
-echo -e "Starting wifi monitor"
+output "Starting wifi monitor"
 $SCREEN_CMD wifimon ./wifi-mon.sh &
 
 #	All handled in /etc/rc.local now
 #echo "Configuring NVIDIA cards"
 #./nvidia-oc.sh
 
-echo "Starting NVIDIA logging"
+output "Starting NVIDIA logging"
 ./nvidia-mon.sh &
 
 if [ "$MINE_ETH" = "yes" ] ; then
     
-    echo "Starting Ethminer"
+    output "Starting Ethminer"
     $SCREEN_CMD ethminer ./start-eth-ethminer.sh &
 
 fi
 
 if [ "$MINE_XMR" = "yes" ] ; then
 
-   echo "Starting XMR Miner"
+   output "Starting XMR Miner"
    $SCREEN_CMD xmrstak ./start-xmr.sh &
 
 fi
 
-echo "Sending pushover message"
+output "Sending pushover message"
 ./pushover.sh "$MINERNAME" "$PUSH_MSG"
 
-sleep $MINMON_DELAY_SECS
+#	Moved sleep logic into min-mon.sh
+#sleep $MINMON_DELAY_SECS
 
-echo "Starting min-mon"
-$SCREEN_CMD minmon ./min-mon.sh &
+output "Starting min-mon"
+$SCREEN_CMD minmon ./min-mon.sh "boot" &
