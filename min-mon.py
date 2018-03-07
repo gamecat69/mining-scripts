@@ -153,12 +153,12 @@ def writeHTML():
 	data = string.replace(data, '$numGPU', str(numGPU))
 	data = string.replace(data, '$avggpuhashrate', str(avgGPUHashRate))
 
-	data = string.replace(data, '$btcpusd', str(xmrUSD))
-	data = string.replace(data, '$btcphashrate', str(xmrHashRate))
-	data = string.replace(data, '$btcpshares', str(xmrSharePerHr))
-	data = string.replace(data, '$btcpuptime', str(xmrUptime))
-	data = string.replace(data, '$btcptotalshares', str(xmrShares))
-	data = string.replace(data, '$btcppool', str(xmrPoolAddr))
+	data = string.replace(data, '$btcpusd', str(btcpUSD))
+	data = string.replace(data, '$btcphashrate', str(btcpHashRate))
+	data = string.replace(data, '$btcpshares', str(btcpSharePerHr))
+	data = string.replace(data, '$btcpuptime', str(btcpUptime))
+	data = string.replace(data, '$btcptotalshares', str(btcpShares))
+	data = string.replace(data, '$btcppool', str(btcpPoolAddr))
 
 	data = string.replace(data, '$numGPU', str(numGPU))
 
