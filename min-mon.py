@@ -569,7 +569,7 @@ def getZminerData():
 		logError("getZminerData: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
-	btcpBalance = js["balance"]
+	btcpEarned = js["balance"] + js["paid"]
 
 	#print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	#print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -581,7 +581,7 @@ def getZminerData():
 	#print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
 	#print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
 	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
-	print("[MIN MON] btcpBalance: %s" % btcpBalance)
+	print("[MIN MON] btcpEarned: %s" % btcpEarned)
 
 
 #	----------------------------------
