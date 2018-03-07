@@ -1,7 +1,7 @@
 timestamp,index,gpu_name,gpu_bus_id,fan.speed,pstate,clocks_throttle_reasons.hw_slowdown,utilization.gpu,temperature.gpu,power.draw,clocks.gr
-2018/03/05 22:51:51.770, 0, GeForce GTX 1060 6GB, 00000000:01:00.0, 0, P0, Not Active, 0, 51, 32.03, 1620
-2018/03/05 22:51:51.775, 1, GeForce GTX 1060 6GB, 00000000:08:00.0, 0, P0, Not Active, 0, 49, 31.94, 1620
-2018/03/05 22:51:51.783, 2, GeForce GTX 1060 6GB, 00000000:0A:00.0, 0, P0, Not Active, 0, 49, 31.40, 1620
-2018/03/05 22:51:51.790, 3, GeForce GTX 1060 6GB, 00000000:0C:00.0, 0, P0, Not Active, 0, 49, 31.38, 1620
-2018/03/05 22:51:51.796, 4, GeForce GTX 1060 6GB, 00000000:0D:00.0, 0, P0, Not Active, 0, 54, 31.65, 1620
-2018/03/05 22:51:51.804, 5, GeForce GTX 1060 6GB, 00000000:0E:00.0, 43, P0, Not Active, 0, 54, 33.15, 1620
+2018/03/07 10:41:09.498, 0, GeForce GTX 1060 6GB, 00000000:01:00.0, 32, P0, Not Active, 0, 52, 33.17, 1645
+2018/03/07 10:41:09.507, 1, GeForce GTX 1060 6GB, 00000000:08:00.0, 40, P0, Not Active, 0, 52, 33.85, 1645
+2018/03/07 10:41:09.520, 2, GeForce GTX 1060 6GB, 00000000:0A:00.0, 41, P0, Not Active, 0, 54, 33.27, 1632
+2018/03/07 10:41:09.532, 3, GeForce GTX 1060 6GB, 00000000:0C:00.0, 40, P0, Not Active, 20, 51, 33.52, 1657
+2018/03/07 10:41:09.542, 4, GeForce GTX 1060 6GB, 00000000:0D:00.0, 42, P0, Not Active, 0, 56, 33.49, 1632
+2018/03/07 10:41:09.556, 5, GeForce GTX 1060 6GB, 00000000:0E:00.0, 47, P0, Not Active, 0, 61, 34.46, 1620

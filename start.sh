@@ -44,6 +44,7 @@ MINERNAME=`readJson config.json MINERNAME`
 #MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
 MINE_XMR=`readJson config.json MINE_XMR`
 MINE_ETH=`readJson config.json MINE_ETH`
+MINE_BTCP=`readJson config.json MINE_BTCP`
 ETHMINER=`readJson config.json ETHMINER`
 S3BUCKET=`readJson config.json S3BUCKET`
 
@@ -76,6 +77,13 @@ if [ "$MINE_XMR" = "yes" ] ; then
 
    output "Starting XMR Miner"
    $SCREEN_CMD xmrstak ./start-xmr.sh &
+
+fi
+
+if [ "$MINE_BTCP" = "yes" ] ; then
+
+   output "Starting BTCP Miner"
+   $SCREEN_CMD zminer ./start-zminer.sh &
 
 fi
 
