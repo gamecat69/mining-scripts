@@ -63,4 +63,5 @@ https://api.pushover.net/1/messages.json"
 output "Running Pushover command:"
 output $PUSHOVER_CMD
 $PUSHOVER_CMD
+output "..."
 
