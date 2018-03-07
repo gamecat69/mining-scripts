@@ -522,7 +522,8 @@ def getEarnedCoins():
 	url = cfg["XMRMINERSTATSURL"] + cfg["XMR_WALLET"]
 	try:
 		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
+		#js=json.loads(data.decode("utf-8"))
+		js=json.loads(data)
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
