@@ -519,7 +519,7 @@ def getEarnedCoins():
 		ethEarned = ethEarned + payment["amount"]
 
 	#	Get XMR data
-	url = cfg["XMRMINERSTATSURL"] + cfg["XMRWALLET"]
+	url = cfg["XMRMINERSTATSURL"] + cfg["XMR_WALLET"]
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
