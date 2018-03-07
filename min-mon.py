@@ -560,6 +560,16 @@ def getZminerData():
 	else:
 		btcpSharePerHr = 0
 	
+	#	Get worker Stats
+	try:
+		data = getURL(cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"])
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats")
+		return "Error"
+
+	btcpBalance = js["balance"]
+
 	#print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	#print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
 	#print("[MIN MON] btcpUptimeMin: %s" % btcpUptimeMin)
@@ -570,6 +580,8 @@ def getZminerData():
 	#print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
 	#print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
 	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
+	print("[MIN MON] btcpBalance: %s" % btcpBalance)
+
 
 #	----------------------------------
 #	Main code

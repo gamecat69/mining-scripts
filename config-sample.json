@@ -29,6 +29,7 @@
    "CMINERURL"        : "http://localhost:3333",
    "XMRSTAKURL"       : "http://localhost:4444/api.json",
    "COINMARKETCAPURL" : "https://api.coinmarketcap.com/v1/ticker",
+   "ZMINERSTATSURL"   : "http://btcprivate.pro/api/worker_stats",
    "HTMLREPORTDIR"    : "/home/mining/mining-scripts/html",
    "HTMLTEMPLATEFILE" : "index-template.html",
    "MINMON_INT_SECS"  : "60",
