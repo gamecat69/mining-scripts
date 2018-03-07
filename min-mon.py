@@ -567,9 +567,8 @@ def getZminerData():
 		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
-	js=''
 	#js=json.loads(j.decode("utf-8"))
-	print("Received data:\n%s" % js)	
+	print("Received data:\n%s" % j)	
 
 #	----------------------------------
 #	Main code
