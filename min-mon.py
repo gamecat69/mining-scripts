@@ -571,7 +571,7 @@ def getZminerData():
 	print("[MIN MON] getZminerData: Received data:\n%s" % js)
 
 	result=js["result"]
-	gpu0temp=result[0].["temperature"]
+	gpu0temp=result[0]["temperature"]
 	
 	print("[MIN MON] gpu0temp: %s" % gpu0temp)
 
