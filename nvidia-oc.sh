@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_NAME="NVIDIA-OC"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -17,6 +19,13 @@ function readJson {
 	else
 		echo $VALUE ;
 	fi;
+
+}
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
@@ -79,7 +88,7 @@ export XAUTHORITY=/var/run/lightdm/root/:0
 #   ------------------------
 
 NUMGPU="$(nvidia-smi -L | wc -l)"
-echo "[NVIDIA-OC] Found $NUMGPU Nvidia cards"
+output "Found $NUMGPU Nvidia cards"
 
 #	Power limit
 
@@ -89,7 +98,7 @@ if [ "$LIMITPOWER" = "yes" ] ; then
    while [ $n -lt $NUMGPU ];
    do
       MINWATT=$(nvidia-smi --id=$n -q -d POWER | grep -Eo 'Min Power Limit\s+:\s.+' | grep -Eo '[0-9]{1,3}\.[0-9]{2}')
-      echo "[NVIDIA-OC] Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]} Watts. Minimum for this card: $MINWATT Watts"
+      output "Limiting  GPU:$n power to ${POWERLIMIT_WATTS[$n]} Watts. Minimum for this card: $MINWATT Watts"
       nvidia-smi -i $n -pm 1
       nvidia-smi -i $n -pl ${POWERLIMIT_WATTS[$n]}
       let n=n+1
@@ -104,7 +113,7 @@ if [ "$GPUOC" = "yes" ] ; then
    n=0
    while [ $n -lt $NUMGPU ];
    do
-      echo "[NVIDIA-OC] Overclocking GPU:$n by ${GPUOVERCLOCK[$n]}"
+      output "Overclocking GPU:$n by ${GPUOVERCLOCK[$n]}"
       nvidia-settings --assign "[gpu:${n}]/GPUGraphicsClockOffset[3]=${GPUOVERCLOCK[$n]}"
       let n=n+1
    done
@@ -118,7 +127,7 @@ if [ "$MEMOC" = "yes" ] ; then
    n=0
    while [ $n -lt $NUMGPU ];
    do
-      echo "[NVIDIA-OC] Overclocking GPU:$n memory by ${MEMOVERCLOCK[$n]}"
+      output "Overclocking GPU:$n memory by ${MEMOVERCLOCK[$n]}"
       nvidia-settings --assign "[gpu:${n}]/GPUMemoryTransferRateOffset[3]=${MEMOVERCLOCK[$n]}"
       let n=n+1
    done
@@ -138,7 +147,7 @@ fi
 
 if [ "$MAXPERF" = "yes" ] ; then
 
-   echo "Setting Powermizer to Prefer Max Performance"
+   output "Setting Powermizer to Prefer Max Performance"
    n=0
    while [  $n -lt  $NUMGPU ];
    do

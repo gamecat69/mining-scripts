@@ -46,13 +46,14 @@ while [ 1 = 1 ]
 do
 
    if [ "$RUN_MODE" == "boot" ]; then
-      output -e "${YELLOW}[MIN MON] Just booted. Sleeping for $MINMON_DELAY_SECS secs"
+      output "${YELLOW}Just booted. Sleeping for $MINMON_DELAY_SECS secs"
+      $RUN_MODE=''
       sleep $MINMON_DELAY_SECS
    fi
 
-   output -e "${YELLOW}[MIN MON] Getting Mining Stats"
+   output "${YELLOW}Getting Mining Stats"
    python min-mon.py
-   output -e "${YELLOW}[MIN MON] Sleeping for $MINMON_INT_SECS${NC}"
+   output "${YELLOW}Sleeping for $MINMON_INT_SECS${NC}"
    sleep $MINMON_INT_SECS
 
 done
