@@ -37,6 +37,24 @@ sudo usermod -a -G video mining
 #	Install some initial software
 sudo apt-get install -y openssh-server git screen
 
+#	Configure swapfile
+sudo fallocate -l 16G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon --show
+
+#	Enable large page support and disable ipv6
+echo "vm.nr_hugepages=128" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+#	Increase limits
+echo "* soft memlock 262144" | sudo tee -a /etc/security/limits.conf
+echo "* hard memlock 262144" | sudo tee -a /etc/security/limits.conf
+
 #	----------------------------
 #	Fix USB Wifi Network issues
 #	----------------------------
@@ -113,11 +131,6 @@ reboot
 #	Install xmr-stak (Monero)
 #	-------------------------------
 
-#	Enable large page support
-sudo sysctl -w vm.nr_hugepages=128
-sudo echo "* soft memlock 262144" >> /etc/security/limits.conf
-sudo echo "* hard memlock 262144" >> /etc/security/limits.conf
-
 #	This installs to /home/<username>/xmr-stak
 sudo apt install -y libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git cmake
 cd ~
@@ -163,6 +176,16 @@ cd Downloads
 wget https://github.com/ethereum-mining/ethminer/releases/download/v0.13.0/ethminer-0.13.0-Linux.tar.gz
 mkdir ~/ethminer
 tar -xvf ethminer-0.13.0-Linux.tar.gz ~/ethminer
+
+#	-------------------------------
+#	Install zminer (BTCP)
+#	-------------------------------
+
+cd ~/Downloads
+wget https://github.com/rewrewby/miner_dstm/releases/download/BTCPv0.6/BTCP-zm_0.6.tar.gz
+tar -xvf BTCP-zm_0.6.tar.gz
+mkdir /home/mining/zminer
+cp -r zm_0.6/* /home/mining/zminer/
 
 #	-----------------------------------
 #	Configure and start mining scripts
