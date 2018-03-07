@@ -558,16 +558,17 @@ def getZminerData():
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		print("[MIN MON] getZminerData: Receiving data")
 		j=s.recv(2048)
-		print("[MIN MON] getZminerData: Cosing socket")
+		print("[MIN MON] getZminerData: Received %d bytes" % len(j))
+		print("[MIN MON] getZminerData: Closing socket")
 		s.close()
-		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getZminerData: Unable to connect. Restarting zminer")
 		#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
 		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
-	print("Received data:\n%s" % js)
+	js=json.loads(j.decode("utf-8"))
+	print("Received data:\n%s" % js)	
 
 #	----------------------------------
 #	Main code
