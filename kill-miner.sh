@@ -15,6 +15,9 @@ pkill -f ethdcrminer64
 output "Killing ethminer"
 pkill -f ethminer
 
+output "Killing zminer"
+pkill -f "zm --server"
+
 output "Killing NVIDIA logging"
 pkill -f nvidia-mon
 
