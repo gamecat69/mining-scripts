@@ -514,6 +514,10 @@ def getEarnedCoins():
 
 	for payment in js["data"]:
 		ethEarned = ethEarned + payment["amount"]
+	
+	ethEarned  = "{0:.4f}".format(ethEarned)
+	btcpEarned = "{0:.4f}".format(btcpEarned)
+	xmrEarned  = "{0:.4f}".format(xmrEarned)
 
 	print("[MIN MON] ethEarned: %s" % ethEarned)
 	print("[MIN MON] btcpEarned: %s" % btcpEarned)
