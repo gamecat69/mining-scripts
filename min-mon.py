@@ -344,6 +344,17 @@ def getEthminerData():
 	else:
 		ethSharePerHr = 0
 
+	#	Get worker Stats
+	url = cfg["ETHMINERSTATSURL"] + '/' + cfg["ETHWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		return "Error"
+	
+	print("ETH Stats:%s" % js)
+
 def getCminerData():
 
 	gpuHashRates = []
