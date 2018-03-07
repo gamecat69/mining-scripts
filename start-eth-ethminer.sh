@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_NAME="ETHMINER"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -17,6 +19,13 @@ function readJson {
 	else
 		echo $VALUE ;
 	fi;
+
+}
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
@@ -48,17 +57,17 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 #WORKER=gtx-1060x6-2-ethminer
 #EMAIL=nikansell00@gmail.com
 
-echo "Miner: $ETHMINER"
+output "Miner: $ETHMINER"
 
 if [ "$ETHMINER" = "ethminer" ] ; then
 
-    echo "Killing previous ethminer process"
+    output "Killing previous ethminer process"
     pkill -f "ethminer --opencl"
     MININGCMD="/home/mining/ethminer/bin/ethminer --opencl -U -F $PSERVER/$ETHWALLET.$WORKER/$EMAIL --farm-recheck 200 --api-port 3333"
 
 elif [ "$ETHMINER" = "cminer" ] ; then
 	cd ~/$CMINERDIR
-	echo "Killing any previous process"
+	output "Killing previous cminer process"
 	pkill -f ethdcrminer64
 	MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80"
 	#   Delete files older than LOGFILERETENTIONDAYS
@@ -67,7 +76,7 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
 	echo "POOL: $SERVER2, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" >> epools.txt 
 else
-	echo "Unable to determing which ethminer to use"
+	output "[ERR] Unable to determing which ethminer to use"
 fi
 #   ------------------------
 #   Start mining

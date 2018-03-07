@@ -4,6 +4,8 @@
 #	Function to get data from json file
 #	-------------------------------------
 
+SCRIPT_NAME="NVIDIA-MON"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -24,6 +26,13 @@ function readJson {
 
 }
 
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
+
+}
+
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
@@ -40,8 +49,8 @@ MAXHOURSPERLOG=`readJson config.json MAXHOURSPERLOG`
 #   Calc when to cycle log file
 MAXITERATIONS=$((3600/$WAITTIMESECS*$MAXHOURSPERLOG))
 
-echo "[NVIDIA-MON] Writing to $OUTFILE every $WAITTIMESECS secs"
-echo .
+output "Writing to $OUTFILE every $WAITTIMESECS secs"
+
 #   Init logfile
 echo $QUERYCOLUMNS > $OUTFILE
 
@@ -51,7 +60,7 @@ do
 
    #   Cycle log file if max reached
    if [ $i = $MAXITERATIONS ] ; then
-      echo "[NVIDIA-MON] Cycling logfile"
+      output "Cycling logfile"
       cp $OUTFILE $OUTFILE.old
       rm $OUTFILE
       i=1

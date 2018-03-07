@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_NAME="XMRMINER"
+
 function readJson {
 
 	UNAMESTR=`uname`
@@ -17,6 +19,13 @@ function readJson {
 	else
 		echo $VALUE ;
 	fi;
+
+}
+
+function output {
+
+	NOW=$(date +"%d-%m-%Y %T")
+	echo -e "$NOW [$SCRIPT_NAME] $@"
 
 }
 
@@ -45,9 +54,9 @@ else
 
 fi
 
-echo "Killing any previous process"
+output "Killing any previous xmr-stak process"
 pkill -f xmr-stak
 
-echo $MININGCMD
+output $MININGCMD
 $MININGCMD
 
