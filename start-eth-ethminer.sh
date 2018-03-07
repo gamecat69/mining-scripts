@@ -82,6 +82,6 @@ fi
 #   Start mining
 #   ------------------------
 
-echo $MININGCMD
+output $MININGCMD
 $MININGCMD
 
