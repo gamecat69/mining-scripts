@@ -560,8 +560,8 @@ def getZminerData():
 		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getZminerData: Unable to connect. Restarting zminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
-		subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
+		#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
+		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
 	print("Received data:\n%s" % js)
