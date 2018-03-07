@@ -31,6 +31,7 @@
    "COINMARKETCAPURL" : "https://api.coinmarketcap.com/v1/ticker",
    "ZMINERSTATSURL"   : "http://btcprivate.pro/api/worker_stats",
    "ETHMINERSTATSURL" : "https://api.nanopool.org/v1/eth",
+   "XMRMINERSTATSURL" : "http://api.minexmr.com:8080/stats_address?address=",
    "HTMLREPORTDIR"    : "/home/mining/mining-scripts/html",
    "HTMLTEMPLATEFILE" : "index-template.html",
    "MINMON_INT_SECS"  : "60",

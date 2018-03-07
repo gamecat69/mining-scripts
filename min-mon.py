@@ -154,6 +154,7 @@ def writeHTML():
 	data = string.replace(data, '$systemuptime', sysUptime)
 	data = string.replace(data, '$avggputemp', str(avgGPUTemp))
 	data = string.replace(data, '$avggpufanspeed', str(avgGPUFanSpeed))
+
 	data = string.replace(data, '$ethusd', str(ethUSD))
 	data = string.replace(data, '$ethhashrate', str(ethHashRate))
 	data = string.replace(data, '$ethshares', str(ethSharePerHr))
@@ -486,7 +487,7 @@ def getEarnedCoins():
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
 	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
 	btcpEarned = js["balance"] + js["paid"]
@@ -498,7 +499,7 @@ def getEarnedCoins():
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
 	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 	
 	ethEarned = js["data"]
@@ -511,11 +512,27 @@ def getEarnedCoins():
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
 	except:
-		logError("getZminerData: Unable to get worker stats from url:%s" % url)
+		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
 	for payment in js["data"]:
 		ethEarned = ethEarned + payment["amount"]
+
+	#	Get XMR data
+	url = cfg["XMRMINERSTATSURL"] + cfg["XMRWALLET"]
+	try:
+		data = getURL(url)
+		js=json.loads(data.decode("utf-8"))
+	except:
+		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		return "Error"
+
+	xmrEarned = js["stats"]["balance"]
+	print("[MIN MON] xmrEarned: %s" % xmrEarned)
+
+	for payment in js["payments"]:
+		xmrEarned = xmrEarned + payment[1]
+		print("[MIN MON] xmrPayment: %s" % payment[1])
 	
 	ethEarned  = "{0:.6f}".format(float(ethEarned))
 	btcpEarned = "{0:.6f}".format(float(btcpEarned))
