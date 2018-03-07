@@ -511,7 +511,7 @@ def getZminerData():
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
 	for gpu in result:
-		gpuTemps.append(result[gpu]["temperature"])
+		gpuTemps.append(gpu["temperature"])
 		gpuFanSpeeds.append("0") # not available
 		
 
