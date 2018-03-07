@@ -38,6 +38,7 @@ btcpShares     = ''
 btcpUptime     = ''
 btcpSharePerHr = ''
 btcpEarned     = ''
+ethEarned      = ''
 avgGPUTemp     = ''
 avgGPUFanSpeed = ''
 numGPU         = ''
@@ -272,6 +273,7 @@ def getEthminerData():
 	global avgGPUFanSpeed
 	global numGPU
 	global avgGPUHashRate
+	global ethEarned
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
@@ -353,113 +355,13 @@ def getEthminerData():
 		logError("getZminerData: Unable to get worker stats from url:%s" % url)
 		return "Error"
 	
-	print("ETH Stats:%s" % js)
+	#print("ETH Stats:%s" % js)
+	
+	ethEarned = 0
+	for payment in js["data"]:
+		ethEarned = ethEarned + payment["amount"]
 
-def getCminerData():
-
-	gpuHashRates = []
-	gpuTemps     = []
-	gpuFanSpeeds = []
-
-	global ethVersion
-	global ethHashRate
-	global ethPoolAddr
-	global ethShares
-	global ethUptime
-	global ethSharePerHr
-	global avgGPUTemp
-	global avgGPUFanSpeed
-	global numGPU
-	global avgGPUHashRate
-
-	#   Open cminer http interface and read
-
-	print ("[MIN MON] Getting ETH data from: %s" % cfg["CMINERURL"])
-
-	try:
-		data = getURL(cfg["CMINERURL"])
-	except:
-		logError("getCminerData: Unable to open url. Restarting cminer")
-		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "cminer problem, restarting..."])
-		subprocess.Popen(["./start-eth-cminer.sh"])
-		return "Error"
-
-	#   Split into a "lines" array
-	#   The line we want is the second line
-
-	lines = data.splitlines(True)
-
-	#   Remove everything after the '}'
-
-	pattern="(^.+\}).*"
-	m =re.match(pattern, lines[1])
-
-	#   Pull out required data from the json
-	#   Format:
-	#   {"result": ["10.0 - ETH", "84", "99853;52;0", "20329;19891;19869;19884;19876", "0;0;0", "off;off;off;off;off", "56;42;65;39;67;40;67;40;56;36", "eth-eu1.nanopool.org:9999", "0;0;0;0"]}
-
-	if m:
-
-		#    Load the json object
-		js = json.loads(m.group(1))
-
-		h_s_r=js["result"][2].split(';')
-		gpu_hashrates=js["result"][3].split(';')
-		gpu_temp_fanspeed=js["result"][6].split(';')
-		pooladdr=js["result"][7]
-
-		i=0
-		for gpu in gpu_hashrates:
-		  gpuHashRates.append(gpu)
-		  i=i+1
-
-		numGPU = i
-
-		#    Cycle through GPUs and get temp and fanspeed
-		#    See below for data structure guidance
-		#    GPU # = listindex, listindex 
-		#    0 = 0,1
-		#    1 = 2,3
-		#    2 = 4,5
-		#    3 = 6,7
-		#    4 = 8,9
-
-		n=0
-		while n < i:
-		  gpuTemps.append(gpu_temp_fanspeed[n*2])
-		  gpuFanSpeeds.append(gpu_temp_fanspeed[(n*2)+1])
-		  gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
-		  n=n+1
-
-		ethVersion    = js["result"][0]
-		ethHashRate   = int(h_s_r[0])
-		ethPoolAddr   = js["result"][7]
-		ethShares     = int(h_s_r[1])
-		ethUptimeMin  = int(js["result"][1])
-		ethUptime     = formatUptimeMins(ethUptimeMin)
-
-		#	Get average GPU temp
-		tempTotal=0
-		for t in gpuTemps:
-			tempTotal = tempTotal + int(t)
-		avgGPUTemp = tempTotal / i;
-
-		#	Get average GPU fanspeed
-		speedTotal=0
-		for t in gpuFanSpeeds:
-			speedTotal = speedTotal + int(t)
-		avgGPUFanSpeed = speedTotal / i;
-
-		#	Get average GPU Hashrate
-		avgGPUHashRate = int(ethHashRate) / i
-
-		#	Prevent a divide by zero error
-		if ethShares > 0 and ethUptimeMin > 60:
-			ethSharePerHr = ethShares // ( ethUptimeMin // 60 )
-		else:
-			ethSharePerHr = 0
-
-		#print ("[MIN MON] ETH Shares per hour calc. %d / (%d / 60)" % (ethShares, ethUptimeMin) )
+	print("[MIN MON] ethEarned: %s" % ethEarned)
 
 def getZminerData():
 
