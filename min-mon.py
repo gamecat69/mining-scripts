@@ -510,12 +510,12 @@ def getZminerData():
 	btcpUptimeMin  = int(js["uptime"]) / 60
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
+	btcpShares   = 0
+
 	for gpu in result:
 		gpuTemps.append(gpu["temperature"])
 		gpuFanSpeeds.append("0") # not available
-		
-
-	gpu0temp=result[0]["temperature"]
+		btcpShares = btcpShares + int(gpu["accepted_shares")
 	
 	print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -523,6 +523,7 @@ def getZminerData():
 	print("[MIN MON] btcpUptime: %s" % btcpUptime)
 	print("[MIN MON] gpuTemps: %s" % gpuTemps)
 	print("[MIN MON] gpuFanSpeeds: %s" % gpuFanSpeeds)
+	print("[MIN MON] btcpShares: %s" % btcpShares)
 
 #	----------------------------------
 #	Main code
