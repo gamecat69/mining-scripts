@@ -450,89 +450,7 @@ def getZminerData():
 			 "latency":206
 		  },
 		  {
-			 "gpu_id":1,
-			 "gpu_name":"GeForce GTX 1060 6GB",
-			 "gpu_pci_bus_id":8,
-			 "gpu_pci_device_id":0,
-			 "gpu_uuid":"GPU-15294d42-fb07-a5c6-f2f8-4e2e666f820a",
-			 "temperature":55,
-			 "sol_ps":291.69,
-			 "avg_sol_ps":290.54,
-			 "sol_pw":3.28,
-			 "avg_sol_pw":3.24,
-			 "power_usage":88.99,
-			 "avg_power_usage":89.65,
-			 "accepted_shares":197,
-			 "rejected_shares":0,
-			 "latency":208
-		  },
-		  {
-			 "gpu_id":2,
-			 "gpu_name":"GeForce GTX 1060 6GB",
-			 "gpu_pci_bus_id":10,
-			 "gpu_pci_device_id":0,
-			 "gpu_uuid":"GPU-5f4d7572-258d-58e6-1333-31ef2bb7169d",
-			 "temperature":55,
-			 "sol_ps":281.86,
-			 "avg_sol_ps":288.21,
-			 "sol_pw":3.22,
-			 "avg_sol_pw":3.28,
-			 "power_usage":87.58,
-			 "avg_power_usage":87.95,
-			 "accepted_shares":175,
-			 "rejected_shares":0,
-			 "latency":201
-		  },
-		  {
-			 "gpu_id":3,
-			 "gpu_name":"GeForce GTX 1060 6GB",
-			 "gpu_pci_bus_id":12,
-			 "gpu_pci_device_id":0,
-			 "gpu_uuid":"GPU-d9ff22f3-9caf-d021-8554-9870940f8110",
-			 "temperature":54,
-			 "sol_ps":289.12,
-			 "avg_sol_ps":288.05,
-			 "sol_pw":3.36,
-			 "avg_sol_pw":3.34,
-			 "power_usage":86.11,
-			 "avg_power_usage":86.32,
-			 "accepted_shares":159,
-			 "rejected_shares":0,
-			 "latency":215
-		  },
-		  {
-			 "gpu_id":4,
-			 "gpu_name":"GeForce GTX 1060 6GB",
-			 "gpu_pci_bus_id":13,
-			 "gpu_pci_device_id":0,
-			 "gpu_uuid":"GPU-09636094-8bc8-d5f7-19d8-d14b658fd446",
-			 "temperature":60,
-			 "sol_ps":286.16,
-			 "avg_sol_ps":289.13,
-			 "sol_pw":3.23,
-			 "avg_sol_pw":3.25,
-			 "power_usage":88.71,
-			 "avg_power_usage":88.92,
-			 "accepted_shares":185,
-			 "rejected_shares":0,
-			 "latency":167
-		  },
-		  {
-			 "gpu_id":5,
-			 "gpu_name":"GeForce GTX 1060 6GB",
-			 "gpu_pci_bus_id":14,
-			 "gpu_pci_device_id":0,
-			 "gpu_uuid":"GPU-e0543ada-b608-d214-b3d4-4e3a39adb213",
-			 "temperature":65,
-			 "sol_ps":291.47,
-			 "avg_sol_ps":287.51,
-			 "sol_pw":3.18,
-			 "avg_sol_pw":3.20,
-			 "power_usage":91.63,
-			 "avg_power_usage":89.76,
-			 "accepted_shares":198,
-			 "rejected_shares":0,
-			 "latency":188
+			...
 		  }
 	   ],
 	   "uptime":29141,
@@ -571,9 +489,25 @@ def getZminerData():
 	print("[MIN MON] getZminerData: Received data:\n%s" % js)
 
 	result=js["result"]
+
+	btcpVersion    = js["version"]
+	btcpPoolAddr   = js["server"]
+	btcpUptimeMin  = int(js["serveruptime"]) / 60
+	btcpUptime     = formatUptimeMins(ethUptimeMin)
+
+	for gpu in result:
+		gpuTemps.append(result[gpu]["temperature"])
+		gpuFanSpeeds.append("0") # not available
+		
+
 	gpu0temp=result[0]["temperature"]
 	
-	print("[MIN MON] gpu0temp: %s" % gpu0temp)
+	print("[MIN MON] btcpVersion: %s" % btcpVersion)
+	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
+	print("[MIN MON] btcpUptimeMin: %s" % btcpUptimeMin)
+	print("[MIN MON] btcpUptime: %s" % btcpUptime)
+	print("[MIN MON] gpuTemps: %s" % gpuTemps)
+	print("[MIN MON] gpuFanSpeeds: %s" % gpuFanSpeeds)
 
 #	----------------------------------
 #	Main code
