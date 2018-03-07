@@ -492,7 +492,7 @@ def getZminerData():
 
 	btcpVersion    = js["version"]
 	btcpPoolAddr   = js["server"]
-	btcpUptimeMin  = int(js["serveruptime"]) / 60
+	btcpUptimeMin  = int(js["uptime"]) / 60
 	btcpUptime     = formatUptimeMins(ethUptimeMin)
 
 	for gpu in result:
