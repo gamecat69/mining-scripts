@@ -463,6 +463,21 @@ def getZminerData():
 	}
 	'''
 
+	gpuHashRates = []
+	gpuTemps     = []
+	gpuFanSpeeds = []
+
+	global btcpVersion
+	global btcpHashRate
+	global btcpPoolAddr
+	global btcpShares
+	global btcpUptime
+	global btcpSharePerHr
+	global avgGPUTemp
+	global avgGPUFanSpeed
+	global numGPU
+	global avgGPUHashRate
+
 	host = "127.0.0.1"
 	port = 2222
 
