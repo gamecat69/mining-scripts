@@ -493,25 +493,24 @@ def getZminerData():
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	print ("[MIN MON] Getting zminer data from: %s:%d" % (host, port))
-	print ("[MIN MON] getZminerData: Attemping to connect to %s:%d" % (host, port))
+	#print ("[MIN MON] getZminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
 		s.connect((host, port))
-		print("[MIN MON] getZminerData: Connected, calling api")
-		#s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
+		#print("[MIN MON] getZminerData: Connected, calling api")
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
-		print("[MIN MON] getZminerData: Receiving data")
+		#print("[MIN MON] getZminerData: Receiving data")
 		j=s.recv(4096)
-		print("[MIN MON] getZminerData: Received %d bytes" % len(j) )
-		print("[MIN MON] getZminerData: Closing socket")
+		#print("[MIN MON] getZminerData: Received %d bytes" % len(j) )
+		#print("[MIN MON] getZminerData: Closing socket")
 		s.close()
 		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getZminerData: Unable to connect. Restarting zminer")
-		#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
-		#subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
+		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
+		subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
 
-	print("[MIN MON] getZminerData: Received data:\n%s" % js)
+	#print("[MIN MON] getZminerData: Received data:\n%s" % js)
 
 	result=js["result"]
 
@@ -549,16 +548,16 @@ def getZminerData():
 	else:
 		btcpSharePerHr = 0
 	
-	print("[MIN MON] btcpVersion: %s" % btcpVersion)
-	print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
-	print("[MIN MON] btcpUptimeMin: %s" % btcpUptimeMin)
-	print("[MIN MON] btcpUptime: %s" % btcpUptime)
-	print("[MIN MON] gpuTemps: %s" % gpuTemps)
-	print("[MIN MON] gpuFanSpeeds: %s" % gpuFanSpeeds)
-	print("[MIN MON] btcpShares: %s" % btcpShares)
-	print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
-	print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
-	print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
+	#print("[MIN MON] btcpVersion: %s" % btcpVersion)
+	#print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
+	#print("[MIN MON] btcpUptimeMin: %s" % btcpUptimeMin)
+	#print("[MIN MON] btcpUptime: %s" % btcpUptime)
+	#print("[MIN MON] gpuTemps: %s" % gpuTemps)
+	#print("[MIN MON] gpuFanSpeeds: %s" % gpuFanSpeeds)
+	#print("[MIN MON] btcpShares: %s" % btcpShares)
+	#print("[MIN MON] avgGPUTemp: %s" % avgGPUTemp)
+	#print("[MIN MON] avgGPUHashRate: %s" % avgGPUHashRate)
+	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
 
 #	----------------------------------
 #	Main code
