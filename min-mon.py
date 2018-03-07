@@ -37,6 +37,7 @@ btcpPoolAddr   = ''
 btcpShares     = ''
 btcpUptime     = ''
 btcpSharePerHr = ''
+btcpEarned     = ''
 avgGPUTemp     = ''
 avgGPUFanSpeed = ''
 numGPU         = ''
@@ -172,6 +173,7 @@ def writeHTML():
 	data = string.replace(data, '$btcpuptime', str(btcpUptime))
 	data = string.replace(data, '$btcptotalshares', str(btcpShares))
 	data = string.replace(data, '$btcppool', str(btcpPoolAddr))
+	data = string.replace(data, '$btcpEarned', str(btcpEarned))
 
 	data = string.replace(data, '$numGPU', str(numGPU))
 
@@ -499,6 +501,7 @@ def getZminerData():
 	global avgGPUFanSpeed
 	global numGPU
 	global avgGPUHashRate
+	global btcpEarned
 
 	host = "127.0.0.1"
 	port = 2222
@@ -527,7 +530,7 @@ def getZminerData():
 	result=js["result"]
 
 	btcpVersion    = js["version"]
-	btcpPoolAddr   = js["server"]
+	btcpPoolAddr   = js["server"] + ':' + js["port"]
 	btcpUptimeMin  = int(js["uptime"]) / 60
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
