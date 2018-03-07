@@ -47,7 +47,7 @@ do
 
    if [ "$RUN_MODE" == "boot" ]; then
       output "${YELLOW}Just booted. Sleeping for $MINMON_DELAY_SECS secs"
-      $RUN_MODE=''
+      RUN_MODE=''
       sleep $MINMON_DELAY_SECS
    fi
 
