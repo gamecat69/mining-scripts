@@ -160,7 +160,6 @@ def writeHTML():
 	data = string.replace(data, '$ethuptime', str(ethUptime))
 	data = string.replace(data, '$ethtotalshares', str(ethShares))
 	data = string.replace(data, '$ethpool', str(ethPoolAddr))
-	data = string.replace(data, '$ethEarned', str(ethEarned))
 
 	data = string.replace(data, '$xmrusd', str(xmrUSD))
 	data = string.replace(data, '$xmrhashrate', str(xmrHashRate))
@@ -177,7 +176,10 @@ def writeHTML():
 	data = string.replace(data, '$btcpuptime', str(btcpUptime))
 	data = string.replace(data, '$btcptotalshares', str(btcpShares))
 	data = string.replace(data, '$btcppool', str(btcpPoolAddr))
+	
+	data = string.replace(data, '$ethEarned', str(ethEarned))
 	data = string.replace(data, '$btcpEarned', str(btcpEarned))
+	data = string.replace(data, '$xmrEarned', str(xmrEarned))
 
 	data = string.replace(data, '$numGPU', str(numGPU))
 
@@ -515,9 +517,9 @@ def getEarnedCoins():
 	for payment in js["data"]:
 		ethEarned = ethEarned + payment["amount"]
 	
-	ethEarned  = "{0:.4f}".format(float(ethEarned))
-	btcpEarned = "{0:.4f}".format(float(btcpEarned))
-	xmrEarned  = "{0:.4f}".format(float(xmrEarned))
+	ethEarned  = "{0:.6f}".format(float(ethEarned))
+	btcpEarned = "{0:.6f}".format(float(btcpEarned))
+	xmrEarned  = "{0:.6f}".format(float(xmrEarned))
 
 	print("[MIN MON] ethEarned: %s" % ethEarned)
 	print("[MIN MON] btcpEarned: %s" % btcpEarned)
