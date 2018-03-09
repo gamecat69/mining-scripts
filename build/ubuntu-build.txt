@@ -54,8 +54,9 @@ sudo apt-get install -y openssh-server git screen
 #	Download mining-scripts
 #	-------------------------
 
-cd ~
-git clone https://github.com/gamecat69/mining-scripts.git
+#	Run as user: mining
+
+sudo su mining -c "cd ~ && git clone https://github.com/gamecat69/mining-scripts.git"
 cd ~/mining-scripts
 nano config.json
 ./start.sh
@@ -99,7 +100,7 @@ sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
 reboot
 
 #	-----------------------
-#	Nvidia Driver Install
+#	Nvidia Install
 #	-----------------------
 
 #	Install the latest driver
@@ -117,9 +118,8 @@ sudo apt install nvidia-${NVIDIA_VERSION} nvidia-${NVIDIA_VERSION}-dev
 #	Test
 #	nvidia-smi
 
-#	------------------
 #	Cuda Install
-#	------------------
+#	---------------
 
 #	Try this first, if it does work, read on...
 NVIDIA_VERSION=390
@@ -141,7 +141,7 @@ sudo apt-get clean
 export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
 export PATH=${CUDA_HOME}/bin:${PATH}
 
-#	-------------------------------
+
 #	Configure Nvidia cards
 #	-------------------------------
 
@@ -153,6 +153,34 @@ sudo nvidia-xconfig --allow-empty-initial-configuration --enable-all-gpus --cool
 #	Add a call to configure the GPUs into /etc/rc.local
 sudo sed -i -e 's/^exit 0/\/home\/mining\/mining-scripts\/nvidia-oc.sh > \/home\/mining\/nvidia-oc.log\nexit 0/' /etc/rc.local
 reboot
+
+
+#	-----------------------
+#	AMD Install
+#	-----------------------
+
+#	Install Blockchain drivers
+#	Find latest here? https://support.amd.com/en-us/kb-articles/Pages/Radeon-Software-for-Linux-Release-Notes.aspx
+cd ~/Downloads
+wget --referer=http://support.amd.com https://www2.ati.com/drivers/linux/beta/ubuntu/amdgpu-pro-17.40-483984.tar.xz
+tar -Jxvf amdgpu-pro-17.40-483984.tar.xz
+#	Add linuxmint as a support os in file amdgpu-pro-install
+set -e
+export OSID=$(cat /etc/os-release | grep -m 1 '^ID=' | sed -r 's/^ID=//')
+sed -i -e "s/ubuntu/ubuntu|$OSID/" amdgpu-pro-17.40-483984/amdgpu-pro-install
+#	Install drivers
+cd amdgpu-pro-17.40-483984 && ./amdgpu-pro-install -y
+
+#	Install and configure ROCm
+sudo apt install -y rocm-amdgpu-pro
+echo 'export LLVM_BIN=/opt/amdgpu-pro/bin' | sudo tee /etc/profile.d/amdgpu-pro.sh
+
+#	Enable larger page support for AMD
+#	sudo nano /etc/default/grub
+#	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amdgpu.vm_fragment_size=9"
+sudo sed -i -e 's/quiet splash/quiet splash amdgpu.vm_fragment_size=9/' /etc/default/grub
+sudo update-grub
+sudo reboot
 
 #	-------------------------------
 #	Install xmr-stak (Monero)
@@ -223,3 +251,10 @@ cd ~/mining-scripts
 
 #	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
 #	Need to figure out how to automate this part
+
+#	----------------------
+#	Useful diag commands
+#	----------------------
+
+#	List all connected VGA cards
+lshw -class Video | grep product
