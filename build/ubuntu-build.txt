@@ -178,7 +178,7 @@ echo 'export LLVM_BIN=/opt/amdgpu-pro/bin' | sudo tee /etc/profile.d/amdgpu-pro.
 #	Enable larger page support for AMD
 #	sudo nano /etc/default/grub
 #	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amdgpu.vm_fragment_size=9"
-sudo sed -i -e 's/quiet splash/quiet splash amdgpu.vm_fragment_size=9/' /etc/default/grub
+sudo sed -i -e 's/quiet splash/quiet splash amdgpu.vm_fragment_size=9 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1/' /etc/default/grub
 sudo update-grub
 sudo reboot
 

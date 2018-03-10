@@ -1,0 +1,33 @@
+#	AMD GPU BIOS Modding
+
+#	Install atiflash
+wget https://github.com/d13g0s0uz4/atiflash/releases/download/0.1/atiflash_linux.tar.xz -O /tmp/atiflash_linux.tar.xz
+sudo tar xvf /tmp/atiflash_linux.tar.xz -C /usr/local/bin/
+
+#	Backup the current BIOS
+#	atiflash -s <gpu-num> <file-name>
+
+atiflash -s 0 amd-rx580-armor-8gb-oc.rom
+
+#	Modify the BIOS
+#	https://github.com/caa82437/PolarisBiosEditor
+#	When modified save the file as .rom
+#	Modification guidance here: https://medium.com/@lukehamilton/flash-your-rx-470-card-on-mac-linux-7391fb78b6f6
+
+sudo apt-get install mono-complete
+cd ~
+git clone https://github.com/jaschaknack/PolarisBiosEditor.git
+
+#	Flash the new BIOS to the card
+sudo atiflash -p <Num> <File>
+
+#	Restart the system
+#	Note.. After applying this BIOS, some linux kernels may take along time to startup the cards
+#	A look in dmesg reveals error msgs like: "failed to send message 309 ret is 254"
+#	Searching the internet shows a few people having this error due to linux kernel incompatabilities
+
+#	Overclock the GPUs
+
+wolfamdctrl -i <gpu-num> --mem-clock 2080 --mem-state 2 --core-clock 1200 --core-state 1 --vddc-table-set 900 --volt-state 1
+
+

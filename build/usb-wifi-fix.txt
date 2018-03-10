@@ -1,4 +1,36 @@
+#	------------------
 #	Prevent Network adapter from persistently dropping out
+#	------------------
+
+#	info: #	https://askubuntu.com/questions/989261/wifi-often-disconnects-using-rtl8192cu-on-ubuntu-17-10
+
+#	This fix does the following:
+#	- Installs and compiles the latest driver
+#	- Disables (blacklists) all other native drivers (blacklist-native-rtl8192.conf)
+#	- Disables power mgmt on the nic (8192cu-disable-power-management.conf)
+
+sudo apt-get install linux-headers-$(uname -r) build-essential dkms git
+git clone https://github.com/pvaret/rtl8192cu-fixes.git
+sudo dkms add ./rtl8192cu-fixes
+sudo dkms install 8192cu/1.11
+sudo depmod -a
+sudo cp ./rtl8192cu-fixes/blacklist-native-rtl8192.conf /etc/modprobe.d/
+sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
+reboot
+
+#	------------------------------------------------------------
+#	HiveOS: wifi settings lost during reboot for some USB cards
+#	------------------------------------------------------------
+
+#	Get the hash of the wifi network passphrase
+wpa_passphrase <WLAN-SSID> <passphrase>
+
+nano /etc/network/interfaces.d/wlan0
+
+auto wlan0
+iface wlan0 inet dhcp
+wpa-ssid <WLAN-SSID>
+wpa-psk <hashed-value-of-passphrase>
 
 #	-------------------
 #	General diag info
@@ -32,22 +64,3 @@ rtlwifi                73728  3 rtl_usb,rtl8192c_common,rtl8192cu
 mac80211              782336  4 rtl_usb,rtlwifi,rtl8192cu,rtl8xxxu
 cfg80211              602112  2 mac80211,rtlwifi
 
-#	------------------
-#	The Fix
-#	------------------
-
-#	info: #	https://askubuntu.com/questions/989261/wifi-often-disconnects-using-rtl8192cu-on-ubuntu-17-10
-
-#	This fix does the following:
-#	- Installs and compiles the latest driver
-#	- Disables (blacklists) all other native drivers (blacklist-native-rtl8192.conf)
-#	- Disables power mgmt on the nic (8192cu-disable-power-management.conf)
-
-sudo apt-get install linux-headers-$(uname -r) build-essential dkms git
-git clone https://github.com/pvaret/rtl8192cu-fixes.git
-sudo dkms add ./rtl8192cu-fixes
-sudo dkms install 8192cu/1.11
-sudo depmod -a
-sudo cp ./rtl8192cu-fixes/blacklist-native-rtl8192.conf /etc/modprobe.d/
-sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
-reboot

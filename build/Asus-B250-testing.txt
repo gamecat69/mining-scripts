@@ -1,0 +1,95 @@
+#	-------------------------------
+#	Asus B250 Motherboard Testing
+#	-------------------------------
+
+#	Rig Spec
+
+- HiveOS
+- Nvidia Asus GTX 1060 6GB Strix OC
+- AMD MSI Rx580 Armor 8GB OC
+
+#	-------------------------------	
+#	Working configurations
+#	-------------------------------
+
+N = Nvidia Card
+A = AMD Card
+- = No slot (just one PCIe x 16)
+x = Empty Slot
+
+#	6 x 1060, 5 x 580
+
+N N N
+N - -
+N x N
+x A A
+A A A
+
+#	6 x 1060, 5 x 580
+
+N N N
+N - -
+N x N
+A A A
+x A A
+
+#	6 x 1060, 5 x 580
+
+N N N
+N - -
+N N A
+x x A
+A A A
+
+#	6 x 1060, 5 x 580
+
+N N N
+N - -
+N N A
+A A A
+x x A
+
+#	6 x 1060, 6 x 580
+
+N N N
+N - -
+N N A
+A A A
+A A x
+
+#	-------------------------------	
+#	Non-Working configurations
+#	-------------------------------
+
+#	6 x 1060, 6 x 580
+#	Boots. Detects all cards. Claymore miner crashes. AMD Cards invisible (lshw)
+
+N N N
+N - -
+A N N
+x A A
+A A A
+
+N N N
+N - -
+N x N
+x A A
+A A A
+
+N N N
+N - -
+N A N
+A A A
+x A A
+
+N N N
+N - -
+N A N
+A A A
+A x A
+
+#	-------------------------------	
+#	To Try
+#	-------------------------------
+
+
