@@ -63,6 +63,20 @@ avgGPUHashRate = ''
 #	Functions
 #	----------------------------------
 
+def writeJSON():
+	
+	JSONfilepath = cfg["HTMLREPORTDIR"] + '/' + jsonReportFile
+
+	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
+
+	try:
+		JSONfile = open(JSONfilepath,"w")
+		JSONfile.write(data)
+		JSONfile.close()
+	except Exception as e:
+		logError("writeJSON: Unable to open JSON outputfile" + str(e))
+		return "Error"
+
 def getURL(url):
 
 	try:
@@ -138,8 +152,8 @@ def writeHTML():
 	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
 	
 	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
-	lastUpdate = datetime.datetime.now().strftime("%H:%M on %d-%m-%Y")
-	sysUptime = getSystemUptime()
+	#lastUpdate = datetime.datetime.now().strftime("%H:%M on %d-%m-%Y")
+	#sysUptime = getSystemUptime()
 
 	try:
 		f = open(HTMLtemplatepath)
@@ -556,8 +570,11 @@ cfg = json.load(open('config.json'))
 miningRootDir  = "/home/mining/mining-scripts"
 ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
 xmrMinerCmd    = miningRootDir + "/" + "start-xmr.sh"
-zMinerCmd    = miningRootDir + "/" + "start-zminer.sh"
+zMinerCmd      = miningRootDir + "/" + "start-zminer.sh"
 htmlReportFile = cfg["MINERNAME"] + ".html"
+jsonReportFile = cfg["MINERNAME"] + ".json"
+sysUptime      = getSystemUptime()
+lastUpdate     = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 if cfg["MINE_ETH"] == "yes":
 	#getCminerData()
@@ -574,7 +591,9 @@ getEarnedCoins()
 xmrUSD = getCoinUSD('monero')
 ethUSD = getCoinUSD('ethereum')
 writeHTML()
+writeJSON()
 
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
+uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile)

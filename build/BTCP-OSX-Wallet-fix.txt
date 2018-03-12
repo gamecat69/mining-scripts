@@ -1,0 +1,11 @@
+For people on MAC that can't get the wallet to work, run the following in terminal:
+
+1. Move the extracted content to your application folder. 
+
+2. cd /Applications/BitcoinPrivateDesktopWallet.app/Contents
+
+3. chmod +x btcpd; chmod +x btcp-cli
+
+4. java -jar Java/BitcoinPrivateDesktopWallet.jar
+
+They didn't make the executable files executable -.-

@@ -1,0 +1,8 @@
+#	Windows USB Notes
+
+#	Create USB Installer
+https://www.windowscentral.com/how-create-windows-10-installer-usb-drive-mac
+
+#	Run Windows 10 from USB
+#	Needs to be setup from Windows....
+https://www.pcmag.com/article/352209/how-to-run-windows-10-from-a-usb-drive

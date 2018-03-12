@@ -3,8 +3,9 @@
 #	-------------------------------
 
 #	Rig Spec
+#	Note I also tried a few configurations on xUbuntu and Linux Mint, but these would not boot once a 6th AMD card was added
 
-- HiveOS
+- HiveOS v0.5-32
 - Nvidia Asus GTX 1060 6GB Strix OC
 - AMD MSI Rx580 Armor 8GB OC
 
@@ -25,23 +26,17 @@ N x N
 x A A
 A A A
 
-#	6 x 1060, 5 x 580
-
 N N N
 N - -
 N x N
 A A A
 x A A
 
-#	6 x 1060, 5 x 580
-
 N N N
 N - -
 N N A
 x x A
 A A A
-
-#	6 x 1060, 5 x 580
 
 N N N
 N - -
