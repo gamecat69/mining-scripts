@@ -11,10 +11,11 @@ print('Loading function')
 
 s3 = boto3.resource('s3')
 
-USER   = os.environ['PUSHOVER_USER_ID']
-API    = os.environ['PUSHOVER_API_TOKEN']
-bucket = os.environ['BUCKET']
-maxAge = int(os.environ['MAX_AGE'])
+USER        = os.environ['PUSHOVER_USER_ID']
+API         = os.environ['PUSHOVER_API_TOKEN']
+bucket      = os.environ['BUCKET']
+maxAge      = int(os.environ['MAX_AGE'])
+minHashRate = int(os.environ['MIN_HASHRATE'])
 
 # miningRigs = {
 # 	"gtx-1060x6-1" : 'gtx-1060x6-1.html',
@@ -22,7 +23,7 @@ maxAge = int(os.environ['MAX_AGE'])
 # }
 
 miningRigs = {
-	"gtx-1060x6-1" : 'gtx-1060x6-1.html'
+	"gtx-1060x6-1" : 'gtx-1060x6-1.json'
 }
 
 def send_message(text):
@@ -55,15 +56,22 @@ def lambda_handler(event, context):
 		
 			#	If file is older than maxAge, there is a problem...
 			if fileAgeSecs > maxAge:
-				print("Rig: %s is down" % (rig))
-				send_message("Rig: %s is down" % (rig))
+				print("[%s] Rig is down" % (rig))
+				send_message("[%s] Rig is down" % (rig))
 			else:
-				print("Rig: %s is up" % (rig))
+				print("[%s] Rig is up" % (rig))
 
 			# Read the hashrate from the file
-			#fileObj  = s3.Object(bucket, key)
-			#contents = fileObj.get()['Body'].read().decode('utf-8')
-			#print(contents)
+			fileObj  = s3.Object(bucket, key)
+			contents = fileObj.get()['Body'].read().decode('utf-8')
+			js       = json.loads(contents)
+			hashrate = int(js['ethhashrate'])
+			print("Hashrate: %d" % (hashrate) )
+			
+			#	Raise alert is hashrate too low
+			if hashrate < minHashRate:
+				print("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))
+				send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))	
 
 		return
 	except Exception as e:
