@@ -66,12 +66,49 @@ avgGPUHashRate = ''
 def writeJSON():
 	
 	JSONfilepath = cfg["HTMLREPORTDIR"] + '/' + jsonReportFile
-
 	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
+
+	data = {}
+
+	data['minername']=cfg["MINERNAME"]
+	data['lastupdate']=lastUpdate
+	data['systemuptime']=sysUptime
+	data['avggputemp']=str(avgGPUTemp)
+	data['avggpufanspeed']=str(avgGPUFanSpeed)
+	data['numGPU']=str(numGPU)
+	data['avggpuhashrate']=str(avgGPUHashRate)
+
+	data['ethhashrate']=str(ethHashRate)
+	data['ethshares']=str(ethShares)
+	data['ethuptime']=str(ethUptime)
+	data['ethtotalshares']=str(ethShares)
+	data['ethpool']=str(ethPoolAddr)
+
+	data['xmrhashrate']=str(xmrHashRate)
+	data['xmrshares']=str(xmrSharePerHr)
+	data['xmruptime']=str(xmrUptime)
+	data['xmrtotalshares']=str(xmrShares)
+	data['xmrpool']=str(xmrPoolAddr)
+
+	data['btcphashrate']=str(btcpHashRate)
+	data['btcpshares']=str(btcpSharePerHr)
+	data['btcpuptime']=str(btcpUptime)
+	data['btcptotalshares']=str(btcpShares)
+	data['btcppool']=str(btcpPoolAddr)
+
+	data['ethusd']=str(ethUSD)
+	data['xmrusd']=str(xmrUSD)
+	data['btcpusd']=str(btcpUSD)
+
+	data['ethEarned']=str(ethEarned)
+	data['btcpEarned']=str(btcpEarned)
+	data['xmrEarned']=str(xmrEarned)
+
+	#print (json.dumps(data))
 
 	try:
 		JSONfile = open(JSONfilepath,"w")
-		JSONfile.write(data)
+		JSONfile.write(json.dumps(data))
 		JSONfile.close()
 	except Exception as e:
 		logError("writeJSON: Unable to open JSON outputfile" + str(e))
