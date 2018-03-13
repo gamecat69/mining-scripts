@@ -428,7 +428,7 @@ nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1160"
 #	Core   : 2025 2025 2025 2025 2025 2025
 #	Mem    : 9064 9064 9064 9064 9064 9064
 #	Result : GPU6 19.903 Mh/s, GPU7 19.997 Mh/s, GPU8 19.990 Mh/s, GPU9 19.997 Mh/s, GPU10 20.009 Mh/s, GPU11 19.995 Mh/s
-#	TBC: Started at 19:45
+#	Ran for days
 
 export DISPLAY=:0 && export NO_AT_BRIDGE=1
 nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
@@ -443,3 +443,22 @@ nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1260"
 nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1260"
 nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1260"
 nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1260"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 9164 9164 9164 9164 9164 9164
+#	Result : GPU6 20.218 Mh/s, GPU7 20.200 Mh/s, GPU8 20.202 Mh/s, GPU9 20.227 Mh/s, GPU10 20.219 Mh/s, GPU11 20.211 Mh/s
+#	TBC: Started at 19:45 on 13th March
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1360"

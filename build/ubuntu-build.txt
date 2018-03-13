@@ -207,19 +207,12 @@ make install
 #	Get latest version from here: https://bitcointalk.org/index.php?topic=1433925.0
 #	https://drive.google.com/drive/folders/0B69wv2iqszefdFZUV2toUG5HdlU
 
-#	Alt
 cd ~/Downloads
-mkdir /home/mining/cminer11.2
-curl -L -o "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" https://drive.google.com/uc?id=1t25SK0lk2osr32GH623rR8aG2_qvZds9
-mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" cminer11.2.tar.gz
-sudo tar -xvf cminer11.2.tar.gz
-cp -r cminer11.2/* /home/mining/cminer11.2/
-
-#	End alt
-
-cd ~/Downloads
-sudo mkdir /home/mining/cminer11.1
-sudo tar -xvf "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.1 - LINUX.tar.gz" -C /home/mining/cminer11.1
+mkdir /home/mining/cminer11.4
+mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" cminer11.4.tar.gz
+tar -xvf cminer11.2.tar.gz
+mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.4 - LINUX" cminer11.4
+cp -r "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.4 - LINUX/*" /home/mining/cminer11.4/
 
 #	-------------------------------
 #	Install ethminer
@@ -253,8 +246,16 @@ cd ~/mining-scripts
 #	Need to figure out how to automate this part
 
 #	----------------------
-#	Useful diag commands
+#	Useful commands
 #	----------------------
 
 #	List all connected VGA cards
 lshw -class Video | grep product
+
+#	Clone a drive. confirm the right drives first by running lsblk
+#	This clones /dev/sda to /dev/sdb
+dd if=/dev/sda of=/dev/sdb bd=4M
+
+#	Create a user and add to the sudo group
+useradd -m <username> -G sudo
+passwd <username>

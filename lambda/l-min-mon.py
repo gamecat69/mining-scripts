@@ -17,14 +17,18 @@ bucket      = os.environ['BUCKET']
 maxAge      = int(os.environ['MAX_AGE'])
 minHashRate = int(os.environ['MIN_HASHRATE'])
 
-# miningRigs = {
-# 	"gtx-1060x6-1" : 'gtx-1060x6-1.html',
-# 	"gtx-1060x6-2" : 'gtx-1060x6-2.html'
-# }
-
 miningRigs = {
-	"gtx-1060x6-1" : 'gtx-1060x6-1.json'
+	"m1" : 'gtx-1060x6-1.json'
 }
+
+#	--------------------------------
+#	To do
+
+#	- Get mining rigs and configs from nodes.json
+#	- Create HTML report files using json in /nodes/<minername>-monitor.json
+#	- Get CoinUSD values? - possible new Lambda
+#	- Get current Coin balanced? - possible new Lambda
+#	--------------------------------
 
 def send_message(text):
 	payload = {"message": text, "user": USER, "token": API }
@@ -61,7 +65,7 @@ def lambda_handler(event, context):
 			else:
 				print("[%s] Rig is up" % (rig))
 
-			# Read the hashrate from the file
+			#	Read the hashrate from the file
 			fileObj  = s3.Object(bucket, key)
 			contents = fileObj.get()['Body'].read().decode('utf-8')
 			js       = json.loads(contents)
@@ -71,7 +75,8 @@ def lambda_handler(event, context):
 			#	Raise alert is hashrate too low
 			if hashrate < minHashRate:
 				print("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))
-				send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))	
+				send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))
+				#	Maybe add some code here to power cycle the rig using the tp-link IoT socket
 
 		return
 	except Exception as e:

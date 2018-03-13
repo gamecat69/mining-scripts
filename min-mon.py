@@ -333,6 +333,7 @@ def getEthminerData():
 	global ethEarned
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.settimeout(5)
 	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
 	#print ("[MIN MON] getEthminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
