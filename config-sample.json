@@ -6,11 +6,20 @@
    "POOLPASS"    : "x",
    "ETHWALLET"   : "0x75A3CdA475EE196916ec76C7174eCd7886163beC",
    "generic-end" : "-------------------",
-   
+
+   "decred"           : "-------------------",
+   "DCRWALLET"        : "DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1",
+   "DCRPOOL1"          : "eu.luxor.tech:4444",
+   "DCRPOOL2"          : "asia.luxor.tech:4444",
+   "DCRPOOL3"          : "us-east.luxor.tech:4444",
+   "DCRPOOL4"          : "us-west.luxor.tech:4444",
+   "decred-end"       : "-------------------",
+      
    "start"             : "-------------------",
    "MINE_XMR"          : "yes",
    "MINE_ETH"          : "no",
    "MINE_BTCP"         : "yes",
+   "MINE_DCR"          : "yes",
    "ETHMINER"          : "ethminer",
    "MINMON_DELAY_SECS" : "20",
    "start-end"         : "-------------------",

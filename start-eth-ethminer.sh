@@ -44,18 +44,18 @@ LOGFILERETENTIONDAYS=`readJson config.json LOGFILERETENTIONDAYS`
 PSERVER=`readJson config.json PSERVER`
 FSERVER=`readJson config.json FSERVER`
 ETHMINER=`readJson config.json ETHMINER`
+MINE_DCR=`readJson config.json MINE_DCR`
+DCRWALLET=`readJson config.json DCRWALLET`
+DCRPOOL1=`readJson config.json DCRPOOL1`
+DCRPOOL2=`readJson config.json DCRPOOL2`
+DCRPOOL3=`readJson config.json DCRPOOL3`
+DCRPOOL4=`readJson config.json DCRPOOL4`
 
 export GPU_FORCE_64BIT_0=PTR
 export GPU_MAX_HEAP_SIZE=100
 export GPU_USE_SYNC_OBJECTS=1
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_SINGLE_ALLOC_PERCENT=100
-
-#SERVER=http://eth1.nanopool.org:8888
-#FSERVER=http://eth-eu2.nanopool.org:9999
-#WALLET=0x75A3CdA475EE196916ec76C7174eCd7886163beC
-#WORKER=gtx-1060x6-2-ethminer
-#EMAIL=nikansell00@gmail.com
 
 output "Miner: $ETHMINER"
 
@@ -69,12 +69,28 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	cd ~/$CMINERDIR
 	output "Killing previous cminer process"
 	pkill -f ethdcrminer64
-	MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80"
+	
+	if [ "$MINE_DCR" = "yes" ]; then
+	    output "Dual Mining (ETH + DCR)"
+		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -ftime 10 -ttli 80 -dwal $DCRWALLET -dpool $DCRPOOL1 -tt 68 -tstop 82"
+
+		#   Init dpools.txt
+		echo "POOL: $DCRPOOL1, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" > dpools.txt
+		echo "POOL: $DCRPOOL2, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" >> dpools.txt
+		echo "POOL: $DCRPOOL3, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" >> dpools.txt
+		echo "POOL: $DCRPOOL4, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" >> dpools.txt
+
+	else
+		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80 -tt 68 -tstop 82"	
+
+		#   Init epools.txt
+		echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
+		echo "POOL: $SERVER2, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" >> epools.txt 
+
+	fi
 	#   Delete files older than LOGFILERETENTIONDAYS
 	find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
-	#   Init epools.txt
-	echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt
-	echo "POOL: $SERVER2, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" >> epools.txt 
+
 else
 	output "[ERR] Unable to determing which ethminer to use"
 fi
