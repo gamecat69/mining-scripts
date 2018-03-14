@@ -280,7 +280,10 @@ def getxmrStakData():
 	
 	xmrErrors     = xmrJson["connection"]["error_log"]
 
-def uploadToAWS(dir, file):
+def uploadToAWS(dir, file, prefix):
+
+	if prefix == '':
+		prefix = '/'
 
 	try:
 		session=boto3.session.Session(
@@ -296,7 +299,7 @@ def uploadToAWS(dir, file):
 	
 	try:
 		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
-		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
+		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
 	except Exception as e:
 		logError("uploadToAWS: Unable to upload file" + str(e))
 		return "Error"
@@ -633,5 +636,5 @@ writeJSON()
 
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
-uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile)
-uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile)
+uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '/')
+uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')

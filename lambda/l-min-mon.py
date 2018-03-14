@@ -38,6 +38,13 @@ miningRigs = {
 #	- Get current Coin balanced? - possible new Lambda
 #	--------------------------------
 
+def loadConfig():
+
+	fileObj  = s3.Object(bucket, 'nodes.json')
+	contents = fileObj.get()['Body'].read().decode('utf-8')
+	#cfg      = json.loads(contents)
+	return json.loads(contents)
+
 def jsonPost(url, headers, json):
 
 	try:
@@ -99,10 +106,17 @@ def lambda_handler(event, context):
 	
 	try:
 
-		for rig in miningRigs:
-			print("Rig: %s" % rig)
-			print("File: %s" % miningRigs[rig])
-			key=miningRigs[rig]
+		cfg = loadConfig()
+		for rig in cfg['rigs']:
+			if rig['monitor'] == 'no':
+				return
+		#for rig in miningRigs:
+			print("Rig: %s" % rig['name'])
+			print("File: %s" % rig['dataFile'])
+			key=rig['dataFile']
+			#print("Rig: %s" % rig)
+			#print("File: %s" % miningRigs[rig])
+			#key=miningRigs[rig]
 
 			#	Get Last Modified date and time of file
 			fileDetails=s3.ObjectSummary(bucket,key)
