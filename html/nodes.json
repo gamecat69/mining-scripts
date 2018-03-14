@@ -1,16 +1,22 @@
 {
-	"m1" : {
-		"minKHs"      : 120000,
-		"alertSecs"   : 120,
-		"description" : "6 x mixed GTX 1060 6GB GPUs. MSI z370A-Pro",
-		"OS"          : "Linux Mint 18.3",
-		"powerControl" : "possibly put tp-link ID here"
-	},
-	"m2" : {
-		"minKHs"      : 250000,
-		"alertSecs"   : 120,
-		"description" : "6 x Asus GTX 1060 6GB Strix OC + 6 x MSI RX580 Armor 8GB. Asus B250 Mining expert",
-		"OS"          : "HiveOS",
-		"powerControl" : "possibly put tp-link ID here"
-	}
+	"version":"1.0",
+	"rigs":[
+
+			{
+				"name"        : "m1",
+				"minKHs"      : 120000,
+				"alertSecs"   : 120,
+				"description" : "6 x mixed GTX 1060 6GB GPUs. MSI z370A-Pro",
+				"OS"          : "Linux Mint 18.3",
+				"deviceId"    : "possibly put tp-link ID here"
+			},
+			{
+				"name"        : "m2",
+				"minKHs"      : 250000,
+				"alertSecs"   : 120,
+				"description" : "6 x Asus GTX 1060 6GB Strix OC + 6 x MSI RX580 Armor 8GB. Asus B250 Mining expert",
+				"OS"          : "HiveOS",
+				"deviceId"    : "possibly put tp-link ID here"
+			}
+		]		
 }

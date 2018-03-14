@@ -17,6 +17,14 @@ bucket      = os.environ['BUCKET']
 maxAge      = int(os.environ['MAX_AGE'])
 minHashRate = int(os.environ['MIN_HASHRATE'])
 
+host     = os.environ['HOST']
+deviceId = os.environ['DEVICEID']
+token    = os.environ['TOKEN']
+
+url         = host + "?token=" + token
+headers     = {"Content-Type": "application/json"}
+powerStates = ['off','on']
+
 miningRigs = {
 	"m1" : 'gtx-1060x6-1.json'
 }
@@ -29,6 +37,58 @@ miningRigs = {
 #	- Get CoinUSD values? - possible new Lambda
 #	- Get current Coin balanced? - possible new Lambda
 #	--------------------------------
+
+def jsonPost(url, headers, json):
+
+	try:
+		print("jsonPost: Posting to: %s" % url)
+		request = requests.post(url, headers=headers, json=json)
+	except:
+		print("jsonPost: Unable to connect")
+		return 'error'
+
+	return request.text
+
+def processJson(data):
+	#print("processJson: starting")
+
+	try:
+		js=json.loads(data.decode("utf-8"))
+	except:
+		print("processJson: No valid JSON received")
+		return 'error'
+
+	#	OK. We have valid JSON
+	#print(js)
+	errorcode = js['error_code']
+	if errorcode == 0:
+		print("processJson: Post completed successfully")
+		return js
+	else:
+		print("processJson: Error: %s (%s)" % (errorcode, js['msg']))
+		return ''
+
+def powerCtrlTplinkDevice(deviceId, state):
+	print("powerCtrlTplinkDevice: %s" % deviceId)
+	print("Powering device: %s" % powerStates[state])
+	return
+
+	jsonPostData = {
+		"method":"passthrough",
+		"params":{
+		"deviceId":deviceId,
+		"requestData":"{\"system\":{\"set_relay_state\":{\"state\":" + str(state) + "}}}"
+	 }
+	}
+
+	#print (json.dumps(jsonPostData))
+	data = jsonPost(url, headers, jsonPostData)
+	js = processJson(data)
+
+	if not js:
+		exit (1)
+	else:
+		print("powerCtrlTplinkDevice: Device powered %s" % powerStates[state])
 
 def send_message(text):
 	payload = {"message": text, "user": USER, "token": API }
@@ -62,6 +122,9 @@ def lambda_handler(event, context):
 			if fileAgeSecs > maxAge:
 				print("[%s] Rig is down" % (rig))
 				send_message("[%s] Rig is down" % (rig))
+				powerCtrlTplinkDevice(deviceId,0)
+				time.sleep(2)
+				powerCtrlTplinkDevice(deviceId,1)
 			else:
 				print("[%s] Rig is up" % (rig))
 
