@@ -5,6 +5,7 @@ import datetime
 import json
 import boto3
 from botocore.vendored import requests
+from botocore.exceptions import ClientError
 import botocore
 
 print('Loading function')
@@ -18,7 +19,6 @@ maxAge      = int(os.environ['MAX_AGE'])
 minHashRate = int(os.environ['MIN_HASHRATE'])
 
 host     = os.environ['HOST']
-deviceId = os.environ['DEVICEID']
 token    = os.environ['TOKEN']
 
 url         = host + "?token=" + token
@@ -37,6 +37,23 @@ miningRigs = {
 #	- Get CoinUSD values? - possible new Lambda
 #	- Get current Coin balanced? - possible new Lambda
 #	--------------------------------
+
+def updateConfig(data, key):
+
+	client = boto3.client('s3')	
+
+	try:	
+		g = open('/tmp/' + key, 'w')
+		g.write(json.dumps(data, indent=4, sort_keys=True))
+		g.close()
+	except:
+		print("Failed to write file: %s" % '/tmp/' + key)
+	
+	try:
+		with open('/tmp/' + key, 'rb') as f:
+			client.upload_fileobj(f, bucket, key)
+	except ClientError as e:
+		print("Failed to upload file: %s" % e)	
 
 def loadConfig():
 
@@ -57,12 +74,14 @@ def jsonPost(url, headers, json):
 	return request.text
 
 def processJson(data):
-	#print("processJson: starting")
+	print("processJson: starting")
+	#print("Data:%s" % data)
 
 	try:
-		js=json.loads(data.decode("utf-8"))
+		js=json.loads(data)
+	#except ValueError as error:
 	except:
-		print("processJson: No valid JSON received")
+		print("processJson: No valid JSON received. Error:%s" % error)
 		return 'error'
 
 	#	OK. We have valid JSON
@@ -78,7 +97,6 @@ def processJson(data):
 def powerCtrlTplinkDevice(deviceId, state):
 	print("powerCtrlTplinkDevice: %s" % deviceId)
 	print("Powering device: %s" % powerStates[state])
-	return
 
 	jsonPostData = {
 		"method":"passthrough",
@@ -108,15 +126,15 @@ def lambda_handler(event, context):
 
 		cfg = loadConfig()
 		for rig in cfg['rigs']:
+
 			if rig['monitor'] == 'no':
 				return
-		#for rig in miningRigs:
+
 			print("Rig: %s" % rig['name'])
-			print("File: %s" % rig['dataFile'])
 			key=rig['dataFile']
-			#print("Rig: %s" % rig)
-			#print("File: %s" % miningRigs[rig])
-			#key=miningRigs[rig]
+			minHashRate=rig['minKHs']
+			deviceId=rig['deviceId']
+			lastError=rig['lastError']
 
 			#	Get Last Modified date and time of file
 			fileDetails=s3.ObjectSummary(bucket,key)
@@ -134,13 +152,25 @@ def lambda_handler(event, context):
 		
 			#	If file is older than maxAge, there is a problem...
 			if fileAgeSecs > maxAge:
-				print("[%s] Rig is down" % (rig))
-				send_message("[%s] Rig is down" % (rig))
-				powerCtrlTplinkDevice(deviceId,0)
-				time.sleep(2)
-				powerCtrlTplinkDevice(deviceId,1)
+
+				if lastError == '':
+					#	No previous error. Send message and update config file
+					print("[%s] Rig is down. Will wait for one more failure before taking action" % (rig['name']))
+					send_message("[%s] Rig is down. Will wait for one more failure before taking action" % (rig['name']))
+					rig['lastError']="File not updated within time period"
+					updateConfig(cfg, "nodes.json")
+				else:
+					#	Second failure. Take action
+					send_message("[%s] Rig is down. Powercycling" % (rig['name']))
+					powerCtrlTplinkDevice(deviceId,0)
+					time.sleep(2)
+					powerCtrlTplinkDevice(deviceId,1)
+					rig['lastError']=""
+					updateConfig(cfg, "nodes.json")
 			else:
-				print("[%s] Rig is up" % (rig))
+				print("[%s] Rig is up" % (rig['name']))
+				rig['lastError']=""
+				updateConfig(cfg, "nodes.json")
 
 			#	Read the hashrate from the file
 			fileObj  = s3.Object(bucket, key)
@@ -151,10 +181,18 @@ def lambda_handler(event, context):
 			
 			#	Raise alert is hashrate too low
 			if hashrate < minHashRate:
-				print("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))
-				send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d)" % (rig, hashrate, minHashRate))
-				#	Maybe add some code here to power cycle the rig using the tp-link IoT socket
-
+				
+				if lastError == '':
+					print("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d).Will wait for one more failure before taking action" % (rig['name'], hashrate, minHashRate))
+					send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d).Will wait for one more failure before taking action" % (rig['name'], hashrate, minHashRate))				
+				else:
+					print("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d). Powercycling" % (rig['name'], hashrate, minHashRate))
+					send_message("[%s] Hashrate Alert\nHashrate (%d) below threshold (%d). Powercycling" % (rig['name'], hashrate, minHashRate))
+					powerCtrlTplinkDevice(deviceId,0)
+					time.sleep(1)
+					powerCtrlTplinkDevice(deviceId,1)
+					rig['lastError']=""
+					updateConfig(cfg, "nodes.json")
 		return
 	except Exception as e:
 		print(e)
