@@ -94,7 +94,7 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
 
 else
-	output "[ERR] Unable to determing which ethminer to use"
+	output "[ERR] Unable to determine which ethminer to use"
 fi
 #   ------------------------
 #   Start mining
