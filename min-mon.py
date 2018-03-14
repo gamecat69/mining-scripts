@@ -295,7 +295,7 @@ def uploadToAWS(dir, file, prefix):
 		logError("uploadToAWS: Unable to create session" + str(e))
 		return "Error"
 
-	print ("[MIN MON] Uploading file: %s to bucket:%s%s" % (dir + '/' + file, cfg["S3BUCKET"], prefix))
+	print ("[MIN MON] Uploading file: %s to bucket:%s/%s" % (dir + '/' + file, cfg["S3BUCKET"], prefix))
 	
 	try:
 		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
