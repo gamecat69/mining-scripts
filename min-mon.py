@@ -282,8 +282,8 @@ def getxmrStakData():
 
 def uploadToAWS(dir, file, prefix):
 
-	if prefix == '':
-		prefix = '/'
+	#if prefix == '':
+	#	prefix = '/'
 
 	try:
 		session=boto3.session.Session(
@@ -295,7 +295,7 @@ def uploadToAWS(dir, file, prefix):
 		logError("uploadToAWS: Unable to create session" + str(e))
 		return "Error"
 
-	print ("[MIN MON] Uploading file: %s to bucket:%s" % (dir + '/' + file, cfg["S3BUCKET"]))
+	print ("[MIN MON] Uploading file: %s to bucket:%s%s" % (dir + '/' + file, cfg["S3BUCKET"], prefix))
 	
 	try:
 		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
@@ -636,5 +636,5 @@ writeJSON()
 
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
-uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '/')
+uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '')
 uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')
