@@ -57,7 +57,7 @@ export GPU_USE_SYNC_OBJECTS=1
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_SINGLE_ALLOC_PERCENT=100
 
-CMINERARGS=" -tt 68 -tstop 82 -dcri 10 -mport 3333 -ftime 10 -ttli 80"
+CMINERARGS=" -tt 68 -tstop 82 -dcri 10 -mport -3333 -ftime 10 -ttli 80"
 
 output "Miner: $ETHMINER"
 
