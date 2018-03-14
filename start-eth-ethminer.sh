@@ -57,6 +57,8 @@ export GPU_USE_SYNC_OBJECTS=1
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_SINGLE_ALLOC_PERCENT=100
 
+CMINERARGS=" -tt 68 -tstop 82 -dcri 10 -mport 3333 -ftime 10 -ttli 80"
+
 output "Miner: $ETHMINER"
 
 if [ "$ETHMINER" = "ethminer" ] ; then
@@ -72,7 +74,7 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	
 	if [ "$MINE_DCR" = "yes" ]; then
 	    output "Dual Mining (ETH + DCR)"
-		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -ftime 10 -ttli 80 -dwal $DCRWALLET -dpool $DCRPOOL1 -tt 68 -tstop 82"
+		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -dwal $DCRWALLET.$WORKER -dpool $DCRPOOL1 $CMINERARGS"
 
 		#   Init dpools.txt
 		echo "POOL: $DCRPOOL1, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" > dpools.txt
@@ -81,7 +83,7 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 		echo "POOL: $DCRPOOL4, WALLET: $DCRWALLET.$WORKER, PSW: $POOLPASS" >> dpools.txt
 
 	else
-		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80 -tt 68 -tstop 82"	
+		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 $CMINERARGS"	
 
 		#   Init epools.txt
 		echo "POOL: $SERVER1, WALLET: $ETHWALLET.$WORKER/$EMAIL, WORKER: $WORKER, ESM: 0, ALLPOOLS: 0" > epools.txt

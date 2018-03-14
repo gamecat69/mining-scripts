@@ -25,6 +25,9 @@ ethdcrminer64.exe -epool eth.suprnova.cc:5005 -ewal 0xa669Bc379B84011024681a318C
  
 #	Example Claymore dpools.txt
 POOL: eu.luxor.tech:4444, WALLET: DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1.m1, PSW: x
+POOL: asia.luxor.tech:4444, WALLET: DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1.m1, PSW: x
+POOL: us-east.luxor.tech:4444, WALLET: DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1.m1, PSW: x
+POOL: us-west.luxor.tech:4444, WALLET: DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1.m1, PSW: x
 
 #	Example Claymore config.txt
 # -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -mode 1 -ftime 10 -ttli 80"

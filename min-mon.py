@@ -304,11 +304,11 @@ def uploadToAWS(dir, file):
 def getEthminerData():
 
 	# ['0.14.0.dev3', 
-	#'59', 
-	#'120723;53;0', 
-	#'22272;19044;19044;22272;19044;19044', 
-	#'0;0;0', 
-	#'off;off;off;off;off;off', 
+	#'59', ETH Shares
+	#'120723;53;0', ETH Summary (hashrate;shares accepted;shares rejected)
+	#'22272;19044;19044;22272;19044;19044', ETH Hasgrates
+	#'0;0;0', DCR Summary (hashrate;shares accepted;shares rejected)
+	#'off;off;off;off;off;off', DCR Hashrates
 	#'64;37; 57;41; 58;43; 73;44; 62;47; 69;53', 
 	#'http://eth1.nanopool.org:8888/0x75A3CdA475EE196916ec76C7174eCd7886163beC.gtx-1060x6-2-ethminer/nikansell00@gmail.com:', 
 	#'0;0;0;0']
