@@ -159,11 +159,6 @@ def getTplinkDevices():
 		print("\tdeviceHwVer: %s" % device['deviceHwVer'])
 		print("\tdeviceId: %s" % device['deviceId'])
 
-# host     = "https://aps1-wap.tplinkcloud.com"
-# #deviceId = '8006E17E7940EA676B2FCEE61E22901C18782B11' #M1
-# deviceId = '80063997646A81C1165877BA889EE4801878FBC0' #M2
-# token    = "2e8717db-A1ffecNsN2U7AAZdRRUeTNx"
-
 cfg = json.load(open('config-tplink.json'))
 host     = cfg['host']
 deviceId = cfg['deviceId']
