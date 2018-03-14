@@ -44,7 +44,7 @@ def processJson(data):
 	#print("processJson: starting")
 
 	try:
-		js=json.loads(data.decode("utf-8"))
+		js=json.loads(data)
 	except:
 		print("processJson: No valid JSON received")
 		return 'error'

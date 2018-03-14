@@ -18,8 +18,8 @@ bucket      = os.environ['BUCKET']
 maxAge      = int(os.environ['MAX_AGE'])
 minHashRate = int(os.environ['MIN_HASHRATE'])
 
-host     = os.environ['HOST']
-token    = os.environ['TOKEN']
+host     = os.environ['TPLINK_HOST']
+token    = os.environ['TPLINK_API_TOKEN']
 
 url         = host + "?token=" + token
 headers     = {"Content-Type": "application/json"}
