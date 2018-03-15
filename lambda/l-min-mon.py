@@ -17,25 +17,26 @@ API         = os.environ['PUSHOVER_API_TOKEN']
 bucket      = os.environ['BUCKET']
 maxAge      = int(os.environ['MAX_AGE'])
 minHashRate = int(os.environ['MIN_HASHRATE'])
+host        = os.environ['TPLINK_HOST']
+token       = os.environ['TPLINK_API_TOKEN']
 
-host     = os.environ['TPLINK_HOST']
-token    = os.environ['TPLINK_API_TOKEN']
-
-url         = host + "?token=" + token
+tpLinkUrl   = host + "?token=" + token
 headers     = {"Content-Type": "application/json"}
 powerStates = ['off','on']
 
-miningRigs = {
-	"m1" : 'gtx-1060x6-1.json'
-}
 
 #	--------------------------------
 #	To do
 
-#	- Get mining rigs and configs from nodes.json
+#	- Create checkFileAge()
+#	- Create checkHashRate()
+#	- Create updateError()
+#	- Create powerCycleRig()
+#	- Add DEBUG env var. Print out debug info if == 1
+#	- Skip hashrate check if file is too old
 #	- Create HTML report files using json in /nodes/<minername>-monitor.json
 #	- Get CoinUSD values? - possible new Lambda
-#	- Get current Coin balanced? - possible new Lambda
+#	- Get current Coin balances? - possible new Lambda
 #	--------------------------------
 
 def updateConfig(data, key):
@@ -107,7 +108,7 @@ def powerCtrlTplinkDevice(deviceId, state):
 	}
 
 	#print (json.dumps(jsonPostData))
-	data = jsonPost(url, headers, jsonPostData)
+	data = jsonPost(tpLinkUrl, headers, jsonPostData)
 	js = processJson(data)
 
 	if not js:
@@ -124,19 +125,24 @@ def lambda_handler(event, context):
 	
 	try:
 
+		#	Load rig config from json
 		cfg = loadConfig()
+		
+		#	Cycle through each rig in the json
 		for rig in cfg['rigs']:
 
+			#	Skip rig if not configured for monitoring
 			if rig['monitor'] == 'no':
-				return
+				break
 
-			print("Rig: %s" % rig['name'])
-			key=rig['dataFile']
-			minHashRate=rig['minKHs']
-			deviceId=rig['deviceId']
-			lastError=rig['lastError']
+			print("[%s] Checking rig..." % (rig['name']))
 
-			#	Get Last Modified date and time of file
+			key=rig['dataFile']        # json file with monitoring data
+			minHashRate=rig['minKHs']  # min acceptable hashrate
+			deviceId=rig['deviceId']   # TP-Link deviceId for power cyclcing
+			lastError=rig['lastError'] # The previous error logged
+
+			#	Get Last Modified date and time of monitoring data file
 			fileDetails=s3.ObjectSummary(bucket,key)
 			fileDate=fileDetails.last_modified
 		
@@ -148,9 +154,10 @@ def lambda_handler(event, context):
 			now = int(time.time())
 			fileAgeSecs = now - int(tsFileDate)
 			formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S")
-			#print("[%s] File is %d seconds old. Modified on: %s" % (rig, fileAgeSecs, formatedTime) )
+			#print("[%s] File is %d seconds old. Modified on: %s" % (rig['name'], fileAgeSecs, formatedTime) )
 		
 			#	If file is older than maxAge, there is a problem...
+			#	... the rig has not updated the file and  may be down.
 			if fileAgeSecs > maxAge:
 
 				if lastError == '':
@@ -165,9 +172,12 @@ def lambda_handler(event, context):
 					powerCtrlTplinkDevice(deviceId,0)
 					time.sleep(2)
 					powerCtrlTplinkDevice(deviceId,1)
+					
+					#	Clear last error and update config file
 					rig['lastError']=""
 					updateConfig(cfg, "nodes.json")
 			else:
+				#	File has been updated recently. Clear error and update config file
 				print("[%s] Rig is up" % (rig['name']))
 				rig['lastError']=""
 				updateConfig(cfg, "nodes.json")
@@ -177,7 +187,7 @@ def lambda_handler(event, context):
 			contents = fileObj.get()['Body'].read().decode('utf-8')
 			js       = json.loads(contents)
 			hashrate = int(js['ethhashrate'])
-			print("Hashrate: %d" % (hashrate) )
+			print("[%s] Hashrate: %s" % (rig['name'], hashrate))
 			
 			#	Raise alert is hashrate too low
 			if hashrate < minHashRate:
