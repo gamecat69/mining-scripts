@@ -69,7 +69,7 @@ output "Starting NVIDIA logging"
 if [ "$MINE_ETH" = "yes" ] ; then
     
     output "Starting Ethminer"
-    $SCREEN_CMD ethminer ./start-eth-ethminer.sh &
+    $SCREEN_CMD ethminer ./start-eth.sh &
 
 fi
 
