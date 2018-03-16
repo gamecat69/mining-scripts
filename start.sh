@@ -5,6 +5,10 @@
 #	-------------------------------------
 
 SCRIPT_NAME="START"
+WORKINGDIR=/home/mining/mining-scripts
+LOGFILE="$WORKINGDIR/logs/start.log"
+
+cd $WORKINGDIR
 
 function readJson {
 
@@ -30,11 +34,9 @@ function output {
 
 	NOW=$(date +"%d-%m-%Y %T")
 	echo -e "$NOW [$SCRIPT_NAME] $@"
+	echo -e "$NOW [$SCRIPT_NAME] $@" >> $LOGFILE
 
 }
-
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
 
 RED='\033[0;31m'
 YELLOW='\033[0;93m'
@@ -51,6 +53,12 @@ S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/$MINERNAME.html"
 SCREEN_CMD="screen -dmS"
 MYIP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 PUSH_MSG="[$MYIP] Starting up... Report URL: $S3URL"
+
+#	Create logdir if needed
+mkdir -p "$WORKINGDIR/logs"
+
+#	Init log file
+echo -e "init" > $LOGFILE
 
 output "${RED}Killing previous processes...${NC}"
 ./kill-miner.sh
