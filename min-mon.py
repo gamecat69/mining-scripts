@@ -584,7 +584,7 @@ def getEarnedCoins():
 	#	http://api.minexmr.com:8080/stats_address?address=
 	#	api code: https://github.com/zone117x/node-cryptonote-pool/blob/master/lib/api.js
 	#	Other apis: live_stats, stats_address
-	url = cfg["XMRMINERSTATSURL"] + cfg["XMR_WALLET"]
+	url = cfg["XMRMINERSTATSURL"] + cfg["XMRWALLET"]
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))

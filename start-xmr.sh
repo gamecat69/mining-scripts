@@ -32,11 +32,11 @@ function output {
 WORKINGDIR=/home/mining/mining-scripts
 cd $WORKINGDIR
 
-XMR_WALLET=`readJson config.json XMR_WALLET`
-XMR_POOL=`readJson config.json XMR_POOL`
-XMR_POOLPASS=`readJson config.json XMR_POOLPASS`
-XMR_CPUONLY=`readJson config.json XMR_CPUONLY`
-XMR_CURRENCY=`readJson config.json XMR_CURRENCY`
+XMRWALLET=`readJson config.json XMR_WALLET`
+XMRPOOL=`readJson config.json XMR_POOL`
+XMRPOOLPASS=`readJson config.json XMR_POOLPASS`
+XMRCPUONLY=`readJson config.json XMR_CPUONLY`
+XMRCURRENCY=`readJson config.json XMR_CURRENCY`
 
 #XMR_WALLET=45kbjV6VRZ3GMPBHktLh9VGgun5nxEwtXS18yL8S23Gu8gvsE31JtMPHo6DwTwi4s4he3r6U5pmmo1ZhMVgsKrECPH3gBsk
 #XMR_POOL=pool.minexmr.com:7777
