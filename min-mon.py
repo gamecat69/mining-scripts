@@ -276,7 +276,7 @@ def getxmrStakData():
 	xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#	Prevent a divide by zero error
-	if xmrShares > 0:
+	if xmrUptimeMin > 0 and xmrShares > 0:
 		xmrSharePerHr = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
 	else:
 		xmrSharePerHr = 0

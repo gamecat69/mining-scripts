@@ -151,7 +151,7 @@ export PATH=${CUDA_HOME}/bin:${PATH}
 sudo nvidia-xconfig --allow-empty-initial-configuration --enable-all-gpus --cool-bits=31 --separate-x-screens
 
 #	Add a call to configure the GPUs into /etc/rc.local
-sudo sed -i -e 's/^exit 0/\/home\/mining\/mining-scripts\/nvidia-oc.sh > \/home\/mining\/nvidia-oc.log\nexit 0/' /etc/rc.local
+sudo sed -i -e 's/^exit 0/sudo su mining -c "mkdir -p \/home\/mining\/mining-scripts\/logs"\n\/home\/mining\/mining-scripts\/nvidia-oc.sh > \/home\/mining\/mining-scripts\/logs\/nvidia-oc.log\nexit 0/' /etc/rc.local
 reboot
 
 
