@@ -353,6 +353,7 @@ def getEthminerData():
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		ethMinerRestartTimestamp = int(time.time())
+		print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		#subprocess.Popen(["./start-eth-ethminer.sh"])
 		subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])

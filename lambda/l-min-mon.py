@@ -244,6 +244,7 @@ def lambda_handler(event, context):
 			
 			#	Find out when the eth miner was last restarted
 			now = int(time.time())
+			print("[%s] Current timestamp: %d" % (rig['name'], now))
 			ethMinerUptimeSecs = now - int(ethMinerRestartTimestamp)
 			
 			if ethMinerUptimeSecs < 60 and ethMinerUptimeSecs > 0:
