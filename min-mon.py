@@ -269,7 +269,7 @@ def getxmrStakData():
 		return "Error"
 	
 	xmrVersion    = xmrJson["version"]
-	xmrHashRate   = int(xmrJson["hashrate"]["total"][0])
+	xmrHashRate   = int(xmrJson["hashrate"]["total"][0]) or 0
 	xmrPoolAddr   = xmrJson["connection"]["pool"]
 	xmrShares     = int(xmrJson["results"]["shares_good"])
 	xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
