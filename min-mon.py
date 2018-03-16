@@ -618,7 +618,6 @@ sysUptime      = getSystemUptime()
 lastUpdate     = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 if cfg["MINE_ETH"] == "yes":
-	#getCminerData()
 	getEthminerData()
 
 if cfg["MINE_XMR"] == "yes":
