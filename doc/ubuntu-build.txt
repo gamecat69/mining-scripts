@@ -62,7 +62,7 @@ nano config.json
 ./start.sh
 
 #	------------------
-#	Configure OS (1)
+#	Configure OS (2)
 #	------------------
 
 #	Configure swapfile
@@ -257,5 +257,5 @@ lshw -class Video | grep product
 dd if=/dev/sda of=/dev/sdb bd=4M
 
 #	Create a user and add to the sudo group
-useradd -m <username> -G sudo
+useradd -m <username> -G sudo -s /bin/bash
 passwd <username>

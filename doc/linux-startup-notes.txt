@@ -1,0 +1,34 @@
+#	Linux startup scripts
+
+#	After kernel loads
+#	Generally services go here
+/etc/init.d/<all scripts in this dir>
+
+#	TBC
+#	User root
+/etc/rc.d/<all scripts in this dir>
+
+#	After kernel loads, init and fstab
+#	User: root
+/etc/rc.local
+
+#	After X has started
+#	User: ??????
+/etc/xinit.rc
+
+#	When you login
+#	User: Currently logged in user
+~/.profile
+
+#	When you start a bash session
+#	User: Currently logged in user
+~/.bashrc
+
+
+#	Mum Birthday
+Fly to UK on 30th
+Go walking on Sat/Sun
+Meal with Mum on Sat/Sun
+Buy perfume and tea from Leopolds
+
+

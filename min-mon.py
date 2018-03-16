@@ -21,15 +21,19 @@ global gpuDetails
 global xmrUSD
 global ethUSD
 
-gpuDetails    = []
+gpuDetails     = []
+numGPU         = ''
+avgGPUTemp     = ''
+avgGPUFanSpeed = ''
+avgGPUHashRate = ''
+
 ethVersion    = ''
 ethHashRate   = ''
 ethPoolAddr   = ''
 ethShares     = ''
 ethUptime     = ''
 ethSharePerHr = ''
-xmrVersion    = ''
-xmrHashRate   = ''
+ethMinerRestartTimestamp = 0
 
 btcpVersion    = ''
 btcpHashRate   = ''
@@ -37,27 +41,23 @@ btcpPoolAddr   = ''
 btcpShares     = ''
 btcpUptime     = ''
 btcpSharePerHr = ''
+
 btcpEarned     = 0.0
 ethEarned      = 0.0
 xmrEarned      = 0.0
-avgGPUTemp     = ''
-avgGPUFanSpeed = ''
-numGPU         = ''
-avgGPUHashRate = ''
+
+xmrUSD        = ''
+ethUSD        = ''
+btcpUSD       = ''
 
 xmrPoolAddr   = ''
 xmrShares     = ''
 xmrUptime     = ''
 xmrSharePerHr = ''
 xmrErrors     = ''
-xmrUSD        = ''
-ethUSD        = ''
-btcpUSD       = ''
-numGPU        = ''
-avgGPUTemp    = ''
-avgGPUTemp    = ''
-avgGPUFanSpeed = ''
-avgGPUHashRate = ''
+xmrVersion    = ''
+xmrHashRate   = ''
+xmrMinerRestartTimestamp = 0
 
 #	----------------------------------
 #	Functions
@@ -103,6 +103,7 @@ def writeJSON():
 	data['ethEarned']=str(ethEarned)
 	data['btcpEarned']=str(btcpEarned)
 	data['xmrEarned']=str(xmrEarned)
+	data['ethMinerRestartTimestamp']=ethMinerRestartTimestamp
 
 	#print (json.dumps(data))
 
@@ -252,6 +253,7 @@ def getxmrStakData():
 	global xmrUptime
 	global xmrSharePerHr
 	global xmrErrors
+	global xmrMinerRestartTimestamp
 
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
@@ -260,6 +262,7 @@ def getxmrStakData():
 		xmrJson = json.loads(data)
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
+		xmrMinerRestartTimestamp = int(time.time())
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
 		#subprocess.Popen(["./start-xmr.sh"])
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
@@ -334,6 +337,7 @@ def getEthminerData():
 	global numGPU
 	global avgGPUHashRate
 	global ethEarned
+	global ethMinerRestartTimestamp
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(5)
@@ -348,6 +352,7 @@ def getEthminerData():
 		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
+		ethMinerRestartTimestamp = int(time.time())
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		#subprocess.Popen(["./start-eth-ethminer.sh"])
 		subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])

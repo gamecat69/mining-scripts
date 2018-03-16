@@ -67,7 +67,7 @@ def getS3FileAge(bucket, key):
 		#	Get Last Modified date and time of monitoring data file
 		fileDetails=s3.ObjectSummary(bucket,key)
 	except:
-		sendMessage("getS3FileAge: Cannot get age for object S3://%s/%s. Assuming file not too old" % (bucket,key))
+		sendMessage("getS3FileAge: Cannot get age for object S3://%s/%s" % (bucket,key))
 		return False
 
 	#	Get fileData and convert to timestamp
@@ -80,26 +80,28 @@ def getS3FileAge(bucket, key):
 	fileAgeSecs = now - int(tsFileDate)
 
 	#formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S")
-	#print("[%s] File is %d seconds old. Modified on: %s" % (rig['name'], fileAgeSecs, formatedTime) )
+	#debugOutput("[%s] File is %d seconds old. Modified on: %s" % (rig['name'], fileAgeSecs, formatedTime) )
 
 	return fileAgeSecs
 
 def jsonToS3File(data, key):
 
-	client = boto3.client('s3')	
+	#	AWS boto3 implementation does not support writing in-memory data to an S3 object
+	#	... so we need to write to a tmp file then upload the tmp file
+	client = boto3.client('s3')
 
 	try:	
 		g = open('/tmp/' + key, 'w')
 		g.write(json.dumps(data, indent=4, sort_keys=True))
 		g.close()
 	except:
-		print("Failed to write file: %s" % '/tmp/' + key)
+		debugOutput("Failed to write file: %s" % '/tmp/' + key)
 	
 	try:
 		with open('/tmp/' + key, 'rb') as f:
 			client.upload_fileobj(f, bucket, key)
 	except ClientError as e:
-		print("Failed to upload file: %s" % e)	
+		debugOutput("Failed to upload file: %s" % e)	
 
 def loadConfig():
 
@@ -111,33 +113,33 @@ def loadConfig():
 def jsonPost(url, headers, json):
 
 	try:
-		print("jsonPost: Posting to: %s" % url)
+		debugOutput("jsonPost: Posting to: %s" % url)
 		request = requests.post(url, headers=headers, json=json)
 	except:
-		print("jsonPost: Unable to connect")
+		debugOutput("jsonPost: Unable to connect")
 		return 'error'
 
 	return request.text
 
 def processJson(data):
-	print("processJson: starting")
+	#debugOutput("processJson: starting")
 	#print("Data:%s" % data)
 
 	try:
 		js=json.loads(data)
 	#except ValueError as error:
 	except:
-		print("processJson: No valid JSON received. Error:%s" % error)
+		debugOutput("processJson: No valid JSON received. Error:%s" % error)
 		return 'error'
 
 	#	OK. We have valid JSON
 	#print(js)
 	errorcode = js['error_code']
 	if errorcode == 0:
-		print("processJson: Post completed successfully")
+		debugOutput("processJson: Post completed successfully")
 		return js
 	else:
-		print("processJson: Error: %s (%s)" % (errorcode, js['msg']))
+		debugOutput("processJson: Error: %s (%s)" % (errorcode, js['msg']))
 		return ''
 
 def powerCtrlTplinkDevice(deviceId, state):
@@ -179,8 +181,8 @@ def lambda_handler(event, context):
 
 	except Exception as e:
 		#	Failed to load config from json
-		print(e)
-		print('Unable to load config from s3://%s/%s' % (bucket, key))
+		debugOutput(e)
+		debugOutput('Unable to load config from s3://%s/%s' % (bucket, key))
 		raise e
 		return 'error'
 		
@@ -193,17 +195,29 @@ def lambda_handler(event, context):
 
 		print("[%s] Checking rig..." % (rig['name']))
 
-		dataFile=rig['dataFile']   # json file with monitoring data
-		minHashRate=rig['minKHs']  # min acceptable hashrate
-		deviceId=rig['deviceId']   # TP-Link deviceId for power cyclcing
-		lastError=rig['lastError'] # The previous error logged
+		dataFile    = rig['dataFile']  # json file with monitoring data
+		minHashRate = rig['minKHs']    # min acceptable hashrate
+		deviceId    = rig['deviceId']  # TP-Link deviceId for power cyclcing
+		lastError   = rig['lastError'] # The previous error logged
+		bootTimestamp = rig['bootTimestamp'] # When the rig was last powercycled
 
-		#	Find out when the data file was last updated	
+		if bootTimestamp != '':
+			#	This server was powercycled recently. Make sure it has 3mins to boot
+			now = int(time.time())
+			uptimeSecs = now - int(bootTimestamp)
+			debugOutput("[%s] Server Uptime: %d secs" % (rig['name'], uptimeSecs))
+			
+			if uptimeSecs < 180:
+				#	Server powercycled in less than 3 mins, skip
+				print("[%s] Rig powercycled %d secs ago. Skipping" % (rig['name'], uptimeSecs))
+				break
+
+		#	Find out when the data file was last updated
 		fileAgeSecs = getS3FileAge(bucket, dataFile) or 0
 		debugOutput("[%s] Last update was %d secs ago" % (rig['name'], fileAgeSecs))
 	
 		#	If file is older than maxAge, there is a problem...
-		#	... the rig has not updated the file and  may be down.
+		#	... the rig has not updated the file and may be down.
 		if fileAgeSecs > maxAge:
 			
 			if testMode == 'true':
@@ -212,8 +226,9 @@ def lambda_handler(event, context):
 				sendMessage("[%s] Rig is down. Powercycling" % (rig['name']))
 				powerCycleRig(deviceId)
 			
-			#	Add error to data file
-			rig['lastError']="Data file not updated within maximum time configured"
+			#	Update json dataFile
+			rig['lastError']="powercycle"
+			rig['bootTimestamp']=int(time.time())
 			jsonToS3File(cfg, "nodes.json")
 
 		else:
@@ -221,9 +236,20 @@ def lambda_handler(event, context):
 			#	File has been updated recently. Check the hashrate
 			print("[%s] Rig is up. Checking hashrate" % (rig['name']))
 
-			#	Read the hashrate from the file
+			#	Read values from dataFile
 			hashrate = getS3JsonData(bucket, dataFile, 'ethhashrate') or 0
+			ethMinerRestartTimestamp = getS3JsonData(bucket, dataFile, 'ethMinerRestartTimestamp') or 0
 			print("[%s] Hashrate: %s" % (rig['name'], hashrate))
+			debugOutput("[%s] ethMinerRestartTimestamp: %d" % (rig['name'], ethMinerRestartTimestamp))
+			
+			#	Find out when the eth miner was last restarted
+			now = int(time.time())
+			ethMinerUptimeSecs = now - int(ethMinerRestartTimestamp)
+			
+			if ethMinerUptimeSecs < 60 and ethMinerUptimeSecs > 0:
+				#	Eth Miner restarted less than 60 secs ago, skip
+				print("[%s] Eth Miner restarted %d secs ago. Skipping" % (rig['name'], uptimeSecs))
+				break
 		
 			if hashrate < minHashRate:
 			
@@ -236,7 +262,8 @@ def lambda_handler(event, context):
 					powerCycleRig(deviceId)
 
 				#	Add error to data file
-				rig['lastError']="Hash rate too low"
+				rig['lastError']="hashrate"
+				rig['bootTimestamp']=int(time.time())
 				jsonToS3File(cfg, "nodes.json")
 			else:
 				#	Update last error in data file
