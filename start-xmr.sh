@@ -38,6 +38,12 @@ XMRPOOLPASS=`readJson config.json XMRPOOLPASS`
 XMRCPUONLY=`readJson config.json XMRCPUONLY`
 XMRCURRENCY=`readJson config.json XMRCURRENCY`
 
+CPUFILE="$WORKINGDIR/conf/xmr-stak/cpu.txt"
+NVIDIAFILE="$WORKINGDIR/conf/xmr-stak/nvidia.txt"
+CFGFILE="$WORKINGDIR/conf/xmr-stak/config.txt"
+
+CONFIG = "--cpu $CPUFILE --nvidia $NVIDIAFILE -c $CFGFILE"
+
 #XMR_WALLET=45kbjV6VRZ3GMPBHktLh9VGgun5nxEwtXS18yL8S23Gu8gvsE31JtMPHo6DwTwi4s4he3r6U5pmmo1ZhMVgsKrECPH3gBsk
 #XMR_POOL=pool.minexmr.com:7777
 #XMR_POOLPASS=x
@@ -46,11 +52,11 @@ XMRCURRENCY=`readJson config.json XMRCURRENCY`
 
 if [ "$XMR_CPUONLY" = "yes" ] ; then
 
-   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY --noNVIDIA"   
+   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY $CONFIG --noNVIDIA"   
 
 else
 
-   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY" 
+   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY $CONFIG" 
 
 fi
 
