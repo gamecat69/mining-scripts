@@ -1,0 +1,464 @@
+#	---------------------------
+#	Nvidia Overclocking notes
+#	---------------------------
+
+#	-------------------
+#	Memory Type notes
+#	-------------------
+
+Samsung and Hynix memory are the best, Macron is cannot be clocked as high without crashes.
+
+#	---------------------------------------------------
+#	Find out the current Core Clock and Memory Speed
+#	---------------------------------------------------
+
+#	Notes:
+- To run from ssh run 'export DISPLAY=:0' before the nvidia-settings command
+  ... because the nvidia tools need to run inside an Xserver session
+
+- If you get an error like this: "WARNING **: Couldn't register with accessibility bus"
+  ... run 'export NO_AT_BRIDGE=1' before the nvidia-settings command
+
+#	nvidia-settings syntax:
+
+nvidia-settings <GPUid>/Query - To query just GPU 0
+nvidia-settings <GPUid>/Query - To query all GPUs
+
+#	Determine which performance mode is being used
+#	It is normally 2
+
+nvidia-settings --query 0/GPUCurrentPerfLevel
+
+#	Determine the max memory and core clock speeds configured for perf mode 2
+nvidia-settings --query 0/GPUPerfModes
+nvidia-settings --query GPUPerfModes
+
+#	The result shows the following for permode 2
+#	It can be changed  : nvclockeditable=1 / memTransferRateeditable=1
+
+#	Current Code Clock : nvclock=253
+#	Current Mem Speed  : memTransferRate=8654
+
+#	Max Core Clock     : nvclockmax=2113
+#	Max Mem Speed      : memTransferRateMax=8654
+
+  perf=2, nvclock=253, nvclockmin=253, nvclockmax=2113,
+  nvclockeditable=1, memclock=4327, memclockmin=4327, memclockmax=4327,
+  memclockeditable=1, memTransferRate=8654, memTransferRatemin=8654,
+  memTransferRatemax=8654, memTransferRateeditable=1 ;
+
+#	Determine the current speeds (formatted)
+nvidia-settings --query 0/GPUCurrentClockFreqs | grep Attribute | sed -r 's/.*([0-9]{4}),([0-9]{4})/Core: \1 Mhz\nMem: \2 Mhz/g'
+
+#	------------------------
+#	Overclocking
+#	------------------------
+
+#	Enable Over Clocking
+
+#	Set CoolBits in Xorg.conf
+#	The following allows full editing (CoolBits=31)
+#	The other commands allow for headless operation
+sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
+reboot
+
+#	Query existing overclock settings
+nvidia-settings --query GPUGraphicsClockOffset | grep Attribute
+nvidia-settings --query GPUMemoryTransferRateOffset | grep Attribute
+
+#	Previous setting
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=760"
+
+#	Examples:
+
+-   0 = nvclockmax=2025
+- 100 = nvclockmax=2113
+- 200 = nvclockmax=2124
+
+#	After running use the above GPUCurrentClockFreqs command to check it has been applied
+
+#	Overclock settings and expected hashrate
+
+#	---------------------------------------------------
+#	Converting MSI After burner to linux OC settings
+#	---------------------------------------------------
+
+#	First, ensure that the cards are not overclocked first.
+#	Get the current (baseline) Core and Mem Clock values in Linux:
+nvidia-settings --query 0/GPUPerfModes
+
+- MSI Core Clock   = Linux perf=2 : nvclockmax
+- MSI Memory Clock = Linux perf=2 : memclockmax
+
+#	Linux command to reach the same MSI after burner settings
+#	First run nvidia-settings --query 0/GPUPerfModes and get the following values:
+#	nvclockmax
+#	memclockmax
+
+Example values:
+nvclockmax=2025
+memclockmax=3802
+
+#	With the values above, run these commands to get the following MSI After burner settings
+
+#	MSI Core Clock=2000
+#	Calculate the difference between the MSI value and the nvclockmax value, then apply
+#	SUM(2000, 2025) = -25
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=-25"
+
+#	MSI Memory Clock=4200
+#	Double both values, then calculate the difference between the MSI value then apply
+#	(2 x MSI-VALUE) - (2 x memclockmax) = 8400 - 7604 = 796
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=796"
+
+#	======================================================
+#	-----------------------
+#	Hash Rates				RIG1 : 6 x mixed GTX 1060 6GB
+#	-----------------------
+#	======================================================
+
+#	Note: GPU0 is the "OC" edition Strix card
+
+#	Baseline
+#	Core   : 2025 1911 1974 2012 1974 1974
+#	Mem    : 7804 7604 7604 7604 7604 7604
+#	Result : GPU0 20.425 Mh/s, GPU1 19.855 Mh/s, GPU2 19.876 Mh/s, GPU3 19.874 Mh/s, GPU4 19.876 Mh/s, GPU5 19.882 Mh/s
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=0"
+
+#	OverClock Core only - level set with GPU0
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 7804 7604 7604 7604 7604 7604
+#	Result : GPU0 20.425 Mh/s, GPU1 19.855 Mh/s, GPU2 19.876 Mh/s, GPU3 19.874 Mh/s, GPU4 19.876 Mh/s, GPU5 19.882 Mh/s
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=0"
+
+#	OverClock Memory to 8364 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8364 8364 8364 8364 8364 8364
+#	Result : All: 22.030 Mhs
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=560"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=760"
+
+#	OverClock Memory to 8464 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8464 8464 8464 8464 8464 8464
+#	Result : All 22.3 Mhs
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=660"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=860"
+
+#	OverClock Memory to 8500 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8500 8500 8500 8500 8500 8500
+#	Result : GPU0 22.397 Mh/s, GPU1 22.365 Mh/s, GPU2 22.384 Mh/s, GPU3 22.404 Mh/s, GPU4 22.393 Mh/s, GPU5 22.391 Mh/s
+#	Ran for 8 hours without any issues
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=696"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=896"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=896"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=896"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=896"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=896"
+
+#	OverClock Memory to 8524 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8524 8524 8524 8524 8524 8524
+#	Result : GPU0 22.469 Mh/s, GPU1 22.488 Mh/s, GPU2 22.494 Mh/s, GPU3 22.498 Mh/s, GPU4 22.493 Mh/s, GPU5 22.496 Mh/s
+#	Ran for 8 hours without any issues
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=720"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=920"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=920"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=920"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=920"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=920"
+
+#	OverClock Memory to 8544 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8544 8544 8544 8544 8544 8544
+#	Result : GPU0 22.514 Mh/s, GPU1 22.501 Mh/s, GPU2 22.504 Mh/s, GPU3 22.484 Mh/s, GPU4 22.477 Mh/s, GPU5 22.511 Mh/s
+#	Ran for 1 hour without any issues. After 8 hrs, the mining sw crashed.
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=740"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=940"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=940"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=940"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=940"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=940"
+
+#	OverClock Memory to 8554 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8554 8554 8554 8554 8554 8554
+#	Result : GPU0 22.558 Mh/s, GPU1 22.547 Mh/s, GPU2 22.548 Mh/s, GPU3 22.537 Mh/s, GPU4 22.554 Mh/s, GPU5 22.562 Mh/s
+#	GPU0 crashed after abotu 1 hr. After miner s/w restarted, hashing at 13.5Mhs!!. Needed rig reboot
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=750"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=950"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=950"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=950"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=950"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=950"
+
+#	OverClock Memory to 8564 Mhz
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8564 8564 8564 8564 8564 8564
+#	Result : GPU0 22.603 Mh/s, GPU1 22.596 Mh/s, GPU2 22.599 Mh/s, GPU3 22.587 Mh/s, GPU4 22.532 Mh/s, GPU5 22.595 Mh/s
+#	*** GPU2 crashed after a few minutes ***
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=104"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=13"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=51"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=760"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=960"
+
+#	======================================================
+#	-----------------------
+#	Hash Rates				RIG2 : 6 x mixed GTX 1060 6GB OC + 6 x AMD RX580
+#	-----------------------
+#	======================================================
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 7804 7804 7804 7804 7804 7804
+#	Result : GPU6 15.972 Mh/s, GPU7 16.089 Mh/s, GPU8 16.087 Mh/s, GPU9 16.069 Mh/s, GPU10 16.069 Mh/s, GPU11 16.022 Mh/s
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=0"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8604 8604 8604 8604 8604 8604
+#	Result : GPU6 18.846 Mh/s, GPU7 18.920 Mh/s, GPU8 18.916 Mh/s, GPU9 18.882 Mh/s, GPU10 18.889 Mh/s, GPU11 18.917 Mh/s
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=800"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=800"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=800"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=800"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=800"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=800"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8664 8664 8664 8664 8664 8664
+#	Result : GPU6 18.936 Mh/s, GPU7 19.046 Mh/s, GPU8 19.065 Mh/s, GPU9 18.982 Mh/s, GPU10 19.050 Mh/s, GPU11 19.009 Mh/s
+#	Normal setting. Runs for days without a crash
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=860"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=860"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8764 8764 8764 8764 8764 8764
+#	Result : GPU6 19.233 Mh/s, GPU7 19.307 Mh/s, GPU8 19.302 Mh/s, GPU9 19.321 Mh/s, GPU10 19.309 Mh/s, GPU11 19.299 Mh/s
+#	Ran for 2 hours
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=960"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=960"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8864 8864 8864 8864 8864 8864
+#	Result : GPU6 19.366 Mh/s, GPU7 19.501 Mh/s, GPU8 19.399 Mh/s, GPU9 19.514 Mh/s, GPU10 19.512 Mh/s, GPU11 19.503 Mh/s
+#	Stopped after 30 minutes
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=1060"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=1060"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1060"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1060"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1060"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1060"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 8964 8964 8964 8964 8964 8964
+#	Result : GPU6 19.672 Mh/s, GPU7 19.766 Mh/s, GPU8 19.756 Mh/s, GPU9 19.766 Mh/s, GPU10 19.781 Mh/s, GPU11 19.779 Mh/s
+#	Ran for 90 mins OK
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=1160"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=1160"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1160"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1160"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1160"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1160"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 9064 9064 9064 9064 9064 9064
+#	Result : GPU6 19.903 Mh/s, GPU7 19.997 Mh/s, GPU8 19.990 Mh/s, GPU9 19.997 Mh/s, GPU10 20.009 Mh/s, GPU11 19.995 Mh/s
+#	Ran for days
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=1260"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=1260"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1260"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1260"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1260"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1260"
+
+#	Core   : 2025 2025 2025 2025 2025 2025
+#	Mem    : 9164 9164 9164 9164 9164 9164
+#	Result : GPU6 20.218 Mh/s, GPU7 20.200 Mh/s, GPU8 20.202 Mh/s, GPU9 20.227 Mh/s, GPU10 20.219 Mh/s, GPU11 20.211 Mh/s
+#	TBC: Started at 19:45 on 13th March
+
+export DISPLAY=:0 && export NO_AT_BRIDGE=1
+nvidia-settings --assign "[gpu:0]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:1]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:2]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:3]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:4]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:5]/GPUGraphicsClockOffset[3]=0"
+nvidia-settings --assign "[gpu:0]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:1]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:2]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:3]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:4]/GPUMemoryTransferRateOffset[3]=1360"
+nvidia-settings --assign "[gpu:5]/GPUMemoryTransferRateOffset[3]=1360"

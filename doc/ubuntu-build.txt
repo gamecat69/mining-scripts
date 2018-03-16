@@ -1,0 +1,261 @@
+#	-----------------------------
+#	Install Linux Mint 18.3 (Ubuntu 16.04)
+#	-----------------------------
+
+#	info: https://www.meebey.net/posts/ethereum_gpu_mining_on_linux_howto/
+#	info: https://github.com/nanopool/genoil-ethereum
+#	info: https://forum.getpimp.org/topic/9/setting-up-motherboards-for-mining
+#	info: https://github.com/one-quaker/linux-rig-tools/blob/master/nvidia_rig_install.sh
+#	AMD Info: http://www.cryptobadger.com/2017/04/build-ethereum-mining-rig-linux/
+
+#	--------------------------------------
+#	BIOS Settings
+#	--------------------------------------
+
+#	MSI GPU BIOS Settings for RX cards
+#	Need to update for Asus BTC Motherboard
+
+#	Under "Integrated Peripherals": -> set HD AUDIO CONTROLLER to DISABLED.
+#	set 4G DECODE to ENABLED.
+#	set PEG1 to "GEN 2"
+#	set PEG2 to "GEN 2"
+#	set PCI Latency to "96 Cycles"
+#	set Advnanced Power Management (APM) to Power On after loss of power
+
+#	-----------------------------
+#	Install OS
+#	-----------------------------
+
+#	Select "Install 3rd party software" option
+#	Select "Erase disk and install Linux Mint"
+# 	Select "Auto disk partitioning" if prompted
+#	Select Timezone and keyboard layout
+#	Give the machine a name
+#	Create a user called "mining", set to auto login
+#	
+
+#	------------------
+#	Configure OS (1)
+#	------------------
+
+#	Create a user, add to video group
+#	Not needed. Done during OS setup
+#	sudo useradd mining -b /home -m
+#	sudo passwd mining
+#	sudo usermod -a -G video mining
+
+#	Update
+sudo apt-get update && sudo apt-get upgrade
+
+#	Install some initial software
+sudo apt-get install -y openssh-server git screen
+
+#	-------------------------
+#	Download mining-scripts
+#	-------------------------
+
+#	Run as user: mining
+
+sudo su mining -c "cd ~ && git clone https://github.com/gamecat69/mining-scripts.git"
+cd ~/mining-scripts
+nano config.json
+./start.sh
+
+#	------------------
+#	Configure OS (1)
+#	------------------
+
+#	Configure swapfile
+sudo fallocate -l 16G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon --show
+
+#	Enable large page support and disable ipv6
+echo "vm.nr_hugepages=128" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+#	Increase limits
+echo "* soft memlock 262144" | sudo tee -a /etc/security/limits.conf
+echo "* hard memlock 262144" | sudo tee -a /etc/security/limits.conf
+
+#	----------------------------
+#	Fix USB Wifi Network issues
+#	----------------------------
+
+#	Only run this section if using an RT8192cu variant
+#	E.G. the Edimax EW-7811
+
+sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms git
+git clone https://github.com/pvaret/rtl8192cu-fixes.git
+sudo dkms add ./rtl8192cu-fixes
+sudo dkms install 8192cu/1.11
+sudo depmod -a
+sudo cp ./rtl8192cu-fixes/blacklist-native-rtl8192.conf /etc/modprobe.d/
+sudo cp ./rtl8192cu-fixes/8192cu-disable-power-management.conf /etc/modprobe.d/
+reboot
+
+#	-----------------------
+#	Nvidia Install
+#	-----------------------
+
+#	Install the latest driver
+#	You can do this through the GUI in the "Drivers" util
+#	Or do it manually like so....
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+
+#	Update 384 to whatever version is needed
+#	e.g. 367 / 387 / 390 etc
+NVIDIA_VERSION=390
+sudo apt install nvidia-${NVIDIA_VERSION} nvidia-${NVIDIA_VERSION}-dev
+
+#	Test
+#	nvidia-smi
+
+#	Cuda Install
+#	---------------
+
+#	Try this first, if it does work, read on...
+NVIDIA_VERSION=390
+sudo apt install -y nvidia-$NVIDIA_VERSION-dev nvidia-$NVIDIA_VERSION nvidia-cuda-toolkit libcuda1-$NVIDIA_VERSION
+
+
+#	Info: https://github.com/tmcdonell/travis-scripts.
+
+set -e
+export CUDA_VER=9.0.176-1
+sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
+wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1604_${CUDA_VER}_amd64.deb
+sudo apt-get update -qq
+export CUDA_APT=${CUDA_VER:0:3}
+export CUDA_APT=${CUDA_APT/./-}
+sudo apt-get install -qy cuda-core-${CUDA_APT} cuda-cudart-dev-${CUDA_APT}
+sudo apt-get clean
+export CUDA_HOME=/usr/local/cuda-${CUDA_VER:0:3}
+export PATH=${CUDA_HOME}/bin:${PATH}
+
+
+#	Configure Nvidia cards
+#	-------------------------------
+
+#	Enable Overclocking on all cards
+#	Enable headless operations
+#sudo nvidia-xconfig -a --allow-empty-initial-configuration --cool-bits=31 --use-display-device="DFP-0" --no-connected-monitor
+sudo nvidia-xconfig --allow-empty-initial-configuration --enable-all-gpus --cool-bits=31 --separate-x-screens
+
+#	Add a call to configure the GPUs into /etc/rc.local
+sudo sed -i -e 's/^exit 0/\/home\/mining\/mining-scripts\/nvidia-oc.sh > \/home\/mining\/nvidia-oc.log\nexit 0/' /etc/rc.local
+reboot
+
+
+#	-----------------------
+#	AMD Install
+#	-----------------------
+
+#	Install Blockchain drivers
+#	Find latest here? https://support.amd.com/en-us/kb-articles/Pages/Radeon-Software-for-Linux-Release-Notes.aspx
+cd ~/Downloads
+wget --referer=http://support.amd.com https://www2.ati.com/drivers/linux/beta/ubuntu/amdgpu-pro-17.40-483984.tar.xz
+tar -Jxvf amdgpu-pro-17.40-483984.tar.xz
+#	Add linuxmint as a support os in file amdgpu-pro-install
+set -e
+export OSID=$(cat /etc/os-release | grep -m 1 '^ID=' | sed -r 's/^ID=//')
+sed -i -e "s/ubuntu/ubuntu|$OSID/" amdgpu-pro-17.40-483984/amdgpu-pro-install
+#	Install drivers
+cd amdgpu-pro-17.40-483984 && ./amdgpu-pro-install -y
+
+#	Install and configure ROCm
+sudo apt install -y rocm-amdgpu-pro
+echo 'export LLVM_BIN=/opt/amdgpu-pro/bin' | sudo tee /etc/profile.d/amdgpu-pro.sh
+
+#	Enable larger page support for AMD
+#	sudo nano /etc/default/grub
+#	GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amdgpu.vm_fragment_size=9"
+sudo sed -i -e 's/quiet splash/quiet splash amdgpu.vm_fragment_size=9 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1/' /etc/default/grub
+sudo update-grub
+sudo reboot
+
+#	-------------------------------
+#	Install xmr-stak (Monero)
+#	-------------------------------
+
+#	This installs to /home/<username>/xmr-stak
+sudo apt install -y libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev git
+cd ~
+git clone https://github.com/fireice-uk/xmr-stak.git
+cd xmr-stak
+cmake -DOpenCL_ENABLE=OFF .
+make install
+
+#	Configure, this creates the required config files
+#	This is skipped now, as the config files are pulled down from github
+#	cpu.txt + config.txt
+#	cd ~
+#	/home/<username>/xmr-stak/bin/xmr-stak
+
+#	------------------------------
+#	Install Claymore ETH miner
+#	------------------------------
+
+#	Get latest version from here: https://bitcointalk.org/index.php?topic=1433925.0
+#	https://drive.google.com/drive/folders/0B69wv2iqszefdFZUV2toUG5HdlU
+
+cd ~/Downloads
+mkdir /home/mining/cminer11.4
+mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.2 - LINUX.tar.gz" cminer11.4.tar.gz
+tar -xvf cminer11.2.tar.gz
+mv "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.4 - LINUX" cminer11.4
+cp -r "Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal_Blake2s_Keccak AMD+NVIDIA GPU Miner v11.4 - LINUX/*" /home/mining/cminer11.4/
+
+#	-------------------------------
+#	Install ethminer
+#	-------------------------------
+
+#	info: https://github.com/ethereum-mining/ethminer
+
+cd Downloads
+wget https://github.com/ethereum-mining/ethminer/releases/download/v0.13.0/ethminer-0.13.0-Linux.tar.gz
+mkdir ~/ethminer
+tar -xvf ethminer-0.13.0-Linux.tar.gz ~/ethminer
+
+#	-------------------------------
+#	Install zminer (BTCP)
+#	-------------------------------
+
+cd ~/Downloads
+wget https://github.com/rewrewby/miner_dstm/releases/download/BTCPv0.6/BTCP-zm_0.6.tar.gz
+tar -xvf BTCP-zm_0.6.tar.gz
+mkdir /home/mining/zminer
+cp -r zm_0.6/* /home/mining/zminer/
+
+#	-----------------------------------
+#	Start the miner up!
+#	-----------------------------------
+
+cd ~/mining-scripts
+./start.sh
+
+#	If the above runs OK, configure start.sh to run as a startup script in Ubuntu :)
+#	Need to figure out how to automate this part
+
+#	----------------------
+#	Useful commands
+#	----------------------
+
+#	List all connected VGA cards
+lshw -class Video | grep product
+
+#	Clone a drive. confirm the right drives first by running lsblk
+#	This clones /dev/sda to /dev/sdb
+dd if=/dev/sda of=/dev/sdb bd=4M
+
+#	Create a user and add to the sudo group
+useradd -m <username> -G sudo
+passwd <username>
