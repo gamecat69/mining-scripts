@@ -46,11 +46,11 @@ XMRCURRENCY=`readJson config.json XMRCURRENCY`
 
 if [ "$XMR_CPUONLY" = "yes" ] ; then
 
-   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMR_POOL -u $XMR_WALLET -p $XMR_POOLPASS --currency  $XMR_CURRENCY --noNVIDIA"   
+   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY --noNVIDIA"   
 
 else
 
-   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMR_POOL -u $XMR_WALLET -p $XMR_POOLPASS --currency  $XMR_CURRENCY" 
+   MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY" 
 
 fi
 
