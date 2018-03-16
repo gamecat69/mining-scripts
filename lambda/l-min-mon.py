@@ -228,6 +228,7 @@ def lambda_handler(event, context):
 			
 			#	Update json dataFile
 			rig['lastError']="powercycle"
+			debugOutput("[%s] Updating bootTimestamp to %d" % (rig['name'], int(time.time())))
 			rig['bootTimestamp']=int(time.time())
 			jsonToS3File(cfg, "nodes.json")
 
@@ -247,9 +248,9 @@ def lambda_handler(event, context):
 			print("[%s] Current timestamp: %d" % (rig['name'], now))
 			ethMinerUptimeSecs = now - int(ethMinerRestartTimestamp)
 			
-			if ethMinerUptimeSecs < 60 and ethMinerUptimeSecs > 0:
+			if ethMinerUptimeSecs < 80 and ethMinerUptimeSecs > 0:
 				#	Eth Miner restarted less than 60 secs ago, skip
-				print("[%s] Eth Miner restarted %d secs ago. Skipping" % (rig['name'], uptimeSecs))
+				print("[%s] Eth Miner restarted %d secs ago. Skipping" % (rig['name'], ethMinerUptimeSecs))
 				break
 		
 			if hashrate < minHashRate:
@@ -264,6 +265,7 @@ def lambda_handler(event, context):
 
 				#	Add error to data file
 				rig['lastError']="hashrate"
+				debugOutput("[%s] Updating bootTimestamp to %d" % (rig['name'], int(time.time())))
 				rig['bootTimestamp']=int(time.time())
 				jsonToS3File(cfg, "nodes.json")
 			else:
