@@ -50,7 +50,7 @@ CONFIG="--cpu $CPUFILE --nvidia $NVIDIAFILE -c $CFGFILE"
 #XMR_CPUONLY=yes
 #XMR_CURRENCY=monero
 
-if [ "$XMR_CPUONLY" = "yes" ] ; then
+if [ "$XMRCPUONLY" = "yes" ] ; then
 
    MININGCMD="/home/mining/xmr-stak/bin/xmr-stak -o $XMRPOOL -u $XMRWALLET -p $XMRPOOLPASS --currency  $XMRCURRENCY $CONFIG --noNVIDIA"   
 
