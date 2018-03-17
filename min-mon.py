@@ -198,7 +198,7 @@ def writeHTML():
 		logError("writeHTML: Unable to open HTML template" + str(e))
 		return "Error"
 	
-	data = string.replace(data, '$minername', str(data['minername']))
+	data = string.replace(data, '$minername', str(cfg["MINERNAME"])
 	data = string.replace(data, '$lastupdate', str(data['lastupdate']))
 	data = string.replace(data, '$systemuptime', str(data['systemuptime']))
 	data = string.replace(data, '$avggputemp', str(data['avggputemp']))
@@ -261,19 +261,8 @@ def getxmrStakData():
 		#subprocess.Popen(["./start-xmr.sh"])
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
-	
-	#js=json.loads(j.decode("utf-8"))
+
 	xmrJson=json.loads(j.decode("utf-8"))
-	
-	print(j)
-	print('--------------\n\n')
-	print(xmrJson)
-	
-	#xmrJson = unicodeToAscii(xmrJson)
-	#xmrJson=json.dumps(xmrJson)
-	#xmrJson = json.loads(data)
-	
-	#print(xmrJson)
 	
 	xmrShares     = int(xmrJson['results']['shares_good'])
 	#xmrShares = int(xmrShares)
@@ -283,8 +272,6 @@ def getxmrStakData():
 	#xmrPoolAddr   = xmrJson["connection"]["pool"]
 	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
 	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
-
-	print ( type(xmrJson["connection"]["pool"]) )
 
 	xmrtotalshares = xmrJson["results"]["shares_good"]
 	xmrversion     = xmrJson["version"]
@@ -662,7 +649,7 @@ data = {}
 cfg = json.load(open('config.json'))
 
 #	Push miner name into the data dict
-data['minername']=cfg["MINERNAME"]
+#data['minername']=cfg["MINERNAME"]
 
 miningRootDir  = "/home/mining/mining-scripts"
 ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
