@@ -272,7 +272,7 @@ def getxmrStakData():
 	#xmrJson = unicodeToAscii(xmrJson)
 	xmrJson=json.dumps(xmrJson)
 	
-	xmrShares     = int(xmrJson["results"]["shares_good"])
+	xmrShares     = int(xmrJson['results']['shares_good'])
 	
 	#xmrVersion    = xmrJson["version"]
 	#xmrHashRate   = int(xmrJson["hashrate"]["total"][0]) or 0
