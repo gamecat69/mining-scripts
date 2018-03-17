@@ -17,44 +17,42 @@ import socket
 #	pip install boto3 requests
 #	----------------------------------
 
-#global gpuDetails
-
 gpuDetails     = []
-numGPU         = ''
-avgGPUTemp     = ''
-avgGPUFanSpeed = ''
-avgGPUHashRate = ''
+# numGPU         = ''
+# avgGPUTemp     = ''
+# avgGPUFanSpeed = ''
+# avgGPUHashRate = ''
 
-ethVersion    = ''
-ethHashRate   = ''
-ethPoolAddr   = ''
-ethShares     = ''
-ethUptime     = ''
-ethSharePerHr = ''
+# ethVersion    = ''
+# ethHashRate   = ''
+# ethPoolAddr   = ''
+# ethShares     = ''
+# ethUptime     = ''
+# ethSharePerHr = ''
 ethMinerRestartTimestamp = 0
 
-btcpVersion    = ''
-btcpHashRate   = ''
-btcpPoolAddr   = ''
-btcpShares     = ''
-btcpUptime     = ''
-btcpSharePerHr = ''
+# btcpVersion    = ''
+# btcpHashRate   = ''
+# btcpPoolAddr   = ''
+# btcpShares     = ''
+# btcpUptime     = ''
+# btcpSharePerHr = ''
 
 btcpEarned     = 0.0
 ethEarned      = 0.0
 xmrEarned      = 0.0
 
-xmrUSD        = ''
-ethUSD        = ''
-btcpUSD       = ''
+# xmrUSD        = ''
+# ethUSD        = ''
+# btcpUSD       = ''
 
-xmrPoolAddr   = ''
-xmrShares     = ''
-xmrUptime     = ''
-xmrSharePerHr = ''
-xmrErrors     = ''
-xmrVersion    = ''
-xmrHashRate   = ''
+# xmrPoolAddr   = ''
+# xmrShares     = ''
+# xmrUptime     = ''
+# xmrSharePerHr = ''
+# xmrErrors     = ''
+# xmrVersion    = ''
+# xmrHashRate   = ''
 xmrMinerRestartTimestamp = 0
 
 #	----------------------------------
