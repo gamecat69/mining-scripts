@@ -690,4 +690,4 @@ uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '')
 uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')
 
 for k in data:
-	print k
+	print ("data['" + k + "']=''")
