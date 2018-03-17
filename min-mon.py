@@ -269,7 +269,9 @@ def getxmrStakData():
 		return "Error"
 	
 	xmrJson = json.loads(data)
-	xmrJson = unicodeToAscii(xmrJson)
+	#xmrJson = unicodeToAscii(xmrJson)
+	xmrJson=json.dumps(xmrJson)
+	
 	xmrShares     = int(xmrJson["results"]["shares_good"])
 	
 	#xmrVersion    = xmrJson["version"]
