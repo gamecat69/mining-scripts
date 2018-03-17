@@ -647,6 +647,32 @@ def getEarnedCoins():
 
 #	Initialize dict object to hold collected data
 data = {}
+data['xmrEarned']=''
+data['xmruptimemins']=''
+data['xmrsharesperhour']=''
+data['btcpusd']=''
+data['xmrhashrate']=''
+data['ethusd']=''
+data['xmrversion']=''
+data['ethtotalshares']=''
+data['lastupdate']=''
+data['xmrtotalshares']=''
+data['avggpuhashrate']=''
+data['systemuptime']=''
+data['ethhashrate']=''
+data['minername']=''
+data['numGPU']=''
+data['ethsharesperhour']=''
+data['ethpool']=''
+data['xmrerrors']=''
+data['btcpEarned']=''
+data['avggputemp']=''
+data['xmrpool']=''
+data['ethEarned']=''
+data['xmruptime']=''
+data['ethuptime']=''
+data['avggpufanspeed']=''
+data['xmrusd']=''
 
 #	Get config from json
 cfg = json.load(open('config.json'))
@@ -689,5 +715,5 @@ time.sleep(1)
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '')
 uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')
 
-for k in data:
-	print ("data['" + k + "']=''")
+#for k in data:
+#	print ("data['" + k + "']=''")
