@@ -2,8 +2,12 @@
 
 SCRIPT_NAME="NVIDIA-OC"
 
+#	Needs this because it runs as root from/etc/rc.local
+WORKINGDIR=/home/mining/mining-scripts
+cd $WORKINGDIR
+
 #	Load common functions and paramaters
-source /home/mining/mining-scripts/bash-functions.sh
+source ./bash-functions.sh
 termColours
 LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
