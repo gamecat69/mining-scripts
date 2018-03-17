@@ -199,7 +199,7 @@ def getxmrStakData():
 	data['xmrsharesperhour'] = str(xmrsharesperhour)
 	data['xmrerrors'] = xmrJson["connection"]["error_log"]
 
-def uploadToAWS(dir, file, prefix):
+def uploadToAWS(dir, file, prefix, contentType):
 
 	#if prefix == '':
 	#	prefix = '/'
@@ -218,14 +218,14 @@ def uploadToAWS(dir, file, prefix):
 	
 	try:
 		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
-		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
+		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType': contentType})
 	except Exception as e:
 		logError("uploadToAWS: Unable to upload file (Attempt 1)" + str(e))
 		
 		#	Retry upload...
 		try:
 			s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
-			s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType':'text/html'})
+			s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType': contentType})
 		except Exception as e:
 			logError("uploadToAWS: Unable to upload file (Attempt 2)" + str(e))
 			return "Error"
@@ -592,8 +592,8 @@ writeJSON()
 
 #	Add a pause to try and stop occasional S3upload Bad Digest error
 time.sleep(1)
-uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '')
-uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')
+uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '', 'text/html')
+uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/', 'application/json')
 
 #for k in data:
 #	print ("data['" + k + "']=''")
