@@ -268,7 +268,7 @@ def getxmrStakData():
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
-	xmrJson = json.loads(data)
+	xmrJson = json.loads(data, ensure_ascii=True)
 	
 	print(data)
 	print('--------------\n\n')
