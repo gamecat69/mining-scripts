@@ -273,7 +273,7 @@ def getxmrStakData():
 
 	#xmrtotalshares = 0
 	#xmrtotalshares = int(xmrJson["results"]["shares_good"])
-	data['xmrtotalshares'] = xmrJson["results"]["shares_good"].decode('utf-8')
+	int(data['xmrtotalshares']) = xmrJson["results"]["shares_good"]
 	data['xmrversion']     = xmrJson["version"]
 	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
 	data['xmrpool']        = xmrJson["connection"]["pool"]
