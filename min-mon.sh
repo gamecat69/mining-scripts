@@ -7,9 +7,6 @@ source ./bash-functions.sh
 termColours
 LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-#	Create logdir if needed
-mkdir -p "$WORKINGDIR/logs"
-
 #	Rotate log
 rotateLog $SCRIPT_NAME
 
@@ -39,7 +36,7 @@ do
    let INTERATIONS+=1
    
    #	Rotate log after 10 interations
-   if [ $INTERATIONS -ge 2 ]; then
+   if [ $INTERATIONS -ge 10 ]; then
       output "" "[i] Rotating log file"
       rotateLog $SCRIPT_NAME
       INTERATIONS=0

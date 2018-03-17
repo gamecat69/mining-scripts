@@ -1,55 +1,27 @@
 #!/bin/bash
 
-#	-------------------------------------
-#	Function to get data from json file
-#	-------------------------------------
-
 SCRIPT_NAME="NVIDIA-MON"
 
-function readJson {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
+#	Rotate log
+rotateLog $SCRIPT_NAME
 
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
-
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
-
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
+#WORKINGDIR=/home/mining/mining-scripts
+#cd $WORKINGDIR
 
 OUTFILE=`readJson config.json OUTFILE`
 QUERYCOLUMNS=`readJson config.json QUERYCOLUMNS`
 WAITTIMESECS=`readJson config.json WAITTIMESECS`
 MAXHOURSPERLOG=`readJson config.json MAXHOURSPERLOG`
 
-#OUTFILE=~/nvidia-mon.log
-#QUERYCOLUMNS="timestamp,index,gpu_name,gpu_bus_id,fan.speed,pstate,clocks_throttle_reasons.hw_slowdown,utilization.gpu,temperature.gpu,power.draw,clocks.gr"
-#WAITTIMESECS=300
-#MAXHOURSPERLOG=4
-
 #   Calc when to cycle log file
 MAXITERATIONS=$((3600/$WAITTIMESECS*$MAXHOURSPERLOG))
 
-output "Writing to $OUTFILE every $WAITTIMESECS secs"
+output "" "[i] Writing to $OUTFILE every $WAITTIMESECS secs"
 
 #   Init logfile
 echo $QUERYCOLUMNS > $OUTFILE
@@ -60,7 +32,7 @@ do
 
    #   Cycle log file if max reached
    if [ $i = $MAXITERATIONS ] ; then
-      output "Cycling logfile"
+      output "$BLUE" "[i] Cycling logfile"
       cp $OUTFILE $OUTFILE.old
       rm $OUTFILE
       i=1
@@ -70,6 +42,5 @@ do
    sleep $WAITTIMESECS
    let i=$i+1
    REMAININGITERATIONS=$(($MAXITERATIONS - $i))
-   #echo "$OUTFILE will be cycled in $REMAININGITERATIONS iterations"
 
 done
