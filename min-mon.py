@@ -282,9 +282,9 @@ def getxmrStakData():
 
 	#	Prevent a divide by zero error
 	if xmruptimemins > 0 and xmrShares > 0:
-		data['xmrsharesperhour'] = "{0:.2f}".format(xmrtotalshares / ( xmruptimemins / 60 ))
+		xmrsharesperhour = "{0:.2f}".format(xmrtotalshares / ( xmruptimemins / 60 ))
 	else:
-		data['xmrsharesperhour'] = 0
+		xmrsharesperhour = 0
 	
 	data['xmrtotalshares'] = str(xmrtotalshares)
 	data['xmrhashrate'] = str(xmrhashrate)
@@ -292,6 +292,7 @@ def getxmrStakData():
 	data['xmrpool'] = str(xmrpool)
 	data['xmruptimemins'] = str(xmruptimemins)
 	data['xmruptime'] = str(xmruptime)
+	data['xmrsharesperhour'] = str(xmrsharesperhour)
 	
 	#xmrErrors     = xmrJson["connection"]["error_log"]
 	data['xmrerrors'] = xmrJson["connection"]["error_log"]
