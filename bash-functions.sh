@@ -4,7 +4,7 @@
 #	Common variables
 #	------------------
 
-WORKINGDIR="."
+WORKINGDIR="/home/mining/mining-scripts"
 LOGDIR="$WORKINGDIR/logs"
 CONFIG_FILE="../config-sample.json"
 
