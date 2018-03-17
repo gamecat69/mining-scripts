@@ -254,7 +254,7 @@ def getxmrStakData():
 
 	try:
 		data = getURL(cfg["XMRSTAKURL"])
-		xmrJson = json.loads(data)
+		xmrJson = json.loads(data.decode("utf-8"))
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
