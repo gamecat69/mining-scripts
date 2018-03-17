@@ -11,36 +11,6 @@ source ./bash-functions.sh
 termColours
 LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-# function readJson {
-# 
-# 	UNAMESTR=`uname`
-# 	if [[ "$UNAMESTR" == 'Linux' ]]; then
-#     	SED_EXTENDED='-r'
-# 	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-#     	SED_EXTENDED='-E'
-# 	fi;
-# 
-# 	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-# 
-# 	if [ ! "$VALUE" ]; then
-# 		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-# 		exit 1;
-# 	else
-# 		echo $VALUE ;
-# 	fi;
-# 
-# }
-# 
-# function output {
-# 
-# 	NOW=$(date +"%d-%m-%Y %T")
-# 	echo -e "$NOW [$SCRIPT_NAME] $@"
-# 
-# }
-# 
-# WORKINGDIR=/home/mining/mining-scripts
-# cd $WORKINGDIR
-
 GPUOVERCLOCK[0]=`readJson config.json GPUOVERCLOCK_0`
 GPUOVERCLOCK[1]=`readJson config.json GPUOVERCLOCK_1`
 GPUOVERCLOCK[2]=`readJson config.json GPUOVERCLOCK_2`

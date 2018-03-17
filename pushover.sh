@@ -2,32 +2,13 @@
 
 SCRIPT_NAME="PUSHOVER"
 
-function readJson {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
-
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
-
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
+#	Rotate log
+rotateLog $SCRIPT_NAME
 
 urlencode() {
     # urlencode <string>
@@ -42,8 +23,8 @@ urlencode() {
     done
 }
 
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
+#WORKINGDIR=/home/mining/mining-scripts
+#cd $WORKINGDIR
 
 PUSHOVER_USER=`readJson config.json PUSHOVER_USER`
 PUSHOVER_TOKEN=`readJson config.json PUSHOVER_TOKEN`
@@ -51,7 +32,6 @@ CURLBIN=`readJson config.json CURLBIN`
 
 TITLE=$(urlencode "$1")
 MSG=$(urlencode "$2")
-#CURLBIN=/usr/bin/curl
 
 PUSHOVER_CMD="$CURLBIN -s \
 -d user=$PUSHOVER_USER \
@@ -60,8 +40,8 @@ PUSHOVER_CMD="$CURLBIN -s \
 -d title=$TITLE \
 https://api.pushover.net/1/messages.json"
 
-output "Running Pushover command:"
-output $PUSHOVER_CMD
+output "$BLUE" "[i] Running Pushover command:"
+output "$GREEN" "[i] $PUSHOVER_CMD"
 $PUSHOVER_CMD
-output "..."
+output "$BLUE" "[i] ..."
 
