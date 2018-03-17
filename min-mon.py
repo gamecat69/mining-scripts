@@ -520,6 +520,7 @@ data['xmrtotalshares']=''
 data['xmrerrors']=''
 data['xmrpool']=''
 data['xmruptime']=''
+data['xmrMinerRestartTimestamp']=0
 
 data['ethusd']=''
 data['xmrusd']=''
@@ -531,6 +532,7 @@ data['ethsharesperhour']=''
 data['ethpool']=''
 data['ethuptime']=''
 data['ethEarned']=''
+data['ethMinerRestartTimestamp']=0
 
 data['lastupdate']=''
 data['avggpuhashrate']=''
