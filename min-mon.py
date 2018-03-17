@@ -217,6 +217,7 @@ def getxmrStakData():
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
+		data['xmrMinerRestartTimestamp'] = xmrMinerRestartTimestamp
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
 		#subprocess.Popen(["./start-xmr.sh"])
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
@@ -327,6 +328,7 @@ def getEthminerData():
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		ethMinerRestartTimestamp = int(time.time())
+		data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
 		print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		#subprocess.Popen(["./start-eth-ethminer.sh"])
@@ -437,17 +439,6 @@ def getZminerData():
 	gpuHashRates = []
 	gpuTemps     = []
 	gpuFanSpeeds = []
-
-	#global btcpVersion
-	#global btcpHashRate
-	#global btcpPoolAddr
-	#global btcpShares
-	#global btcpUptime
-	#global btcpSharePerHr
-	#global avgGPUTemp
-	#global avgGPUFanSpeed
-	#global numGPU
-	#global avgGPUHashRate
 
 	host = "127.0.0.1"
 	port = 2222
@@ -611,29 +602,38 @@ data = {}
 data['xmrEarned']=''
 data['xmruptimemins']=''
 data['xmrsharesperhour']=''
-data['btcpusd']=''
 data['xmrhashrate']=''
-data['ethusd']=''
 data['xmrversion']=''
-data['ethtotalshares']=''
-data['lastupdate']=''
 data['xmrtotalshares']=''
-data['avggpuhashrate']=''
-data['systemuptime']=''
+data['xmrerrors']=''
+data['xmrpool']=''
+data['xmruptime']=''
+
+data['ethusd']=''
+data['xmrusd']=''
+data['btcpusd']=''
+
+data['ethtotalshares']=''
 data['ethhashrate']=''
-data['minername']=''
-data['numGPU']=''
 data['ethsharesperhour']=''
 data['ethpool']=''
-data['xmrerrors']=''
-data['btcpEarned']=''
-data['avggputemp']=''
-data['xmrpool']=''
-data['ethEarned']=''
-data['xmruptime']=''
 data['ethuptime']=''
+data['ethEarned']=''
+
+data['lastupdate']=''
+data['avggpuhashrate']=''
+data['systemuptime']=''
+data['minername']=''
+data['numGPU']=''
+data['avggputemp']=''
 data['avggpufanspeed']=''
-data['xmrusd']=''
+
+data['btcphashrate']=''
+data['btcpshares']=''
+data['btcpuptime']=''
+data['btcptotalshares']=''
+data['btcppool']=''
+data['btcpEarned']=''
 
 #	Get config from json
 cfg = json.load(open('config.json'))
