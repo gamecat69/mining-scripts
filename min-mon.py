@@ -239,12 +239,6 @@ def writeHTML():
 		logError("writeHTML: Unable to open HTML outputfile" + str(e))
 		return "Error"
 
-def unicodeToAscii(x):
-    def unicode_to_str(x):
-        return x.normalize("NFKD").encode("ascii", "ignore")
-
-    return {unicode_to_str(k): unicode_to_str(v) for k, v in x.items()}
-
 def getxmrStakData():
 
 	#global xmrVersion
@@ -259,7 +253,7 @@ def getxmrStakData():
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
 	try:
-		data = getURL(cfg["XMRSTAKURL"])
+		j = getURL(cfg["XMRSTAKURL"])
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
@@ -268,9 +262,10 @@ def getxmrStakData():
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
-	xmrJson = json.loads(data)
+	#js=json.loads(j.decode("utf-8"))
+	xmrJson=json.loads(j.decode("utf-8"))
 	
-	print(data)
+	print(j)
 	print('--------------\n\n')
 	print(xmrJson)
 	
@@ -382,11 +377,6 @@ def getEthminerData():
 		j=s.recv(2048)
 		s.close()		
 		js=json.loads(j.decode("utf-8"))
-
-		print(j)
-		print('--------------\n\n')
-		print(js)
-
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		ethMinerRestartTimestamp = int(time.time())
