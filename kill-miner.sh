@@ -1,31 +1,31 @@
 #!/bin/bash
 
+#	Set this for every script
 SCRIPT_NAME="KILLMINER"
 
-function output {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
-
-output "Killing cminer"
+#	Kill any previous processes
+output "" "[i] Killing cminer"
 pkill -f ethdcrminer64
 
-output "Killing ethminer"
+output "" "[i] Killing ethminer"
 pkill -f ethminer
 
-output "Killing zminer"
+output "" "[i] Killing zminer"
 pkill -f "zm --server"
 
-output "Killing NVIDIA logging"
+output "" "[i] Killing NVIDIA logging"
 pkill -f nvidia-mon
 
-output "Killing xmr-stak"
+output "" "[i] Killing xmr-stak"
 pkill -f xmr-stak
 
-output "Killing wifi-mon"
+output "" "[i] Killing wifi-mon"
 pkill -f wifi-mon
 
-output "Killing min-mon"
+output "" "[i] Killing min-mon"
 pkill -f min-mon

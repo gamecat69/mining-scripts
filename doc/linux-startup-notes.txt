@@ -14,21 +14,16 @@
 
 #	After X has started
 #	User: ??????
-/etc/xinit.rc
+~/xinit.rc
 
-#	When you login
+#	When any user logs in
+#	User: Currently logged in user
+/etc/.profile
+
+#	When a specific users logs in
 #	User: Currently logged in user
 ~/.profile
 
-#	When you start a bash session
+#	Launched by ~/.profile
 #	User: Currently logged in user
 ~/.bashrc
-
-
-#	Mum Birthday
-Fly to UK on 30th
-Go walking on Sat/Sun
-Meal with Mum on Sat/Sun
-Buy perfume and tea from Leopolds
-
-
