@@ -69,8 +69,7 @@ def writeJSON():
 	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
 
 	#data = {}
-
-	data['minername']=cfg["MINERNAME"]
+	#data['minername']=cfg["MINERNAME"]
 	#data['lastupdate']=lastUpdate
 	#data['systemuptime']=sysUptime
 	#data['avggputemp']=str(avgGPUTemp)
@@ -665,7 +664,7 @@ getEarnedCoins()
 
 data['xmrusd'] = getCoinUSD('monero')
 data['ethusd'] = getCoinUSD('ethereum')
-data['btcpusd'] ''
+data['btcpusd'] = ''
 writeHTML()
 writeJSON()
 
