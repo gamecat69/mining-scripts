@@ -199,7 +199,7 @@ def writeHTML():
 		return "Error"
 	
 	data = string.replace(data, '$minername', str(cfg["MINERNAME"]))
-	data = string.replace(data, '$lastupdate', str(data['lastupdate']))
+	data = string.replace(data, '$lastupdate', str(data.lastupdate))
 	data = string.replace(data, '$systemuptime', str(data['systemuptime']))
 	data = string.replace(data, '$avggputemp', str(data['avggputemp']))
 	data = string.replace(data, '$avggpufanspeed', str(data['avggpufanspeed']))
