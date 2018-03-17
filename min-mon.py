@@ -578,11 +578,12 @@ def getEarnedCoins():
 	#	Get Zminer (BTCP) info
 	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
 	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
+		j = getURL(url)
+		js=json.loads(j.decode("utf-8"))
 		js = unicodeToAscii(js)
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		data['btcpEarned'] = ''
 		return "Error"
 
 	data['btcpEarned'] = js["balance"] + js["paid"]
@@ -592,10 +593,11 @@ def getEarnedCoins():
 	data['ethEarned'] = 0
 	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
 	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
+		j = getURL(url)
+		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		data['ethEarned'] = ''
 		return "Error"
 	
 	data['ethEarned'] = js["data"]
@@ -605,10 +607,11 @@ def getEarnedCoins():
 	#	Get ETH payments
 	url = cfg["ETHMINERSTATSURL"] + '/payments/' + cfg["ETHWALLET"]
 	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
+		j = getURL(url)
+		js=json.loads(j.decode("utf-8"))
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		data['ethEarned'] = ''
 		return "Error"
 
 	for payment in js["data"]:
@@ -620,8 +623,8 @@ def getEarnedCoins():
 	#	Other apis: live_stats, stats_address
 	url = cfg["XMRMINERSTATSURL"] + cfg["XMRWALLET"]
 	try:
-		data = getURL(url)
-		js=json.loads(data.decode("utf-8"))
+		j = getURL(url)
+		js=json.loads(j.decode("utf-8"))
 		
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
@@ -681,7 +684,7 @@ data['xmrusd'] = getCoinUSD('monero')
 data['ethusd'] = getCoinUSD('ethereum')
 data['btcpusd'] = ''
 
-print(data)
+#print(data)
 
 writeHTML()
 writeJSON()
