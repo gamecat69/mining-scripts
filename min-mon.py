@@ -260,8 +260,6 @@ def getxmrStakData():
 
 	try:
 		data = getURL(cfg["XMRSTAKURL"])
-		xmrJson = json.loads(data.decode("utf-8"))
-		xmrJson = unicodeToAscii(xmrJson)
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
@@ -270,6 +268,8 @@ def getxmrStakData():
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
+	xmrJson = json.loads(data)
+	xmrJson = unicodeToAscii(xmrJson)
 	xmrShares     = int(xmrJson["results"]["shares_good"])
 	
 	#xmrVersion    = xmrJson["version"]
