@@ -53,7 +53,7 @@ function output {
 	NOW=$(date +"%d-%m-%Y %T")
 	[[ "$1" != '' ]] && COLOUR=$1 || COLOUR=$NC
 	echo -e "$COLOUR$NOW ($SCRIPT_NAME)${@:1}${NC}"
-	echo -e "$NOW ($SCRIPT_NAME)${@:1}" >> $LOGFILE
+	echo -e "$NOW ($SCRIPT_NAME)${@:2}" >> $LOGFILE
 
 	return 0
 
