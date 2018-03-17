@@ -198,7 +198,7 @@ def writeHTML():
 		logError("writeHTML: Unable to open HTML template" + str(e))
 		return "Error"
 	
-	data = string.replace(data, '$minername', str(cfg["MINERNAME"])
+	data = string.replace(data, '$minername', str(cfg["MINERNAME"]))
 	data = string.replace(data, '$lastupdate', str(data['lastupdate']))
 	data = string.replace(data, '$systemuptime', str(data['systemuptime']))
 	data = string.replace(data, '$avggputemp', str(data['avggputemp']))
