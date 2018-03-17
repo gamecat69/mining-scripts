@@ -2,6 +2,10 @@
 
 SCRIPT_NAME="START"
 
+#	Needs this because it runs as root from/etc/rc.local
+WORKINGDIR=/home/mining/mining-scripts
+cd $WORKINGDIR
+
 #	Load common functions and paramaters
 source ./bash-functions.sh
 termColours
@@ -12,12 +16,6 @@ mkdir -p "$WORKINGDIR/logs"
 
 #	Rotate log
 rotateLog $SCRIPT_NAME
-
-#	Get this from bash-functions.sh
-#WORKINGDIR=/home/mining/mining-scripts
-#LOGFILE="$WORKINGDIR/logs/start.log"
-
-cd $WORKINGDIR
 
 MINERNAME=`readJson config.json MINERNAME`
 MINE_XMR=`readJson config.json MINE_XMR`
