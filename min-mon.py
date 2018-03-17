@@ -118,7 +118,7 @@ def writeJSON():
 def getURL(url):
 
 	try:
-		res = requests.get(url, timeout=5)
+		res = requests.get(url, timeout=10)
 		return res.text
 	except:
 		logError("getURL: Unable to open url %s" % url)
@@ -340,7 +340,7 @@ def getEthminerData():
 	global ethMinerRestartTimestamp
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.settimeout(5)
+	s.settimeout(10)
 	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
 	#print ("[MIN MON] getEthminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
@@ -469,6 +469,7 @@ def getZminerData():
 	port = 2222
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.settimeout(10)
 	print ("[MIN MON] Getting zminer data from: %s:%d" % (host, port))
 	#print ("[MIN MON] getZminerData: Attemping to connect to %s:%d" % (host, port))
 	try:

@@ -14,7 +14,7 @@ rotateLog $SCRIPT_NAME
 #cd $WORKINGDIR
 
 RUN_MODE=$1
-INTERATIONS=0
+ITERATIONS=0
 
 MINMON_INT_SECS=`readJson config.json MINMON_INT_SECS`
 MINMON_DELAY_SECS=`readJson config.json MINMON_DELAY_SECS`
@@ -33,13 +33,13 @@ do
    output "" "[i] Getting Mining Stats"
    python min-mon.py | tee $LOGFILE
    output "" "[i] Sleeping for $MINMON_INT_SECS${NC}"
-   let INTERATIONS+=1
+   let ITERATIONS+=1
    
    #	Rotate log after 10 interations
-   if [ $INTERATIONS -ge 10 ]; then
+   if [ $ITERATIONS -ge 10 ]; then
       output "" "[i] Rotating log file"
       rotateLog $SCRIPT_NAME
-      INTERATIONS=0
+      ITERATIONS=0
    fi
 
    sleep $MINMON_INT_SECS
