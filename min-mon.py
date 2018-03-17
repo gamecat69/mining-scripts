@@ -629,10 +629,10 @@ def getEarnedCoins():
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
-	xmrEarned = int(js["stats"]["balance"]) / 1000000000000
+	data['xmrEarned'] = int(js["stats"]["balance"]) / 1000000000000
 
 	for payment in js["payments"]:
-		xmrEarned = xmrEarned + payment[1]
+		data['xmrEarned'] = data['xmrEarned'] + payment[1]
 		#print("[MIN MON] xmrPayment: %s" % payment[1])
 	
 	data['ethEarned']  = "{0:.6f}".format(float(data['ethEarned']))
