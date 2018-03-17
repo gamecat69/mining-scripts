@@ -239,6 +239,12 @@ def writeHTML():
 		logError("writeHTML: Unable to open HTML outputfile" + str(e))
 		return "Error"
 
+def unicodeToAscii(x):
+    def unicode_to_str(x):
+        return x.normalize("NFKD").encode("ascii", "ignore")
+
+    return {unicode_to_str(k): unicode_to_str(v) for k, v in x.items()}
+
 def getxmrStakData():
 
 	#global xmrVersion
@@ -255,6 +261,7 @@ def getxmrStakData():
 	try:
 		data = getURL(cfg["XMRSTAKURL"])
 		xmrJson = json.loads(data.decode("utf-8"))
+		xmrJson = unicodeToAscii(xmrJson)
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
