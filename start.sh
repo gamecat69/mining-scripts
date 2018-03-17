@@ -5,42 +5,19 @@
 #	-------------------------------------
 
 SCRIPT_NAME="START"
-WORKINGDIR=/home/mining/mining-scripts
-LOGFILE="$WORKINGDIR/logs/start.log"
+
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
+
+#	Rotate log
+rotateLog $SCRIPT_NAME
+
+#WORKINGDIR=/home/mining/mining-scripts
+#LOGFILE="$WORKINGDIR/logs/start.log"
 
 cd $WORKINGDIR
-
-function readJson {
-
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
-
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
-
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-	echo -e "$NOW [$SCRIPT_NAME] $@" >> $LOGFILE
-
-}
-
-RED='\033[0;31m'
-YELLOW='\033[0;93m'
-NC='\033[0m' # No Color
 
 MINERNAME=`readJson config.json MINERNAME`
 MINE_XMR=`readJson config.json MINE_XMR`
@@ -60,45 +37,45 @@ mkdir -p "$WORKINGDIR/logs"
 #	Init log file
 echo -e "init" > $LOGFILE
 
-output "${RED}Killing previous processes...${NC}"
+output "$BLUE" "[i] Killing previous processes..."
 ./kill-miner.sh
 
-output "Starting wifi monitor"
+output "$GREEN" "[i] Starting wifi monitor"
 $SCREEN_CMD wifimon ./wifi-mon.sh &
 
 #	All handled in /etc/rc.local now
 #echo "Configuring NVIDIA cards"
 #./nvidia-oc.sh
 
-output "Starting NVIDIA logging"
+output "$GREEN" "[i] Starting NVIDIA logging"
 ./nvidia-mon.sh &
 
 if [ "$MINE_ETH" = "yes" ] ; then
     
-    output "Starting Ethminer"
+    output "$GREEN" "[i] Starting Ethminer"
     $SCREEN_CMD ethminer ./start-eth.sh &
 
 fi
 
 if [ "$MINE_XMR" = "yes" ] ; then
 
-   output "Starting XMR Miner"
+   output "$GREEN" "[i] Starting XMR Miner"
    $SCREEN_CMD xmrstak ./start-xmr.sh &
 
 fi
 
 if [ "$MINE_BTCP" = "yes" ] ; then
 
-   output "Starting BTCP Miner"
+   output "$GREEN" "[i] Starting BTCP Miner"
    $SCREEN_CMD zminer ./start-zminer.sh &
 
 fi
 
-output "Sending pushover message"
+output "$GREEN" "[i] Sending pushover message"
 ./pushover.sh "$MINERNAME" "$PUSH_MSG"
 
 #	Moved sleep logic into min-mon.sh
 #sleep $MINMON_DELAY_SECS
 
-output "Starting min-mon"
+output "$GREEN" "[i] Starting min-mon"
 $SCREEN_CMD minmon ./min-mon.sh "boot" &
