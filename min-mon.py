@@ -271,20 +271,21 @@ def getxmrStakData():
 	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
 	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
-	print (type(xmrJson["results"]["shares_good"]))
-	print (type(data['xmrtotalshares']))
-	data['xmrtotalshares'] = xmrJson["results"]["shares_good"]
+	xmrtotalshares = xmrJson["results"]["shares_good"]
 	data['xmrversion']     = xmrJson["version"]
-	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
+	xmrhashrate = int(xmrJson["hashrate"]["total"][0]) or 0
 	data['xmrpool']        = xmrJson["connection"]["pool"]
 	data['xmruptimemins']  = int(xmrJson["connection"]["uptime"] / 60)
 	data['xmruptime']      = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#	Prevent a divide by zero error
 	if xmrUptimeMin > 0 and xmrShares > 0:
-		data['xmrsharesperhour'] = "{0:.2f}".format(data['xmrtotalshares'] / ( xmrUptimeMin / 60 ))
+		data['xmrsharesperhour'] = "{0:.2f}".format(xmrtotalshares / ( xmrUptimeMin / 60 ))
 	else:
 		data['xmrsharesperhour'] = 0
+	
+	data['xmrtotalshares'] = str(xmrtotalshares)
+	data['xmrhashrate'] = str(xmrhashrate)
 	
 	#xmrErrors     = xmrJson["connection"]["error_log"]
 	data['xmrerrors'] = xmrJson["connection"]["error_log"]
