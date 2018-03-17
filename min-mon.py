@@ -104,8 +104,6 @@ def writeJSON():
 	#data['xmrEarned']=str(xmrEarned)
 	#data['ethMinerRestartTimestamp']=ethMinerRestartTimestamp
 
-	print (json.dumps(data))
-
 	try:
 		JSONfile = open(JSONfilepath,"w")
 		JSONfile.write(json.dumps(data))
@@ -683,8 +681,6 @@ data['xmrusd'] = getCoinUSD('monero')
 data['ethusd'] = getCoinUSD('ethereum')
 data['btcpusd'] = ''
 
-#print(data)
-
 writeHTML()
 writeJSON()
 
@@ -692,3 +688,6 @@ writeJSON()
 time.sleep(1)
 uploadToAWS(cfg["HTMLREPORTDIR"], htmlReportFile, '')
 uploadToAWS(cfg["HTMLREPORTDIR"], jsonReportFile, 'nodes/')
+
+for k in data:
+	print k
