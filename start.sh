@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#	-------------------------------------
-#	Function to get data from json file
-#	-------------------------------------
-
 SCRIPT_NAME="START"
 
 #	Load common functions and paramaters
@@ -11,9 +7,13 @@ source ./bash-functions.sh
 termColours
 LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
+#	Create logdir if needed
+mkdir -p "$WORKINGDIR/logs"
+
 #	Rotate log
 rotateLog $SCRIPT_NAME
 
+#	Get this from bash-functions.sh
 #WORKINGDIR=/home/mining/mining-scripts
 #LOGFILE="$WORKINGDIR/logs/start.log"
 
@@ -30,12 +30,6 @@ S3URL="http://$S3BUCKET.s3-website-eu-west-1.amazonaws.com/$MINERNAME.html"
 SCREEN_CMD="screen -dmS"
 MYIP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 PUSH_MSG="[$MYIP] Starting up... Report URL: $S3URL"
-
-#	Create logdir if needed
-mkdir -p "$WORKINGDIR/logs"
-
-#	Init log file
-echo -e "init" > $LOGFILE
 
 output "$BLUE" "[i] Killing previous processes..."
 ./kill-miner.sh

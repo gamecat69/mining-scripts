@@ -2,39 +2,20 @@
 
 SCRIPT_NAME="MIN-MON"
 
-function readJson {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
+#	Create logdir if needed
+mkdir -p "$WORKINGDIR/logs"
 
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
+#	Rotate log
+rotateLog $SCRIPT_NAME
 
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
+#WORKINGDIR=/home/mining/mining-scripts
+#cd $WORKINGDIR
 
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
-
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
-
-RED='\033[0;31m'
-YELLOW='\033[0;93m'
-NC='\033[0m' # No Color
 RUN_MODE=$1
 
 MINMON_INT_SECS=`readJson config.json MINMON_INT_SECS`
@@ -46,14 +27,14 @@ while [ 1 = 1 ]
 do
 
    if [ "$RUN_MODE" == "boot" ]; then
-      output "${YELLOW}Just booted. Sleeping for $MINMON_DELAY_SECS secs"
+      output "$BLUE" "[i] Just booted. Sleeping for $MINMON_DELAY_SECS secs"
       RUN_MODE=''
       sleep $MINMON_DELAY_SECS
    fi
 
-   output "${YELLOW}Getting Mining Stats"
+   output "" "[i] Getting Mining Stats"
    python min-mon.py
-   output "${YELLOW}Sleeping for $MINMON_INT_SECS${NC}"
+   output "" "[i] Sleeping for $MINMON_INT_SECS${NC}"
    sleep $MINMON_INT_SECS
 
 done
