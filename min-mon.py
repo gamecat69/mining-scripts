@@ -199,8 +199,7 @@ def writeHTML():
 		return "Error"
 	
 	file = string.replace(file, '$minername', str(cfg["MINERNAME"]))
-	file = string.replace(file, '$minername', str(cfg["MINERNAME"]))
-	file = string.replace(file, '$lastupdate', str(data[lastupdate]))
+	file = string.replace(file, '$lastupdate', str(data['lastupdate']))
 	file = string.replace(file, '$systemuptime', str(data['systemuptime']))
 	file = string.replace(file, '$avggputemp', str(data['avggputemp']))
 	file = string.replace(file, '$avggpufanspeed', str(data['avggpufanspeed']))
