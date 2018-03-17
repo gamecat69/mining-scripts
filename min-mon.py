@@ -269,6 +269,11 @@ def getxmrStakData():
 		return "Error"
 	
 	xmrJson = json.loads(data)
+	
+	print(data)
+	print('--------------\n\n')
+	print(xmrJson)
+	
 	#xmrJson = unicodeToAscii(xmrJson)
 	#xmrJson=json.dumps(xmrJson)
 	#xmrJson = json.loads(data)
