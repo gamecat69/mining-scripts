@@ -17,9 +17,7 @@ import socket
 #	pip install boto3 requests
 #	----------------------------------
 
-global gpuDetails
-#global xmrUSD
-#global ethUSD
+#global gpuDetails
 
 gpuDetails     = []
 numGPU         = ''
@@ -67,42 +65,6 @@ def writeJSON():
 	
 	JSONfilepath = cfg["HTMLREPORTDIR"] + '/' + jsonReportFile
 	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
-
-	#data = {}
-	#data['minername']=cfg["MINERNAME"]
-	#data['lastupdate']=lastUpdate
-	#data['systemuptime']=sysUptime
-	#data['avggputemp']=str(avgGPUTemp)
-	#data['avggpufanspeed']=str(avgGPUFanSpeed)
-	#data['numGPU']=str(numGPU)
-	#data['avggpuhashrate']=str(avgGPUHashRate)
-
-	#data['ethhashrate']=str(ethHashRate)
-	#data['ethshares']=str(ethShares)
-	#data['ethuptime']=str(ethUptime)
-	#data['ethtotalshares']=str(ethShares)
-	#data['ethpool']=str(ethPoolAddr)
-
-	#data['xmrhashrate']=str(xmrHashRate)
-	#data['xmrshares']=str(xmrSharePerHr)
-	#data['xmruptime']=str(xmrUptime)
-	#data['xmrtotalshares']=str(xmrShares)
-	#data['xmrpool']=str(xmrPoolAddr)
-
-	#data['btcphashrate']=str(btcpHashRate)
-	#data['btcpshares']=str(btcpSharePerHr)
-	#data['btcpuptime']=str(btcpUptime)
-	#data['btcptotalshares']=str(btcpShares)
-	#data['btcppool']=str(btcpPoolAddr)
-
-	#data['ethusd']=str(ethUSD)
-	#data['xmrusd']=str(xmrUSD)
-	#data['btcpusd']=str(btcpUSD)
-
-	#data['ethEarned']=str(ethEarned)
-	#data['btcpEarned']=str(btcpEarned)
-	#data['xmrEarned']=str(xmrEarned)
-	#data['ethMinerRestartTimestamp']=ethMinerRestartTimestamp
 
 	try:
 		JSONfile = open(JSONfilepath,"w")
@@ -204,29 +166,26 @@ def writeHTML():
 	file = string.replace(file, '$numGPU', str(data['numGPU']))
 	file = string.replace(file, '$avggpuhashrate', str(data['avggpuhashrate']))
 
-	if cfg["MINE_ETH"] == "yes":
-		file = string.replace(file, '$ethusd', str(data['ethusd']))
-		file = string.replace(file, '$ethhashrate', str(data['ethhashrate']))
-		file = string.replace(file, '$ethshares', str(data['ethsharesperhour']))
-		file = string.replace(file, '$ethuptime', str(data['ethuptime']))
-		file = string.replace(file, '$ethtotalshares', str(data['ethtotalshares']))
-		file = string.replace(file, '$ethpool', str(data['ethpool']))
-	
-	if cfg["MINE_XMR"] == "yes":
-		file = string.replace(file, '$xmrusd', str(data['xmrusd']))
-		file = string.replace(file, '$xmrhashrate', str(data['xmrhashrate']))
-		file = string.replace(file, '$xmrshares', str(data['xmrsharesperhour']))
-		file = string.replace(file, '$xmruptime', str(data['xmruptime']))
-		file = string.replace(file, '$xmrtotalshares', str(data['xmrtotalshares']))
-		file = string.replace(file, '$xmrpool', str(data['xmrpool']))
+	file = string.replace(file, '$ethusd', str(data['ethusd']))
+	file = string.replace(file, '$ethhashrate', str(data['ethhashrate']))
+	file = string.replace(file, '$ethshares', str(data['ethsharesperhour']))
+	file = string.replace(file, '$ethuptime', str(data['ethuptime']))
+	file = string.replace(file, '$ethtotalshares', str(data['ethtotalshares']))
+	file = string.replace(file, '$ethpool', str(data['ethpool']))
 
-	if cfg["MINE_BTCP"] == "yes":
-		file = string.replace(file, '$btcpusd', str(data['btcpusd']))
-		file = string.replace(file, '$btcphashrate', str(data['btcphashrate']))
-		file = string.replace(file, '$btcpshares', str(data['btcpshares']))
-		file = string.replace(file, '$btcpuptime', str(data['btcpuptime']))
-		file = string.replace(file, '$btcptotalshares', str(data['btcptotalshares']))
-		file = string.replace(file, '$btcppool', str(data['btcppool']))
+	file = string.replace(file, '$xmrusd', str(data['xmrusd']))
+	file = string.replace(file, '$xmrhashrate', str(data['xmrhashrate']))
+	file = string.replace(file, '$xmrshares', str(data['xmrsharesperhour']))
+	file = string.replace(file, '$xmruptime', str(data['xmruptime']))
+	file = string.replace(file, '$xmrtotalshares', str(data['xmrtotalshares']))
+	file = string.replace(file, '$xmrpool', str(data['xmrpool']))
+
+	file = string.replace(file, '$btcpusd', str(data['btcpusd']))
+	file = string.replace(file, '$btcphashrate', str(data['btcphashrate']))
+	file = string.replace(file, '$btcpshares', str(data['btcpshares']))
+	file = string.replace(file, '$btcpuptime', str(data['btcpuptime']))
+	file = string.replace(file, '$btcptotalshares', str(data['btcptotalshares']))
+	file = string.replace(file, '$btcppool', str(data['btcppool']))
 
 	file = string.replace(file, '$ethEarned', str(data['ethEarned']))
 	file = string.replace(file, '$btcpEarned', str(data['btcpEarned']))
@@ -647,6 +606,8 @@ def getEarnedCoins():
 
 #	Initialize dict object to hold collected data
 data = {}
+
+#	Initialize keys with blank values to avoid errors later if an API call fails
 data['xmrEarned']=''
 data['xmruptimemins']=''
 data['xmrsharesperhour']=''
