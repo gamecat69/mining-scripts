@@ -213,7 +213,7 @@ def writeHTML():
 
 	data = string.replace(data, '$xmrusd', data['xmrusd'])
 	data = string.replace(data, '$xmrhashrate', data['xmrhashrate'])
-	data = string.replace(data, '$xmrshares', data['xmrshares'])
+	data = string.replace(data, '$xmrshares', data['xmrsharesperhour'])
 	data = string.replace(data, '$xmruptime', data['xmruptime'])
 	data = string.replace(data, '$xmrtotalshares', data['xmrtotalshares'])
 	data = string.replace(data, '$xmrpool', data['xmrpool'])
@@ -271,6 +271,7 @@ def getxmrStakData():
 	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
 	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
+	data['xmrtotalshares'] = 0
 	data['xmrtotalshares'] = int(xmrJson["results"]["shares_good"])
 	data['xmrversion']     = xmrJson["version"]
 	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
@@ -280,9 +281,9 @@ def getxmrStakData():
 
 	#	Prevent a divide by zero error
 	if xmrUptimeMin > 0 and xmrShares > 0:
-		data['xmrshares'] = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
+		data['xmrsharesperhour'] = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
 	else:
-		data['xmrshares'] = 0
+		data['xmrsharesperhour'] = 0
 	
 	#xmrErrors     = xmrJson["connection"]["error_log"]
 	data['xmrerrors'] = xmrJson["connection"]["error_log"]
