@@ -37,7 +37,7 @@ else
 
 fi
 
-output "$RED" "[i] Killing any previous xmr-stak process"
+output "$BLUE" "[i] Killing any previous xmr-stak process"
 pkill -f xmr-stak
 
 output "" "[i] $MININGCMD"
