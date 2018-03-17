@@ -281,7 +281,7 @@ def getxmrStakData():
 
 	#	Prevent a divide by zero error
 	if xmrUptimeMin > 0 and xmrShares > 0:
-		data['xmrsharesperhour'] = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
+		data['xmrsharesperhour'] = "{0:.2f}".format(data['xmrtotalshares'] / ( xmrUptimeMin / 60 ))
 	else:
 		data['xmrsharesperhour'] = 0
 	
