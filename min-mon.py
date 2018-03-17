@@ -652,7 +652,7 @@ data = {}
 cfg = json.load(open('config.json'))
 
 #	Push miner name into the data dict
-#data['minername']=cfg["MINERNAME"]
+data['minername']=cfg["MINERNAME"]
 
 miningRootDir  = "/home/mining/mining-scripts"
 ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
@@ -680,6 +680,9 @@ getEarnedCoins()
 data['xmrusd'] = getCoinUSD('monero')
 data['ethusd'] = getCoinUSD('ethereum')
 data['btcpusd'] = ''
+
+print(data)
+
 writeHTML()
 writeJSON()
 
