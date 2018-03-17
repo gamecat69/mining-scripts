@@ -584,6 +584,7 @@ def getEarnedCoins():
 	try:
 		data = getURL(url)
 		js=json.loads(data.decode("utf-8"))
+		js = unicodeToAscii(js)
 	except:
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
