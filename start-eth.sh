@@ -53,7 +53,7 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	pkill -f ethdcrminer64
 	
 	if [ "$MINE_DCR" = "yes" ]; then
-	    output "$BLUE" "[i] Dual Mining (ETH + DCR)"
+	    #output "$BLUE" "[i] Dual Mining (ETH + DCR)"
 		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -dwal $DCRWALLET.$WORKER -dpool $DCRPOOL1 $CMINERARGS"
 
 		#   Init dpools.txt

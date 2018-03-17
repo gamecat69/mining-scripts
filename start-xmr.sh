@@ -2,35 +2,16 @@
 
 SCRIPT_NAME="XMRMINER"
 
-function readJson {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
+#	Rotate log
+rotateLog $SCRIPT_NAME
 
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
-
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
-
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
+#WORKINGDIR=/home/mining/mining-scripts
+#cd $WORKINGDIR
 
 XMRWALLET=`readJson config.json XMRWALLET`
 XMRPOOL=`readJson config.json XMRPOOL`
@@ -56,9 +37,9 @@ else
 
 fi
 
-output "Killing any previous xmr-stak process"
+output "$RED" "[i] Killing any previous xmr-stak process"
 pkill -f xmr-stak
 
-output $MININGCMD
+output "" "[i] $MININGCMD
 $MININGCMD
 
