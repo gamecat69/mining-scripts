@@ -28,6 +28,7 @@ MINERNAME=`readJson config.json MINERNAME`
 NUM_ERRORS=0
 MAX_ERRORS=3
 SLEEPTIME=8
+ITERATIONS=0
 
 while [ 1 = 1 ]
 do
@@ -50,6 +51,15 @@ do
       	 NUM_ERRORS=0
       fi
       
+   fi
+
+   let ITERATIONS+=1
+
+   #	Rotate log after 100 iterations
+   if [ $ITERATIONS -ge 100 ]; then
+      output "" "[i] Rotating log file"
+      rotateLog $SCRIPT_NAME
+      ITERATIONS=0
    fi
 
    sleep $SLEEPTIME
