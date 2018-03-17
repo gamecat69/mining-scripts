@@ -40,6 +40,6 @@ fi
 output "$RED" "[i] Killing any previous xmr-stak process"
 pkill -f xmr-stak
 
-output "" "[i] $MININGCMD
+output "" "[i] $MININGCMD"
 $MININGCMD
 
