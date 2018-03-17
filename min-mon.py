@@ -271,9 +271,9 @@ def getxmrStakData():
 	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
 	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
-	#xmrtotalshares = 0
-	#xmrtotalshares = int(xmrJson["results"]["shares_good"])
-	int(data['xmrtotalshares']) = xmrJson["results"]["shares_good"]
+	xmrtotalshares = int(xmrJson["results"]["shares_good"])
+	data['xmrtotalshares'] = xmrtotalshares
+	#data['xmrtotalshares'] = xmrJson["results"]["shares_good"]
 	data['xmrversion']     = xmrJson["version"]
 	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
 	data['xmrpool']        = xmrJson["connection"]["pool"]
