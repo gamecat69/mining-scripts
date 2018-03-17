@@ -33,7 +33,7 @@ do
    fi
 
    output "" "[i] Getting Mining Stats"
-   python min-mon.py
+   python min-mon.py >> $LOGFILE
    output "" "[i] Sleeping for $MINMON_INT_SECS${NC}"
    sleep $MINMON_INT_SECS
 
