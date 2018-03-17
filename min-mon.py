@@ -10,7 +10,6 @@ import time
 import requests
 import subprocess
 import socket
-import ast
 
 #	----------------------------------
 #	Pre-requisites
@@ -269,8 +268,7 @@ def getxmrStakData():
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
-	#xmrJson = json.loads(data)
-	xmrJson = ast.literal_eval(json.loads(data))
+	xmrJson = json.loads(data)
 	
 	print(data)
 	print('--------------\n\n')
@@ -382,8 +380,13 @@ def getEthminerData():
 		#print("[MIN MON] getEthminerData: Connected, calling jsonrpc api")
 		s.sendall('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}\n'.encode('utf-8'))
 		j=s.recv(2048)
-		s.close()
+		s.close()		
 		js=json.loads(j.decode("utf-8"))
+
+		print(j)
+		print('--------------\n\n')
+		print(js)
+
 	except:
 		logError("getEthminerData: Unable to connect. Restarting ethminer")
 		ethMinerRestartTimestamp = int(time.time())
