@@ -8,24 +8,27 @@ source ./bash-functions.sh
 termColours
 LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
+#	Rotate log
+rotateLog $SCRIPT_NAME
+
 #	Kill any previous processes
-output "" "[i] Killing cminer"
+output "$BLUE" "[i] Killing cminer"
 pkill -f ethdcrminer64
 
-output "" "[i] Killing ethminer"
+output "$BLUE" "[i] Killing ethminer"
 pkill -f ethminer
 
-output "" "[i] Killing zminer"
+output "$BLUE" "[i] Killing zminer"
 pkill -f "zm --server"
 
-output "" "[i] Killing NVIDIA logging"
+output "$BLUE" "[i] Killing NVIDIA logging"
 pkill -f nvidia-mon
 
-output "" "[i] Killing xmr-stak"
+output "$BLUE" "[i] Killing xmr-stak"
 pkill -f xmr-stak
 
-output "" "[i] Killing wifi-mon"
+output "$BLUE" "[i] Killing wifi-mon"
 pkill -f wifi-mon
 
-output "" "[i] Killing min-mon"
+output "$BLUE" "[i] Killing min-mon"
 pkill -f min-mon
