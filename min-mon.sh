@@ -40,6 +40,7 @@ do
    
    #	Rotate log after 10 interations
    if [ $INTERATIONS -ge 2 ]; then
+      output "" "[i] Rotating log file"
       rotateLog $SCRIPT_NAME
       INTERATIONS=0
    fi
