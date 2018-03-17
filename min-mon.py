@@ -18,8 +18,8 @@ import socket
 #	----------------------------------
 
 global gpuDetails
-global xmrUSD
-global ethUSD
+#global xmrUSD
+#global ethUSD
 
 gpuDetails     = []
 numGPU         = ''
@@ -68,44 +68,44 @@ def writeJSON():
 	JSONfilepath = cfg["HTMLREPORTDIR"] + '/' + jsonReportFile
 	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
 
-	data = {}
+	#data = {}
 
 	data['minername']=cfg["MINERNAME"]
-	data['lastupdate']=lastUpdate
-	data['systemuptime']=sysUptime
-	data['avggputemp']=str(avgGPUTemp)
-	data['avggpufanspeed']=str(avgGPUFanSpeed)
-	data['numGPU']=str(numGPU)
-	data['avggpuhashrate']=str(avgGPUHashRate)
+	#data['lastupdate']=lastUpdate
+	#data['systemuptime']=sysUptime
+	#data['avggputemp']=str(avgGPUTemp)
+	#data['avggpufanspeed']=str(avgGPUFanSpeed)
+	#data['numGPU']=str(numGPU)
+	#data['avggpuhashrate']=str(avgGPUHashRate)
 
-	data['ethhashrate']=str(ethHashRate)
-	data['ethshares']=str(ethShares)
-	data['ethuptime']=str(ethUptime)
-	data['ethtotalshares']=str(ethShares)
-	data['ethpool']=str(ethPoolAddr)
+	#data['ethhashrate']=str(ethHashRate)
+	#data['ethshares']=str(ethShares)
+	#data['ethuptime']=str(ethUptime)
+	#data['ethtotalshares']=str(ethShares)
+	#data['ethpool']=str(ethPoolAddr)
 
-	data['xmrhashrate']=str(xmrHashRate)
-	data['xmrshares']=str(xmrSharePerHr)
-	data['xmruptime']=str(xmrUptime)
-	data['xmrtotalshares']=str(xmrShares)
-	data['xmrpool']=str(xmrPoolAddr)
+	#data['xmrhashrate']=str(xmrHashRate)
+	#data['xmrshares']=str(xmrSharePerHr)
+	#data['xmruptime']=str(xmrUptime)
+	#data['xmrtotalshares']=str(xmrShares)
+	#data['xmrpool']=str(xmrPoolAddr)
 
-	data['btcphashrate']=str(btcpHashRate)
-	data['btcpshares']=str(btcpSharePerHr)
-	data['btcpuptime']=str(btcpUptime)
-	data['btcptotalshares']=str(btcpShares)
-	data['btcppool']=str(btcpPoolAddr)
+	#data['btcphashrate']=str(btcpHashRate)
+	#data['btcpshares']=str(btcpSharePerHr)
+	#data['btcpuptime']=str(btcpUptime)
+	#data['btcptotalshares']=str(btcpShares)
+	#data['btcppool']=str(btcpPoolAddr)
 
-	data['ethusd']=str(ethUSD)
-	data['xmrusd']=str(xmrUSD)
-	data['btcpusd']=str(btcpUSD)
+	#data['ethusd']=str(ethUSD)
+	#data['xmrusd']=str(xmrUSD)
+	#data['btcpusd']=str(btcpUSD)
 
-	data['ethEarned']=str(ethEarned)
-	data['btcpEarned']=str(btcpEarned)
-	data['xmrEarned']=str(xmrEarned)
-	data['ethMinerRestartTimestamp']=ethMinerRestartTimestamp
+	#data['ethEarned']=str(ethEarned)
+	#data['btcpEarned']=str(btcpEarned)
+	#data['xmrEarned']=str(xmrEarned)
+	#data['ethMinerRestartTimestamp']=ethMinerRestartTimestamp
 
-	#print (json.dumps(data))
+	print (json.dumps(data))
 
 	try:
 		JSONfile = open(JSONfilepath,"w")
@@ -190,8 +190,6 @@ def writeHTML():
 	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
 	
 	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
-	#lastUpdate = datetime.datetime.now().strftime("%H:%M on %d-%m-%Y")
-	#sysUptime = getSystemUptime()
 
 	try:
 		f = open(HTMLtemplatepath)
@@ -201,40 +199,38 @@ def writeHTML():
 		logError("writeHTML: Unable to open HTML template" + str(e))
 		return "Error"
 	
-	data = string.replace(data, '$minername', cfg["MINERNAME"])
-	data = string.replace(data, '$lastupdate', lastUpdate)
-	data = string.replace(data, '$systemuptime', sysUptime)
-	data = string.replace(data, '$avggputemp', str(avgGPUTemp))
-	data = string.replace(data, '$avggpufanspeed', str(avgGPUFanSpeed))
+	data = string.replace(data, '$minername', data['minername'])
+	data = string.replace(data, '$lastupdate', data['lastupdate'])
+	data = string.replace(data, '$systemuptime', data['systemuptime'])
+	data = string.replace(data, '$avggputemp', data['avggputemp'])
+	data = string.replace(data, '$avggpufanspeed', data['avggpufanspeed'])
 
-	data = string.replace(data, '$ethusd', str(ethUSD))
-	data = string.replace(data, '$ethhashrate', str(ethHashRate))
-	data = string.replace(data, '$ethshares', str(ethSharePerHr))
-	data = string.replace(data, '$ethuptime', str(ethUptime))
-	data = string.replace(data, '$ethtotalshares', str(ethShares))
-	data = string.replace(data, '$ethpool', str(ethPoolAddr))
+	data = string.replace(data, '$ethusd', data['ethusd'])
+	data = string.replace(data, '$ethhashrate', data['ethhashrate'])
+	data = string.replace(data, '$ethshares', data['ethsharesperhour'])
+	data = string.replace(data, '$ethuptime', data['ethuptime'])
+	data = string.replace(data, '$ethtotalshares', data['ethtotalshares'])
+	data = string.replace(data, '$ethpool', data['ethpool'])
 
-	data = string.replace(data, '$xmrusd', str(xmrUSD))
-	data = string.replace(data, '$xmrhashrate', str(xmrHashRate))
-	data = string.replace(data, '$xmrshares', str(xmrSharePerHr))
-	data = string.replace(data, '$xmruptime', str(xmrUptime))
-	data = string.replace(data, '$xmrtotalshares', str(xmrShares))
-	data = string.replace(data, '$xmrpool', str(xmrPoolAddr))
-	data = string.replace(data, '$numGPU', str(numGPU))
-	data = string.replace(data, '$avggpuhashrate', str(avgGPUHashRate))
+	data = string.replace(data, '$xmrusd', data['xmrusd'])
+	data = string.replace(data, '$xmrhashrate', data['xmrhashrate'])
+	data = string.replace(data, '$xmrshares', data['xmrshares'])
+	data = string.replace(data, '$xmruptime', data['xmruptime'])
+	data = string.replace(data, '$xmrtotalshares', data['xmrtotalshares'])
+	data = string.replace(data, '$xmrpool', data['xmrpool'])
+	data = string.replace(data, '$numGPU', data['numGPU'])
+	data = string.replace(data, '$avggpuhashrate', data['avggpuhashrate'])
 
-	data = string.replace(data, '$btcpusd', str(btcpUSD))
-	data = string.replace(data, '$btcphashrate', str(btcpHashRate))
-	data = string.replace(data, '$btcpshares', str(btcpSharePerHr))
-	data = string.replace(data, '$btcpuptime', str(btcpUptime))
-	data = string.replace(data, '$btcptotalshares', str(btcpShares))
-	data = string.replace(data, '$btcppool', str(btcpPoolAddr))
+	data = string.replace(data, '$btcpusd', data['btcpusd'])
+	data = string.replace(data, '$btcphashrate', data['btcphashrate'])
+	data = string.replace(data, '$btcpshares', data['btcpshares'])
+	data = string.replace(data, '$btcpuptime', data['btcpuptime'])
+	data = string.replace(data, '$btcptotalshares', data['btcptotalshares'])
+	data = string.replace(data, '$btcppool', data['btcppool'])
 	
-	data = string.replace(data, '$ethEarned', str(ethEarned))
-	data = string.replace(data, '$btcpEarned', str(btcpEarned))
-	data = string.replace(data, '$xmrEarned', str(xmrEarned))
-
-	data = string.replace(data, '$numGPU', str(numGPU))
+	data = string.replace(data, '$ethEarned', data['ethEarned'])
+	data = string.replace(data, '$btcpEarned', data['btcpEarned'])
+	data = string.replace(data, '$xmrEarned', data['xmrEarned'])
 
 	try:
 		HTMLfile = open(HTMLfilepath,"w")
@@ -246,14 +242,14 @@ def writeHTML():
 
 def getxmrStakData():
 
-	global xmrVersion
-	global xmrHashRate
-	global xmrPoolAddr
-	global xmrShares
-	global xmrUptime
-	global xmrSharePerHr
-	global xmrErrors
-	global xmrMinerRestartTimestamp
+	#global xmrVersion
+	#global xmrHashRate
+	#global xmrPoolAddr
+	#global xmrShares
+	#global xmrUptime
+	#global xmrSharePerHr
+	#global xmrErrors
+	#global xmrMinerRestartTimestamp
 
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
@@ -268,20 +264,29 @@ def getxmrStakData():
 		subprocess.Popen(["screen", "-dmS", "xmrstak", xmrMinerCmd])
 		return "Error"
 	
-	xmrVersion    = xmrJson["version"]
-	xmrHashRate   = int(xmrJson["hashrate"]["total"][0]) or 0
-	xmrPoolAddr   = xmrJson["connection"]["pool"]
 	xmrShares     = int(xmrJson["results"]["shares_good"])
-	xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
-	xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
+	
+	#xmrVersion    = xmrJson["version"]
+	#xmrHashRate   = int(xmrJson["hashrate"]["total"][0]) or 0
+	#xmrPoolAddr   = xmrJson["connection"]["pool"]
+	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
+	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
+
+	data['xmrtotalshares'] = int(xmrJson["results"]["shares_good"])
+	data['xmrversion']     = xmrJson["version"]
+	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
+	data['xmrpool']        = xmrJson["connection"]["pool"]
+	data['xmruptimemins']  = int(xmrJson["connection"]["uptime"] / 60)
+	data['xmruptime']      = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#	Prevent a divide by zero error
 	if xmrUptimeMin > 0 and xmrShares > 0:
-		xmrSharePerHr = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
+		data['xmrshares'] = "{0:.2f}".format(xmrShares / ( xmrUptimeMin / 60 ))
 	else:
-		xmrSharePerHr = 0
+		data['xmrshares'] = 0
 	
-	xmrErrors     = xmrJson["connection"]["error_log"]
+	#xmrErrors     = xmrJson["connection"]["error_log"]
+	data['xmrerrors'] = xmrJson["connection"]["error_log"]
 
 def uploadToAWS(dir, file, prefix):
 
@@ -327,16 +332,16 @@ def getEthminerData():
 	gpuFanSpeeds = []
 
 	global ethVersion
-	global ethHashRate
-	global ethPoolAddr
-	global ethShares
-	global ethUptime
-	global ethSharePerHr
-	global avgGPUTemp
-	global avgGPUFanSpeed
-	global numGPU
-	global avgGPUHashRate
-	global ethEarned
+	#global ethHashRate
+	#global ethPoolAddr
+	#global ethShares
+	#global ethUptime
+	#global ethSharePerHr
+	#global avgGPUTemp
+	#global avgGPUFanSpeed
+	#global numGPU
+	#global avgGPUHashRate
+	#global ethEarned
 	global ethMinerRestartTimestamp
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -368,7 +373,8 @@ def getEthminerData():
 	for gpu in gpu_hashrates:
 		gpuHashRates.append(gpu)
 		i=i+1
-	numGPU = i
+	#numGPU = i
+	data['numGPU']=i
 
 	n=0
 	while n < i:
@@ -378,40 +384,48 @@ def getEthminerData():
 		n=n+1
 
 	ethVersion    = js["result"][0]
-	ethHashRate   = int(h_s_r[0])
-	ethPoolAddr   = js["result"][7]
-	ethShares     = int(h_s_r[1])
+	#ethHashRate   = int(h_s_r[0])
+	data['ethhashrate']=int(h_s_r[0])
+	#ethPoolAddr   = js["result"][7]
+	data['ethpool']= js["result"][7]
+	#ethShares     = int(h_s_r[1])
+	data['ethtotalshares']= int(h_s_r[1])
+	#data['ethshares']=int(h_s_r[1])
 	ethUptimeMin  = int(js["result"][1])
-	ethUptime     = formatUptimeMins(ethUptimeMin)
+	#ethUptime     = formatUptimeMins(ethUptimeMin)
+	data['ethuptime']=formatUptimeMins(ethUptimeMin)
 
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer
-	if len(ethPoolAddr) > 40:
+	if len(data['ethpool']) > 40:
 		pattern="http://(.+?:\d+)/.+"
-		m = re.match(pattern, ethPoolAddr)
+		m = re.match(pattern, data['ethpool'])
 		if m:
-			ethPoolAddr = m.group(1)
+			data['ethpool'] = m.group(1)
 
 	#	Get average GPU temp
 	tempTotal=0
 	for t in gpuTemps:
 		tempTotal = tempTotal + int(t)
-	avgGPUTemp = int(tempTotal / i);
+	#avgGPUTemp = int(tempTotal / i)
+	data['avggputemp']=int(tempTotal / i)
 
 	#	Get average GPU fanspeed
 	speedTotal=0
 	for t in gpuFanSpeeds:
 		speedTotal = speedTotal + int(t)
-	avgGPUFanSpeed = int(speedTotal / i);
+	#avgGPUFanSpeed = int(speedTotal / i)
+	data['avggpufanspeed']=int(speedTotal / i)
 
 	#	Get average GPU Hashrate
-	avgGPUHashRate = int(ethHashRate / i)
+	#avgGPUHashRate = int(ethHashRate / i)
+	data['avggpuhashrate']=int(data['ethhashrate'] / i)
 
 	#	Prevent a divide by zero error
 	if ethShares > 0:
-		ethSharePerHr = "{0:.2f}".format(ethShares / ( ethUptimeMin / 60 ))
+		data['ethsharesperhour'] = "{0:.2f}".format(ethShares / ( ethUptimeMin / 60 ))
 	else:
-		ethSharePerHr = 0
+		data['ethsharesperhour'] = 0
 
 def getZminerData():
 
@@ -454,16 +468,16 @@ def getZminerData():
 	gpuTemps     = []
 	gpuFanSpeeds = []
 
-	global btcpVersion
-	global btcpHashRate
-	global btcpPoolAddr
-	global btcpShares
-	global btcpUptime
-	global btcpSharePerHr
-	global avgGPUTemp
-	global avgGPUFanSpeed
-	global numGPU
-	global avgGPUHashRate
+	#global btcpVersion
+	#global btcpHashRate
+	#global btcpPoolAddr
+	#global btcpShares
+	#global btcpUptime
+	#global btcpSharePerHr
+	#global avgGPUTemp
+	#global avgGPUFanSpeed
+	#global numGPU
+	#global avgGPUHashRate
 
 	host = "127.0.0.1"
 	port = 2222
@@ -497,34 +511,39 @@ def getZminerData():
 	btcpUptimeMin  = int(js["uptime"]) / 60
 	btcpUptime     = formatUptimeMins(btcpUptimeMin)
 
-	btcpShares   = 0
-	btcpHashRate = 0
+	data['btcptotalshares']   = 0
+	data['btcphashrate'] = 0
 
 	i=0
 	for gpu in result:
 		gpuTemps.append(gpu["temperature"])
 		gpuFanSpeeds.append("0") # not available
-		btcpHashRate = btcpHashRate + int(gpu["avg_sol_ps"])
-		btcpShares = btcpShares + int(gpu["accepted_shares"])
+		data['btcphashrate'] = data['btcphashrate'] + int(gpu["avg_sol_ps"])
+		data['btcptotalshares'] = data['btcptotalshares'] + int(gpu["accepted_shares"])
 		i=i+1
 
-	numGPU = i
-	avgGPUFanSpeed = 0 # Data not available
+	#numGPU = i
+	data['numGPU']=i
+	#avgGPUFanSpeed = 0 # Data not available
+	data['avggpufanspeed']=0 # Data not available
 
 	#	Get average GPU temp
 	tempTotal=0
 	for t in gpuTemps:
 		tempTotal = tempTotal + int(t)
-	avgGPUTemp = int(tempTotal / i);
+	
+	#avgGPUTemp = int(tempTotal / i)
+	data['avggputemp']=int(tempTotal / i)
 
 	#	Get average GPU Hashrate
-	avgGPUHashRate = int(btcpHashRate / i)
+	#avgGPUHashRate = int(btcpHashRate / i)
+	data['avggpuhashrate']=int(btcpHashRate / i)
 
 	#	Prevent a divide by zero error
-	if btcpShares > 0:
-		btcpSharePerHr = "{0:.2f}".format(btcpShares / ( btcpUptimeMin / 60 ))
+	if data['btcptotalshares'] > 0:
+		data['btcpshares'] = "{0:.2f}".format(data['btcptotalshares'] / ( btcpUptimeMin / 60 ))
 	else:
-		btcpSharePerHr = 0
+		data['btcpshares'] = 0
 
 	#print("[MIN MON] btcpVersion: %s" % btcpVersion)
 	#print("[MIN MON] btcpPoolAddr: %s" % btcpPoolAddr)
@@ -539,9 +558,9 @@ def getZminerData():
 
 def getEarnedCoins():
 
-	global btcpEarned
-	global xmrEarned
-	global ethEarned
+	#global btcpEarned
+	#global xmrEarned
+	#global ethEarned
 
 	#	Get Zminer (BTCP) info
 	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
@@ -552,11 +571,11 @@ def getEarnedCoins():
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
-	btcpEarned = js["balance"] + js["paid"]
+	data['btcpEarned'] = js["balance"] + js["paid"]
 
 	#	Get ETH balance
 	#	https://eth.nanopool.org/api#api-Pool
-	ethEarned = 0
+	data['ethEarned'] = 0
 	url = cfg["ETHMINERSTATSURL"] + '/balance/' + cfg["ETHWALLET"]
 	try:
 		data = getURL(url)
@@ -565,7 +584,7 @@ def getEarnedCoins():
 		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 	
-	ethEarned = js["data"]
+	data['ethEarned'] = js["data"]
 	
 	#print("ETH Stats:%s" % js)
 
@@ -579,7 +598,7 @@ def getEarnedCoins():
 		return "Error"
 
 	for payment in js["data"]:
-		ethEarned = ethEarned + payment["amount"]
+		data['ethEarned'] = data['ethEarned'] + payment["amount"]
 
 	#	Get XMR data
 	#	http://api.minexmr.com:8080/stats_address?address=
@@ -600,9 +619,9 @@ def getEarnedCoins():
 		xmrEarned = xmrEarned + payment[1]
 		#print("[MIN MON] xmrPayment: %s" % payment[1])
 	
-	ethEarned  = "{0:.6f}".format(float(ethEarned))
-	btcpEarned = "{0:.6f}".format(float(btcpEarned))
-	xmrEarned  = "{0:.6f}".format(float(xmrEarned))
+	data['ethEarned']  = "{0:.6f}".format(float(data['ethEarned']))
+	data['btcpEarned'] = "{0:.6f}".format(float(data['btcpEarned']))
+	data['xmrEarned']  = "{0:.6f}".format(float(data['xmrEarned']))
 
 	#print("[MIN MON] ethEarned: %s" % ethEarned)
 	#print("[MIN MON] btcpEarned: %s" % btcpEarned)
@@ -612,8 +631,14 @@ def getEarnedCoins():
 #	Main code
 #	----------------------------------
 
+#	Initialize dict object to hold collected data
+data = {}
+
 #	Get config from json
 cfg = json.load(open('config.json'))
+
+#	Push miner name into the data dict
+data['minername']=cfg["MINERNAME"]
 
 miningRootDir  = "/home/mining/mining-scripts"
 ethMinerCmd    = miningRootDir + "/" + "start-eth.sh"
@@ -621,8 +646,11 @@ xmrMinerCmd    = miningRootDir + "/" + "start-xmr.sh"
 zMinerCmd      = miningRootDir + "/" + "start-zminer.sh"
 htmlReportFile = cfg["MINERNAME"] + ".html"
 jsonReportFile = cfg["MINERNAME"] + ".json"
-sysUptime      = getSystemUptime()
-lastUpdate     = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+#sysUptime      = getSystemUptime()
+#lastUpdate     = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+data['lastupdate'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+data['systemuptime'] = getSystemUptime()
 
 if cfg["MINE_ETH"] == "yes":
 	getEthminerData()
@@ -635,8 +663,9 @@ if cfg["MINE_BTCP"] == "yes":
 
 getEarnedCoins()
 
-xmrUSD = getCoinUSD('monero')
-ethUSD = getCoinUSD('ethereum')
+data['xmrusd'] = getCoinUSD('monero')
+data['ethusd'] = getCoinUSD('ethereum')
+data['btcpusd'] ''
 writeHTML()
 writeJSON()
 
