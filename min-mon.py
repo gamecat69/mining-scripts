@@ -17,44 +17,6 @@ import socket
 #	pip install boto3 requests
 #	----------------------------------
 
-gpuDetails     = []
-# numGPU         = ''
-# avgGPUTemp     = ''
-# avgGPUFanSpeed = ''
-# avgGPUHashRate = ''
-
-# ethVersion    = ''
-# ethHashRate   = ''
-# ethPoolAddr   = ''
-# ethShares     = ''
-# ethUptime     = ''
-# ethSharePerHr = ''
-ethMinerRestartTimestamp = 0
-
-# btcpVersion    = ''
-# btcpHashRate   = ''
-# btcpPoolAddr   = ''
-# btcpShares     = ''
-# btcpUptime     = ''
-# btcpSharePerHr = ''
-
-btcpEarned     = 0.0
-ethEarned      = 0.0
-xmrEarned      = 0.0
-
-# xmrUSD        = ''
-# ethUSD        = ''
-# btcpUSD       = ''
-
-# xmrPoolAddr   = ''
-# xmrShares     = ''
-# xmrUptime     = ''
-# xmrSharePerHr = ''
-# xmrErrors     = ''
-# xmrVersion    = ''
-# xmrHashRate   = ''
-xmrMinerRestartTimestamp = 0
-
 #	----------------------------------
 #	Functions
 #	----------------------------------
@@ -199,15 +161,6 @@ def writeHTML():
 
 def getxmrStakData():
 
-	#global xmrVersion
-	#global xmrHashRate
-	#global xmrPoolAddr
-	#global xmrShares
-	#global xmrUptime
-	#global xmrSharePerHr
-	#global xmrErrors
-	#global xmrMinerRestartTimestamp
-
 	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
 	try:
@@ -223,18 +176,10 @@ def getxmrStakData():
 
 	xmrJson=json.loads(j.decode("utf-8"))
 	
-	xmrShares     = int(xmrJson['results']['shares_good'])
-	#xmrShares = int(xmrShares)
-	
-	#xmrVersion    = xmrJson["version"]
-	#xmrHashRate   = int(xmrJson["hashrate"]["total"][0]) or 0
-	#xmrPoolAddr   = xmrJson["connection"]["pool"]
-	#xmrUptimeMin  = int(xmrJson["connection"]["uptime"] / 60)
-	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
-
+	xmrShares      = int(xmrJson['results']['shares_good'])
 	xmrtotalshares = xmrJson["results"]["shares_good"]
 	xmrversion     = xmrJson["version"]
-	xmrhashrate = int(xmrJson["hashrate"]["total"][0]) or 0
+	xmrhashrate    = int(xmrJson["hashrate"]["total"][0]) or 0
 	xmrpool        = xmrJson["connection"]["pool"].encode('utf-8')
 	xmruptimemins  = int(xmrJson["connection"]["uptime"] / 60)
 	xmruptime      = formatUptimeMins(xmruptimemins)
@@ -252,8 +197,6 @@ def getxmrStakData():
 	data['xmruptimemins'] = str(xmruptimemins)
 	data['xmruptime'] = str(xmruptime)
 	data['xmrsharesperhour'] = str(xmrsharesperhour)
-	
-	#xmrErrors     = xmrJson["connection"]["error_log"]
 	data['xmrerrors'] = xmrJson["connection"]["error_log"]
 
 def uploadToAWS(dir, file, prefix):
@@ -299,19 +242,6 @@ def getEthminerData():
 	gpuTemps     = []
 	gpuFanSpeeds = []
 
-	global ethVersion
-	#global ethHashRate
-	#global ethPoolAddr
-	#global ethShares
-	#global ethUptime
-	#global ethSharePerHr
-	#global avgGPUTemp
-	#global avgGPUFanSpeed
-	#global numGPU
-	#global avgGPUHashRate
-	#global ethEarned
-	global ethMinerRestartTimestamp
-
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(10)
 	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
@@ -342,9 +272,10 @@ def getEthminerData():
 	for gpu in gpu_hashrates:
 		gpuHashRates.append(gpu)
 		i=i+1
-	#numGPU = i
+	
 	data['numGPU']=i
-
+	
+	gpuDetails     = []
 	n=0
 	while n < i:
 		gpuTemps.append(gpu_temp_fanspeed[n*2])
@@ -352,12 +283,12 @@ def getEthminerData():
 		gpuDetails.append( gpuHashRates[n] + "," + gpuTemps[n] + "," + gpuFanSpeeds[n] )
 		n=n+1
 
-	ethVersion    = js["result"][0]
-	data['ethhashrate']=int(h_s_r[0])
-	data['ethpool']= js["result"][7]
-	data['ethtotalshares']= int(h_s_r[1])
-	ethUptimeMin  = int(js["result"][1])
-	data['ethuptime']=formatUptimeMins(ethUptimeMin)
+	data['ethVersion']     = js["result"][0]
+	data['ethhashrate']    = int(h_s_r[0])
+	data['ethpool']        = js["result"][7]
+	data['ethtotalshares'] = int(h_s_r[1])
+	ethUptimeMin           = int(js["result"][1])
+	data['ethuptime']      = formatUptimeMins(ethUptimeMin)
 
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer
@@ -456,12 +387,12 @@ def getZminerData():
 
 	result=js["result"]
 
-	btcpVersion    = js["version"]
-	btcpPoolAddr   = js["server"] + ':' + str(js["port"])
-	btcpUptimeMin  = int(js["uptime"]) / 60
-	btcpUptime     = formatUptimeMins(btcpUptimeMin)
+	data['btcpVersion']  = js["version"]
+	data['btcpPoolAddr'] = js["server"] + ':' + str(js["port"])
+	btcpUptimeMin        = int(js["uptime"]) / 60
+	data['btcpUptime']   = formatUptimeMins(btcpUptimeMin)
 
-	data['btcptotalshares']   = 0
+	data['btcptotalshares'] = 0
 	data['btcphashrate'] = 0
 
 	i=0
