@@ -2,36 +2,16 @@
 
 SCRIPT_NAME="ETHMINER"
 
-function readJson {
+#	Load common functions and paramaters
+source ./bash-functions.sh
+termColours
+LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
-	UNAMESTR=`uname`
-	if [[ "$UNAMESTR" == 'Linux' ]]; then
-    	SED_EXTENDED='-r'
-	elif [[ "$UNAMESTR" == 'Darwin' ]]; then
-    	SED_EXTENDED='-E'
-	fi;
+#	Rotate log
+rotateLog $SCRIPT_NAME
 
-	VALUE=`grep -m 1 "\"${2}\"" ${1} | sed ${SED_EXTENDED} 's/^ *//;s/.*: *"//;s/",?//'`
-
-	if [ ! "$VALUE" ]; then
-		echo "Error: Cannot find \"${2}\" in ${1}" >&2;
-		exit 1;
-	else
-		echo $VALUE ;
-	fi;
-
-}
-
-function output {
-
-	NOW=$(date +"%d-%m-%Y %T")
-	echo -e "$NOW [$SCRIPT_NAME] $@"
-
-}
-
-
-WORKINGDIR=/home/mining/mining-scripts
-cd $WORKINGDIR
+#WORKINGDIR=/home/mining/mining-scripts
+#cd $WORKINGDIR
 
 SERVER1=`readJson config.json SERVER1`
 SERVER2=`readJson config.json SERVER2`
@@ -59,21 +39,21 @@ export GPU_SINGLE_ALLOC_PERCENT=100
 
 CMINERARGS=" -tt 68 -tstop 82 -dcri 10 -mport -3333 -ftime 10 -ttli 80"
 
-output "Miner: $ETHMINER"
+output "$GREEN" "[i] Miner: $ETHMINER"
 
 if [ "$ETHMINER" = "ethminer" ] ; then
 
-    output "Killing previous ethminer process"
+    output "$RED" "[i] Killing previous ethminer process"
     pkill -f "ethminer --opencl"
     MININGCMD="/home/mining/ethminer/bin/ethminer --opencl -U -F $PSERVER/$ETHWALLET.$WORKER/$EMAIL --farm-recheck 200 --api-port 3333"
 
 elif [ "$ETHMINER" = "cminer" ] ; then
 	cd ~/$CMINERDIR
-	output "Killing previous cminer process"
+	output "$GREEN" "[i] Killing previous cminer process"
 	pkill -f ethdcrminer64
 	
 	if [ "$MINE_DCR" = "yes" ]; then
-	    output "Dual Mining (ETH + DCR)"
+	    output "$BLUE" "[i] Dual Mining (ETH + DCR)"
 		MININGCMD="./ethdcrminer64 -epool $SERVER1 -ewal $ETHWALLET.$WORKER/$EMAIL -epsw $POOLPASS -dwal $DCRWALLET.$WORKER -dpool $DCRPOOL1 $CMINERARGS"
 
 		#   Init dpools.txt
@@ -94,12 +74,12 @@ elif [ "$ETHMINER" = "cminer" ] ; then
 	find ./*_log.txt -mtime +$LOGFILERETENTIONDAYS -exec rm {} \;
 
 else
-	output "[ERR] Unable to determine which ethminer to use"
+	output "$RED" "[e] [ERR] Unable to determine which ethminer to use"
 fi
 #   ------------------------
 #   Start mining
 #   ------------------------
 
-output $MININGCMD
+output "" "[i] $MININGCMD"
 $MININGCMD
 
