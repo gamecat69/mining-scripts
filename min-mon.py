@@ -355,15 +355,10 @@ def getEthminerData():
 		n=n+1
 
 	ethVersion    = js["result"][0]
-	#ethHashRate   = int(h_s_r[0])
 	data['ethhashrate']=int(h_s_r[0])
-	#ethPoolAddr   = js["result"][7]
 	data['ethpool']= js["result"][7]
-	#ethShares     = int(h_s_r[1])
 	data['ethtotalshares']= int(h_s_r[1])
-	#data['ethshares']=int(h_s_r[1])
 	ethUptimeMin  = int(js["result"][1])
-	#ethUptime     = formatUptimeMins(ethUptimeMin)
 	data['ethuptime']=formatUptimeMins(ethUptimeMin)
 
 	#	Extract just the pool address if its too long
@@ -378,22 +373,18 @@ def getEthminerData():
 	tempTotal=0
 	for t in gpuTemps:
 		tempTotal = tempTotal + int(t)
-	#avgGPUTemp = int(tempTotal / i)
 	data['avggputemp']=int(tempTotal / i)
 
 	#	Get average GPU fanspeed
 	speedTotal=0
 	for t in gpuFanSpeeds:
 		speedTotal = speedTotal + int(t)
-	#avgGPUFanSpeed = int(speedTotal / i)
 	data['avggpufanspeed']=int(speedTotal / i)
 
 	#	Get average GPU Hashrate
-	#avgGPUHashRate = int(ethHashRate / i)
 	data['avggpuhashrate']=int(data['ethhashrate'] / i)
 
 	#	Prevent a divide by zero error
-	#data['ethsharesperhour'] = 0.0
 	if data['ethtotalshares'] > 0:
 		data['ethsharesperhour'] = "{0:.2f}".format(data['ethtotalshares'] / ( ethUptimeMin / 60 ))
 	else:
@@ -483,9 +474,7 @@ def getZminerData():
 		data['btcptotalshares'] = data['btcptotalshares'] + int(gpu["accepted_shares"])
 		i=i+1
 
-	#numGPU = i
 	data['numGPU']=i
-	#avgGPUFanSpeed = 0 # Data not available
 	data['avggpufanspeed']=0 # Data not available
 
 	#	Get average GPU temp
@@ -493,11 +482,9 @@ def getZminerData():
 	for t in gpuTemps:
 		tempTotal = tempTotal + int(t)
 	
-	#avgGPUTemp = int(tempTotal / i)
 	data['avggputemp']=int(tempTotal / i)
 
 	#	Get average GPU Hashrate
-	#avgGPUHashRate = int(btcpHashRate / i)
 	data['avggpuhashrate']=int(btcpHashRate / i)
 
 	#	Prevent a divide by zero error
@@ -518,10 +505,6 @@ def getZminerData():
 	#print("[MIN MON] btcpSharePerHr: %s" % btcpSharePerHr)
 
 def getEarnedCoins():
-
-	#global btcpEarned
-	#global xmrEarned
-	#global ethEarned
 
 	#	Get Zminer (BTCP) info
 	url = cfg["ZMINERSTATSURL"] + '?' + cfg["BTCPWALLET"]
@@ -648,8 +631,6 @@ zMinerCmd      = miningRootDir + "/" + "start-zminer.sh"
 htmlReportFile = cfg["MINERNAME"] + ".html"
 jsonReportFile = cfg["MINERNAME"] + ".json"
 
-#sysUptime      = getSystemUptime()
-#lastUpdate     = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 data['lastupdate'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 data['systemuptime'] = getSystemUptime()
 
