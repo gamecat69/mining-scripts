@@ -33,8 +33,7 @@ output "$BLUE" "[i] Killing previous processes..."
 ./kill-miner.sh
 
 output "$GREEN" "[i] Starting wifi monitor"
-#$SCREEN_CMD wifimon ./wifi-mon.sh &
-./wifi-mon.sh &
+$SCREEN_CMD wifimon ./wifi-mon.sh &
 
 #	All handled in /etc/rc.local now
 #echo "Configuring NVIDIA cards"
@@ -71,5 +70,4 @@ output "$GREEN" "[i] Sending pushover message"
 #sleep $MINMON_DELAY_SECS
 
 output "$GREEN" "[i] Starting min-mon"
-#$SCREEN_CMD minmon ./min-mon.sh "boot" &
-./min-mon.sh "boot" &
+$SCREEN_CMD minmon ./min-mon.sh "boot" &
