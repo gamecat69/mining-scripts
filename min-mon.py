@@ -254,7 +254,7 @@ def getxmrStakData():
 
 	try:
 		data = getURL(cfg["XMRSTAKURL"])
-		xmrJson = json.loads(data)
+		xmrJson = json.loads(data.decode('utf-8'))
 	except:
 		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
@@ -272,8 +272,8 @@ def getxmrStakData():
 	#xmrUptime     = formatUptimeMins(xmrJson["connection"]["uptime"] / 60)
 
 	#xmrtotalshares = 0
-	xmrtotalshares = int(xmrJson["results"]["shares_good"])
-	#data['xmrtotalshares'] = int(xmrJson["results"]["shares_good"])
+	#xmrtotalshares = int(xmrJson["results"]["shares_good"])
+	data['xmrtotalshares'] = xmrJson["results"]["shares_good"]
 	data['xmrversion']     = xmrJson["version"]
 	data['xmrhashrate']    = int(xmrJson["hashrate"]["total"][0]) or 0
 	data['xmrpool']        = xmrJson["connection"]["pool"]
