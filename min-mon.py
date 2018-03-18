@@ -498,8 +498,9 @@ def getEarnedCoins():
 		data['ethEarned'] = ''
 		return "Error"
 
-	for payment in js["data"]:
-		data['ethEarned'] = data['ethEarned'] + payment["amount"]
+	if js["data"] != '':
+		for payment in js["data"]:
+			data['ethEarned'] = data['ethEarned'] + payment["amount"]
 
 	#	Get XMR data
 	#	http://api.minexmr.com:8080/stats_address?address=
