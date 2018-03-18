@@ -1,6 +1,57 @@
 #	Monitoring notes
 
-# WIFI-MON
+#	WIFI-MON
 Interval: 8 seconds
+
 Check: Pings www.google.com
 Action: Restart wifi interface if 3 consecutive failures
+
+#	MIN-MON
+Interval: 60 seconds
+
+Check: ETH/XMR/BTC Miner - As per config.json
+Action: Restart failed miner
+
+if watchdog enabled (As per config.json):
+	Check: ETH Hashrates
+	Action: Restart Ethminer
+
+#	Cloud Monitor
+Interval: 5 minutes
+
+Check: Has the MIN-MON data file been updated in the last 240 seconds
+Action: Powercycle the rig via TP-link API
+
+Check: ETH Hashrates
+Action: Powercycle the rig via TP-link API
+
+#	------------------------
+#	Installing into HiveOS
+#	------------------------
+
+sudo apt-get install -y git python-pip
+sudo pip install boto3 
+sudo pip install requests
+cd /
+sudo git clone https://github.com/gamecat69/mining-scripts.git
+sudo chown -R mining:mining /mining-scripts
+
+cd /mining-scripts
+mv config-sample.json config.json
+
+#	Edit the following values
+#	MINERNAME
+#	EMAIL
+#	ACCESSKEY
+#	SECRETKEY
+#	S3BUCKET
+#	PUSHOVER_TOKEN
+#	PUSHOVER_USER
+#	HTMLREPORTDIR
+nano config.json
+
+#	Todo
+- Disable / Reconfigure restart miner command
+- Configure new path "/mining-scripts" in bash-functions.sh
+- Autostart min-mon.sh
+

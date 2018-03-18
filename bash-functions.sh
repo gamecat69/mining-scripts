@@ -6,7 +6,7 @@
 
 WORKINGDIR="/home/mining/mining-scripts"
 LOGDIR="$WORKINGDIR/logs"
-CONFIG_FILE="../config-sample.json"
+CONFIG_FILE="../config.json"
 
 #	------------------
 #	Common functions 

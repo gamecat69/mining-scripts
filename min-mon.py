@@ -14,7 +14,7 @@ import socket
 #	----------------------------------
 #	Pre-requisites
 #	sudo apt-get install python-pip
-#	pip install boto3 requests
+#	sudo pip install boto3 requests
 #	----------------------------------
 
 #	----------------------------------
