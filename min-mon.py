@@ -339,7 +339,7 @@ def getEthminerData():
 	data['avggpuhashrate']=int(data['ethhashrate'] / i)
 
 	#	Prevent a divide by zero error
-	if data['ethtotalshares'] > 0:
+	if data['ethtotalshares'] > 0 and ethUptimeMin > 1:
 		data['ethsharesperhour'] = "{0:.2f}".format(data['ethtotalshares'] / ( ethUptimeMin / 60 ))
 	else:
 		data['ethsharesperhour'] = 0

@@ -1,0 +1,6 @@
+#	Monitoring notes
+
+# WIFI-MON
+Interval: 8 seconds
+Check: Pings www.google.com
+Action: Restart wifi interface if 3 consecutive failures

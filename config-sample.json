@@ -26,7 +26,6 @@
    "MINE_BTCP"         : "yes",
    "MINE_DCR"          : "yes",
    "ETHMINER"          : "ethminer",
-   "MINMON_DELAY_SECS" : "20",
    "start-end"         : "-------------------",
  
    "nvidia-mon"     : "-------------------",
@@ -48,6 +47,7 @@
    "XMRMINERSTATSURL" : "http://api.minexmr.com:8080/stats_address?address=",
    "HTMLREPORTDIR"    : "/home/mining/mining-scripts/html",
    "HTMLTEMPLATEFILE" : "index-template.html",
+   "MINMON_DELAY_SECS": "60",
    "MINMON_INT_SECS"  : "60",
    "min-mon-end"      : "-------------------",
 
