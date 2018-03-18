@@ -78,7 +78,7 @@ def getS3FileAge(bucket, key):
 	now = int(time.time())
 	fileAgeSecs = now - int(tsFileDate)
 
-	#formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S")
+	#formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S") %d-%m-%Y %H:%M:%S
 	#debugOutput("[%s] File is %d seconds old. Modified on: %s" % (rig['name'], fileAgeSecs, formatedTime) )
 
 	return fileAgeSecs

@@ -303,19 +303,17 @@ def getEthminerData():
 	#	If the hashrate watchdog is available....
 	if cfg['WATCHDOG_ENABLED'] == 'yes':
 		if data['ethhashrate'] < int(cfg['WATCHDOG_MIN_HASRATE']):
-			output ("[e] Watchdog: Hashrate: %d lower than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))
 			#	Restart the miner
-
-			output ("[e] getEthminerData: Hashrate lower than required minimum. Restarting ethminer")
-			#ethMinerRestartTimestamp = int(time.time())
-			#data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
-			#print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
-			#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate lower than required minimum. Restarting ethminer"])
-			#subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
-			#return "Error"
+			output ("[e] Watchdog: Hashrate: %d lower than required minimum: %d. Restarting ethminer" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))
+			ethMinerRestartTimestamp = int(time.time())
+			data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
+			output ("[i] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
+			subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate lower than required minimum. Restarting ethminer"])
+			subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
+			return "Error"
 
 		else:
-			output ("[e] Watchdog: Hashrate: %d higher than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))		
+			output ("[i] Watchdog: Hashrate: %d higher than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))		
 
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer

@@ -30,13 +30,13 @@ do
       sleep $MINMON_DELAY_SECS
    fi
 
-   output "" "[i] Getting Mining Stats"
+   output "$BLUE" "[i] Getting Mining Stats"
    python min-mon.py | tee $LOGFILE
-   output "" "[i] Sleeping for $MINMON_INT_SECS${NC}"
+   output "$BLUE" "[i] Sleeping for $MINMON_INT_SECS${NC}"
    let ITERATIONS+=1
    
    #	Rotate log after 10 interations
-   if [ $ITERATIONS -ge 10 ]; then
+   if [ $ITERATIONS -ge 100 ]; then
       output "" "[i] Rotating log file"
       rotateLog $SCRIPT_NAME
       ITERATIONS=0
