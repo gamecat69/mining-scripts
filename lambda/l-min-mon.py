@@ -16,7 +16,6 @@ USER        = os.environ['PUSHOVER_USER_ID']
 API         = os.environ['PUSHOVER_API_TOKEN']
 bucket      = os.environ['BUCKET']
 maxAge      = int(os.environ['MAX_AGE'])
-minHashRate = int(os.environ['MIN_HASHRATE'])
 host        = os.environ['TPLINK_HOST']
 token       = os.environ['TPLINK_API_TOKEN']
 testMode    = os.environ['TEST_MODE']

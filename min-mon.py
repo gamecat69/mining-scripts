@@ -24,14 +24,14 @@ import socket
 def writeJSON():
 	
 	JSONfilepath = cfg["HTMLREPORTDIR"] + '/' + jsonReportFile
-	print ("[MIN MON] Writing JSON report to: %s" % JSONfilepath)
+	output ("[i] Writing JSON report to: %s" % JSONfilepath)
 
 	try:
 		JSONfile = open(JSONfilepath,"w")
 		JSONfile.write(json.dumps(data))
 		JSONfile.close()
 	except Exception as e:
-		logError("writeJSON: Unable to open JSON outputfile" + str(e))
+		output("[e] writeJSON: Unable to open JSON outputfile" + str(e))
 		return "Error"
 
 def getURL(url):
@@ -40,11 +40,14 @@ def getURL(url):
 		res = requests.get(url, timeout=10)
 		return res.text
 	except:
-		logError("getURL: Unable to open url %s" % url)
+		output("[e] getURL: Unable to open url %s" % url)
 		return "Error"
 
-def logError(errString):
-	print ("[MIN MON] [ERR] : %s" % errString)
+def output(errString):
+	#now = formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S") %d-%m-%Y %H:%M:%S
+	
+	now = time.strftime("%d-%m-%Y %H:%M:%S")
+	print ("%s [MIN MON] %s" % (now, errString) )
 
 def formatUptimeMins(mins):
 	
@@ -78,14 +81,14 @@ def getCoinUSD(coin):
 
 	url = cfg["COINMARKETCAPURL"] + '/' + coin
 
-	print ("[MIN MON] Getting data from: %s" % url)
+	output("[i] Getting data from: %s" % url)
 
 	try:
 		data = getURL(url)
 		Json = json.loads(data)
 		return Json[0]["price_usd"]
 	except Exception as e:
-		logError("getCoinUSD: Unable to open url " + str(e))
+		output("[e] getCoinUSD: Unable to open url " + str(e))
 		return "Error"
 
 def getSystemUptime():
@@ -95,7 +98,7 @@ def getSystemUptime():
 		contents = f.read().split()
 		f.close()
 	except Exception as e:
-		logError("getSystemUptime: Unable to open /proc/uptime " + str(e))
+		output("[e] getSystemUptime: Unable to open /proc/uptime " + str(e))
 		return "Error"
 
 	total_seconds = float(contents[0])
@@ -108,14 +111,14 @@ def writeHTML():
 	HTMLfilepath     = cfg["HTMLREPORTDIR"] + '/' + htmlReportFile
 	HTMLtemplatepath = cfg["HTMLREPORTDIR"] + '/' + cfg["HTMLTEMPLATEFILE"]
 	
-	print ("[MIN MON] Writing HTML report to: %s" % HTMLfilepath)
+	output("[i] Writing HTML report to: %s" % HTMLfilepath)
 
 	try:
 		f = open(HTMLtemplatepath)
 		file = f.read()
 		f.close()
 	except Exception as e:
-		logError("writeHTML: Unable to open HTML template" + str(e))
+		output ("[e] writeHTML: Unable to open HTML template" + str(e))
 		return "Error"
 	
 	file = string.replace(file, '$minername', str(cfg["MINERNAME"]))
@@ -156,17 +159,17 @@ def writeHTML():
 		HTMLfile.write(file)
 		HTMLfile.close()
 	except Exception as e:
-		logError("writeHTML: Unable to open HTML outputfile" + str(e))
+		output ("[e] writeHTML: Unable to open HTML outputfile" + str(e))
 		return "Error"
 
 def getxmrStakData():
 
-	print ("[MIN MON] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
+	output ("[i] Getting XMR data from: %s" % cfg["XMRSTAKURL"])
 
 	try:
 		j = getURL(cfg["XMRSTAKURL"])
 	except:
-		logError("getxmrStakData: Unable to open url. Restarting xmr-stak")
+		output ("[e] getxmrStakData: Unable to open url. Restarting xmr-stak")
 		xmrMinerRestartTimestamp = int(time.time())
 		data['xmrMinerRestartTimestamp'] = xmrMinerRestartTimestamp
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "xmr-stak problem, restarting..."])
@@ -211,23 +214,23 @@ def uploadToAWS(dir, file, prefix, contentType):
 			aws_secret_access_key = cfg["SECRETKEY"],
 		)
 	except Exception as e:
-		logError("uploadToAWS: Unable to create session" + str(e))
+		output ("[e] uploadToAWS: Unable to create session" + str(e))
 		return "Error"
 
-	print ("[MIN MON] Uploading file: %s to bucket:%s/%s" % (dir + '/' + file, cfg["S3BUCKET"], prefix))
+	output ("[i] Uploading file: %s to bucket:%s/%s" % (dir + '/' + file, cfg["S3BUCKET"], prefix))
 	
 	try:
 		s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
 		s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType': contentType})
 	except Exception as e:
-		logError("uploadToAWS: Unable to upload file (Attempt 1)" + str(e))
+		output ("[e] uploadToAWS: Unable to upload file (Attempt 1)" + str(e))
 		
 		#	Retry upload...
 		try:
 			s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
 			s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType': contentType})
 		except Exception as e:
-			logError("uploadToAWS: Unable to upload file (Attempt 2)" + str(e))
+			output ("[e] "uploadToAWS: Unable to upload file (Attempt 2)" + str(e))
 			return "Error"
 
 def getEthminerData():
@@ -251,7 +254,7 @@ def getEthminerData():
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(10)
-	print ("[MIN MON] Getting ETH data from: %s:%d" % (host, port))
+	output ("[i] Getting ETH data from: %s:%d" % (host, port))
 	#print ("[MIN MON] getEthminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
 		s.connect((host, port))
@@ -261,10 +264,10 @@ def getEthminerData():
 		s.close()		
 		js=json.loads(j.decode("utf-8"))
 	except:
-		logError("getEthminerData: Unable to connect. Restarting ethminer")
+		output ("[e] getEthminerData: Unable to connect. Restarting ethminer")
 		ethMinerRestartTimestamp = int(time.time())
 		data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
-		print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
+		output ("[i] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
 		#subprocess.Popen(["./start-eth-ethminer.sh"])
 		subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
@@ -300,10 +303,10 @@ def getEthminerData():
 	#	If the hashrate watchdog is available....
 	if cfg['WATCHDOG_ENABLED'] == 'yes':
 		if data['ethhashrate'] < int(cfg['WATCHDOG_MIN_HASRATE']):
-			print ("[MIN MON] Watchdog: Hashrate: %d lower than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))
+			output ("[e] Watchdog: Hashrate: %d lower than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))
 			#	Restart the miner
 
-			logError("getEthminerData: Hashrate lower than required minimum. Restarting ethminer")
+			output ("[e] getEthminerData: Hashrate lower than required minimum. Restarting ethminer")
 			#ethMinerRestartTimestamp = int(time.time())
 			#data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
 			#print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
@@ -312,7 +315,7 @@ def getEthminerData():
 			#return "Error"
 
 		else:
-			print ("[MIN MON] Watchdog: Hashrate: %d higher than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))		
+			output ("[e] Watchdog: Hashrate: %d higher than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))		
 
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer
@@ -389,7 +392,7 @@ def getZminerData():
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(10)
-	print ("[MIN MON] Getting zminer data from: %s:%d" % (host, port))
+	output ("[i] Getting zminer data from: %s:%d" % (host, port))
 	#print ("[MIN MON] getZminerData: Attemping to connect to %s:%d" % (host, port))
 	try:
 		s.connect((host, port))
@@ -402,7 +405,7 @@ def getZminerData():
 		s.close()
 		js=json.loads(j.decode("utf-8"))
 	except:
-		logError("getZminerData: Unable to connect. Restarting zminer")
+		output ("[e] getZminerData: Unable to connect. Restarting zminer")
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "zminer problem, restarting..."])
 		subprocess.Popen(["screen", "-dmS", "zminer", zMinerCmd])
 		return "Error"
@@ -465,7 +468,7 @@ def getEarnedCoins():
 		j = getURL(url)
 		js=json.loads(j.decode("utf-8"))
 	except:
-		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		output ("[e] getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		data['btcpEarned'] = ''
 		return "Error"
 
@@ -479,7 +482,7 @@ def getEarnedCoins():
 		j = getURL(url)
 		js=json.loads(j.decode("utf-8"))
 	except:
-		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		output ("[e] getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		data['ethEarned'] = ''
 		return "Error"
 	
@@ -493,7 +496,7 @@ def getEarnedCoins():
 		j = getURL(url)
 		js=json.loads(j.decode("utf-8"))
 	except:
-		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		output ("[e] getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		data['ethEarned'] = ''
 		return "Error"
 
@@ -510,7 +513,7 @@ def getEarnedCoins():
 		js=json.loads(j.decode("utf-8"))
 		
 	except:
-		logError("getEarnedCoins: Unable to get worker stats from url:%s" % url)
+		output ("[e] getEarnedCoins: Unable to get worker stats from url:%s" % url)
 		return "Error"
 
 	data['xmrEarned'] = int(js["stats"]["balance"]) / 1000000000000
