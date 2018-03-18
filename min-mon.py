@@ -230,7 +230,7 @@ def uploadToAWS(dir, file, prefix, contentType):
 			s3client = session.client('s3', config= boto3.session.Config(signature_version='s3'))
 			s3client.upload_file(dir + '/' + file, cfg["S3BUCKET"], prefix + file, ExtraArgs={'ACL':'public-read', 'ContentType': contentType})
 		except Exception as e:
-			output ("[e] "uploadToAWS: Unable to upload file (Attempt 2)" + str(e))
+			output ("[e] uploadToAWS: Unable to upload file (Attempt 2)" + str(e))
 			return "Error"
 
 def getEthminerData():
