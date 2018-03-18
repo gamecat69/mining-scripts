@@ -7,6 +7,11 @@
    "ETHWALLET"   : "0x75A3CdA475EE196916ec76C7174eCd7886163beC",
    "generic-end" : "-------------------",
 
+   "watchdog"             : "-------------------",
+   "WATCHDOG_ENABLED"     : "yes",
+   "WATCHDOG_MIN_HASRATE" : "120000",
+   "watchdog-end"         : "-------------------",
+
    "decred"           : "-------------------",
    "DCRWALLET"        : "DsRPHY9M1hZ37v2KayVKDAfdVEPHMmgp9s1",
    "DCRPOOL1"          : "eu.luxor.tech:4444",

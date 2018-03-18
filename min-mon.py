@@ -297,6 +297,23 @@ def getEthminerData():
 	ethUptimeMin           = int(js["result"][1])
 	data['ethuptime']      = formatUptimeMins(ethUptimeMin)
 
+	#	If the hashrate watchdog is available....
+	if cfg['WATCHDOG_ENABLED'] == 'yes':
+		if data['ethhashrate'] < int(cfg['WATCHDOG_MIN_HASRATE']):
+			print ("[MIN MON] Watchdog: Hashrate: %d lower than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))
+			#	Restart the miner
+
+			logError("getEthminerData: Hashrate lower than required minimum. Restarting ethminer")
+			#ethMinerRestartTimestamp = int(time.time())
+			#data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
+			#print ("[MIN MON] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
+			#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate lower than required minimum. Restarting ethminer"])
+			#subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
+			#return "Error"
+
+		else:
+			print ("[MIN MON] Watchdog: Hashrate: %d higher than required minimum: %d" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE'])))		
+
 	#	Extract just the pool address if its too long
 	#	Ethminer provides a much longer URL than cminer
 	if len(data['ethpool']) > 40:
