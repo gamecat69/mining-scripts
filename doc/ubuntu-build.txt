@@ -251,6 +251,8 @@ cd ~/mining-scripts
 
 #	List all connected VGA cards
 lshw -class Video | grep product
+NUM_NVIDIA=$(lshw -class Video | grep 'product' | grep 'NVIDIA' | wc -l)
+NUM_AMD=$(lshw -class Video | grep 'product' | grep 'Advanced Micro Devices' | wc -l)
 
 #	Clone a drive. confirm the right drives first by running lsblk
 #	This clones /dev/sda to /dev/sdb

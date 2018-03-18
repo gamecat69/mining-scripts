@@ -9,6 +9,7 @@ LOGFILE="$LOGDIR/$SCRIPT_NAME.log"
 
 #	Rotate log
 rotateLog $SCRIPT_NAME
+rotateLog 'cminer-log-noappend'
 
 #WORKINGDIR=/home/mining/mining-scripts
 #cd $WORKINGDIR
