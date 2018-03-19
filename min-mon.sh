@@ -31,7 +31,7 @@ do
    fi
 
    output "$BLUE" "[i] Getting Mining Stats"
-   python min-mon.py | tee $LOGFILE
+   python min-mon.py | tee -a $LOGFILE
    output "$BLUE" "[i] Sleeping for $MINMON_INT_SECS${NC}"
    let ITERATIONS+=1
    
