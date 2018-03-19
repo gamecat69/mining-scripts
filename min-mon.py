@@ -238,7 +238,7 @@ def getEthminerData():
 	# ['0.14.0.dev3', 
 	#'59', ETH Shares
 	#'120723;53;0', ETH Summary (hashrate;shares accepted;shares rejected)
-	#'22272;19044;19044;22272;19044;19044', ETH Hasgrates
+	#'22272;19044;19044;22272;19044;19044', ETH Hashrates
 	#'0;0;0', DCR Summary (hashrate;shares accepted;shares rejected)
 	#'off;off;off;off;off;off', DCR Hashrates
 	#'64;37; 57;41; 58;43; 73;44; 62;47; 69;53', 
@@ -269,7 +269,6 @@ def getEthminerData():
 		data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
 		output ("[i] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
 		subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "ethminer problem, restarting..."])
-		#subprocess.Popen(["./start-eth-ethminer.sh"])
 		subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
 		return "Error"
 
@@ -308,7 +307,9 @@ def getEthminerData():
 			ethMinerRestartTimestamp = int(time.time())
 			data['ethMinerRestartTimestamp'] = ethMinerRestartTimestamp
 			output ("[i] ethMinerRestartTimestamp: %d" % (ethMinerRestartTimestamp))
-			subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate lower than required minimum. Restarting ethminer"])
+			#subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate lower than required minimum. Restarting ethminer"])
+			subprocess.Popen(["./pushover.sh",cfg["MINERNAME"], "Hashrate: %d lower than required minimum: %d. Restarting ethminer" % (data['ethhashrate'], int(cfg['WATCHDOG_MIN_HASRATE']))])
+			
 			subprocess.Popen(["screen", "-dmS", "ethminer", ethMinerCmd])
 			return "Error"
 
