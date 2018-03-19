@@ -47,7 +47,7 @@ def output(errString):
 	#now = formatedTime=fileDate.strftime("%Y-%m-%d %H:%M:%S") %d-%m-%Y %H:%M:%S
 	
 	now = time.strftime("%d-%m-%Y %H:%M:%S")
-	print ("%s [MIN MON] %s" % (now, errString) )
+	print ("%s (MIN MON) %s" % (now, errString) )
 
 def formatUptimeMins(mins):
 	
