@@ -56,7 +56,7 @@ do
    let ITERATIONS+=1
 
    #	Rotate log after 100 iterations
-   if [ $ITERATIONS -ge 100 ]; then
+   if [ $ITERATIONS -ge 500 ]; then
       output "" "[i] Rotating log file"
       rotateLog $SCRIPT_NAME
       ITERATIONS=0
