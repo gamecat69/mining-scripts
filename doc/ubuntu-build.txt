@@ -256,7 +256,7 @@ NUM_AMD=$(lshw -class Video | grep 'product' | grep 'Advanced Micro Devices' | w
 
 #	Clone a drive. confirm the right drives first by running lsblk
 #	This clones /dev/sda to /dev/sdb
-dd if=/dev/sda of=/dev/sdb bd=4M
+dd if=/dev/sda of=/dev/sdb bs=4M
 
 #	Create a user and add to the sudo group
 useradd -m <username> -G sudo -s /bin/bash

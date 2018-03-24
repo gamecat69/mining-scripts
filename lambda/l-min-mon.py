@@ -25,14 +25,6 @@ tpLinkUrl   = host + "?token=" + token
 headers     = {"Content-Type": "application/json"}
 powerStates = ['off','on']
 
-#	--------------------------------
-#	To do
-
-#	- Create HTML report files using json in /nodes/<minername>-monitor.json
-#	- Get CoinUSD values? - possible new Lambda
-#	- Get current Coin balances? - possible new Lambda
-#	--------------------------------
-
 def debugOutput(str):
 	if debug == 'true':
 		print(str)

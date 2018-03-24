@@ -11,7 +11,21 @@ import botocore
 #s3 = boto3.resource('s3')
 
 data={}
+data['ethEarned'] = 0
+data['btcpEarned'] = 0
+data['xmrEarned'] = 0
+data['xmrusd'] = 0
+data['ethusd'] = 0
+data['btcpusd'] = 0
+
 debug = os.environ['DEBUG_MODE']
+
+def getCoinUSD(coin):
+
+	url = os.environ["COINMARKETCAPURL"] + '/' + coin
+	#debugOutput("[i] Getting data from: %s" % url)
+	js  = getJson(url)
+	return js[0]["price_usd"]
 
 def debugOutput(str):
 	if debug == 'true':
@@ -55,10 +69,6 @@ def jsonToS3File(data, bucket, key):
 
 def getEarnedCoins():
 
-	data['ethEarned'] = 0
-	data['btcpEarned'] = 0
-	data['xmrEarned'] = 0
-
 	#	Get Zminer (BTCP) info
 	url = os.environ["ZMINERSTATSURL"] + '?' + os.environ["BTCPWALLET"]
 	js  = getJson(url)
@@ -96,6 +106,13 @@ def getEarnedCoins():
 	data['xmrEarned']  = round(data['xmrEarned'], 6)
 
 def lambda_handler(event, context):
+
     getEarnedCoins()
+    data['xmrusd'] = getCoinUSD('monero')
+    data['ethusd'] = getCoinUSD('ethereum')
+    data['ethUsdValue']  = round(float(data['ethusd'])  * float(data['ethEarned']),3)
+    data['xmrUsdValue']  = round(float(data['xmrusd'])  * float(data['xmrEarned']),3)
+    data['btcpUsdValue'] = round(float(data['btcpusd']) * float(data['btcpEarned']),3)
+
     jsonToS3File(data, os.environ["S3_BUCKET"], 'earned-coins.json')
     return(data)
