@@ -32,7 +32,7 @@
 #	Select Timezone and keyboard layout
 #	Give the machine a name
 #	Create a user called "mining", set to auto login
-#	
+#
 
 #	------------------
 #	Configure OS (1)
@@ -191,7 +191,7 @@ sudo apt install -y libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-
 cd ~
 git clone https://github.com/fireice-uk/xmr-stak.git
 cd xmr-stak
-cmake -DOpenCL_ENABLE=OFF .
+cmake -DOpenCL_ENABLE=OFF -DOpenSSL_ENABLE=OFF .
 make install
 
 #	Configure, this creates the required config files
