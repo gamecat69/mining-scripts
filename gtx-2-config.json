@@ -23,8 +23,8 @@
    "nvidia-mon-end" : "-------------------",
    
    "min-mon"          : "-------------------",
-   "ACCESSKEY"        : "AKIAI32SWSIJKSHHDB4A",
-   "SECRETKEY"        : "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",
+   "ACCESSKEY"        : "",
+   "SECRETKEY"        : "",
    "S3BUCKET"         : "min-mon",
    "CMINERURL"        : "http://localhost:3333",
    "XMRSTAKURL"       : "http://localhost:4444/api.json",
