@@ -26,12 +26,15 @@
  *       "affine_to_cpu" : false, "sync_mode" : 3,
  *     },
  * ],
+ * If you do not wish to mine with your nVidia GPU(s) then use:
+ * "gpu_threads_conf" :
+ * null,
  */
 
 "gpu_threads_conf" :
 [
   // gpu: GeForce GTX 1060 6GB architecture: 61
-  //      memory: 3295/6072 MiB
+  //      memory: 5971/6078 MiB
   //      smx: 10
   { "index" : 0,
     "threads" : 32, "blocks" : 30,
@@ -39,7 +42,7 @@
     "affine_to_cpu" : false, "sync_mode" : 3,
   },
   // gpu: GeForce GTX 1060 6GB architecture: 61
-  //      memory: 3516/6072 MiB
+  //      memory: 5984/6078 MiB
   //      smx: 10
   { "index" : 1,
     "threads" : 32, "blocks" : 30,
@@ -47,7 +50,7 @@
     "affine_to_cpu" : false, "sync_mode" : 3,
   },
   // gpu: GeForce GTX 1060 6GB architecture: 61
-  //      memory: 3516/6072 MiB
+  //      memory: 5984/6078 MiB
   //      smx: 10
   { "index" : 2,
     "threads" : 32, "blocks" : 30,
@@ -55,9 +58,33 @@
     "affine_to_cpu" : false, "sync_mode" : 3,
   },
   // gpu: GeForce GTX 1060 6GB architecture: 61
-  //      memory: 3516/6072 MiB
+  //      memory: 5984/6078 MiB
   //      smx: 10
   { "index" : 3,
+    "threads" : 32, "blocks" : 30,
+    "bfactor" : 0, "bsleep" :  0,
+    "affine_to_cpu" : false, "sync_mode" : 3,
+  },
+  // gpu: GeForce GTX 1060 6GB architecture: 61
+  //      memory: 5984/6078 MiB
+  //      smx: 10
+  { "index" : 4,
+    "threads" : 32, "blocks" : 30,
+    "bfactor" : 0, "bsleep" :  0,
+    "affine_to_cpu" : false, "sync_mode" : 3,
+  },
+  // gpu: GeForce GTX 1060 6GB architecture: 61
+  //      memory: 5984/6078 MiB
+  //      smx: 10
+  { "index" : 5,
+    "threads" : 32, "blocks" : 30,
+    "bfactor" : 0, "bsleep" :  0,
+    "affine_to_cpu" : false, "sync_mode" : 3,
+  },
+  // gpu: GeForce GTX 1060 6GB architecture: 61
+  //      memory: 5984/6078 MiB
+  //      smx: 10
+  { "index" : 6,
     "threads" : 32, "blocks" : 30,
     "bfactor" : 0, "bsleep" :  0,
     "affine_to_cpu" : false, "sync_mode" : 3,
